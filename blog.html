@@ -69,9 +69,9 @@ img{max-width:100%;display:block}a{color:inherit;text-decoration:none}
 .featured-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:2px;margin-top:40px}
 .featured-main{background:var(--white);display:flex;flex-direction:column;overflow:hidden;transition:transform var(--t)}
 .featured-main:hover{transform:translateY(-3px)}
-.featured-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.featured-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;filter:brightness(.82);transition:filter var(--t),transform var(--t)}
+.featured-main:hover .featured-img{filter:brightness(.92);transform:scale(1.02)}
 .featured-img-placeholder{width:100%;aspect-ratio:16/9;background:var(--forest);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.featured-img-placeholder::before{content:'';position:absolute;inset:0;background-image:url('./images/studio-latem.webp');background-size:cover;background-position:center;opacity:.4}
 .featured-img-placeholder-text{position:relative;z-index:1;font-family:var(--font-display);font-size:1.1rem;font-weight:300;color:rgba(255,255,255,.7);text-align:center;padding:20px}
 
 .featured-content{padding:32px 36px 36px;flex:1;display:flex;flex-direction:column}
@@ -90,7 +90,8 @@ img{max-width:100%;display:block}a{color:inherit;text-decoration:none}
 .featured-side-card:hover{transform:translateX(3px)}
 .featured-main.hidden,.featured-side-card.hidden,#featured.hidden{display:none}
 .side-img-wrap{width:100%;aspect-ratio:3/2;background:var(--offwhite);margin-bottom:20px;overflow:hidden;position:relative}
-.side-img-wrap::before{content:'';position:absolute;inset:0;background-image:url('./images/studio-latem.webp');background-size:cover;background-position:center;opacity:.25}
+.side-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;opacity:.72;transition:opacity var(--t),transform var(--t)}
+.featured-side-card:hover .side-img-wrap img{opacity:.9;transform:scale(1.03)}
 .side-title{font-family:var(--font-display);font-size:1.15rem;font-weight:400;color:var(--anthracite);line-height:1.3;margin-bottom:10px;margin-top:4px;transition:color var(--t)}
 .featured-side-card:hover .side-title{color:var(--cedar)}
 .side-lead{font-size:.82rem;font-weight:300;color:var(--grey-text);line-height:1.65;flex:1;margin-bottom:16px}
@@ -104,8 +105,8 @@ img{max-width:100%;display:block}a{color:inherit;text-decoration:none}
 .post-card:hover{transform:translateY(-3px)}
 .post-card.hidden{display:none}
 .post-card-img{width:100%;aspect-ratio:16/9;background:var(--offwhite);position:relative;overflow:hidden}
-.post-card-img-inner{position:absolute;inset:0;background-image:url('./images/studio-latem.webp');background-size:cover;background-position:center;opacity:.2;transition:opacity var(--t)}
-.post-card:hover .post-card-img-inner{opacity:.35}
+.post-card-img img{width:100%;height:100%;object-fit:cover;display:block;opacity:.72;transition:opacity var(--t),transform var(--t)}
+.post-card:hover .post-card-img img{opacity:.92;transform:scale(1.03)}
 .post-card-body{padding:24px 24px 28px;flex:1;display:flex;flex-direction:column}
 .post-card-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .post-card-title{font-family:var(--font-display);font-size:1.15rem;font-weight:400;color:var(--anthracite);line-height:1.3;margin-bottom:10px;flex:1;transition:color var(--t)}
@@ -222,8 +223,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       <!-- FEATURED MAIN: Tomasz case study -->
       <a href="./blog/post-od-bolu-do-ruchu-tomasz.html" class="featured-main" data-cats="bol trening">
         <div class="featured-img-placeholder">
-          <!-- Miejsce na docelowe zdjęcie do wpisu. -->
-          <div class="featured-img-placeholder-text">Zdjęcie do wpisu<br><small style="opacity:.5">./images/blog/tomasz.jpg</small></div>
+          <img src="./images/outdoor.webp" alt="Trener Studio Las w terenie górskim" class="featured-img">
         </div>
         <div class="featured-content">
           <div class="featured-meta">
@@ -240,7 +240,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       <!-- FEATURED SIDE -->
       <div class="featured-side">
         <a href="./blog/post-dlaczego-nie-ma-20-maszyn.html" class="featured-side-card" data-cats="trening studio">
-          <div class="side-img-wrap"></div>
+          <div class="side-img-wrap"><img src="./images/studio-interior.webp" alt="Kameralne wnętrze Studio Las" loading="lazy"></div>
           <div class="featured-meta">
             <span class="post-tag">Filozofia</span>
             <span class="post-date">8 Listopada 2025</span>
@@ -251,7 +251,7 @@ footer{background:var(--forest);padding:60px 0 36px}
         </a>
 
         <a href="./blog/post-neurotyp-trening.html" class="featured-side-card" data-cats="trening neurotypy">
-          <div class="side-img-wrap"></div>
+          <div class="side-img-wrap"><img src="./images/damian-profilowe.webp" alt="Trening 1:1 dopasowany do osoby" loading="lazy"></div>
           <div class="featured-meta">
             <span class="post-tag">Neurotypy</span>
             <span class="post-date">1 Listopada 2025</span>
@@ -277,7 +277,7 @@ footer{background:var(--forest);padding:60px 0 36px}
     <div class="posts-grid" id="postsGrid">
 
       <a href="./blog/post-jelita-sibo-imo-sifo.html" class="post-card reveal" data-cats="styl trening">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/IMG_2382.webp" alt="Spokojne jezioro i regeneracja organizmu" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Styl życia</span>
@@ -294,7 +294,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-model-bolu.html" class="post-card reveal" data-cats="bol trening">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/1.webp" alt="Trening medyczny i praca z ruchem" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Ból i kontuzje</span>
@@ -311,7 +311,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-skad-wiem.html" class="post-card reveal" data-cats="trening studio">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/MK4_0694_preview.webp" alt="Trener medyczny podczas pracy edukacyjnej" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Trening medyczny</span>
@@ -328,7 +328,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-trening-funkcjonalny.html" class="post-card reveal" data-cats="trening bol">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/training.webp" alt="Trening funkcjonalny w studiu" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Trening medyczny</span>
@@ -345,7 +345,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-trening-onkologia.html" class="post-card reveal" data-cats="trening bol">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/studio-latem.webp" alt="Kameralne Studio Las w lesie" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Trening medyczny</span>
@@ -362,7 +362,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-od-bolu-do-ruchu-tomasz.html" class="post-card reveal" data-cats="bol trening">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/IMG_0617.webp" alt="Powrót do ruchu w naturalnym terenie" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Case study</span>
@@ -379,7 +379,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-dlaczego-nie-ma-20-maszyn.html" class="post-card reveal" data-cats="trening studio">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/studio-interior.webp" alt="Wnętrze kameralnego studia bez nadmiaru maszyn" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">O Studio Las</span>
@@ -396,7 +396,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-neurotyp-trening.html" class="post-card reveal" data-cats="trening neurotypy">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/damian-profilowe.webp" alt="Indywidualny trening dopasowany do układu nerwowego" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Neurotypy</span>
@@ -413,7 +413,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-dlaczego-trening-300.html" class="post-card reveal" data-cats="studio">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/damian-about.webp" alt="Damian Krawiec, trener medyczny Studio Las" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">O Studio Las</span>
@@ -430,7 +430,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-kim-jestem.html" class="post-card reveal" style="transition-delay:.05s" data-cats="studio">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/spadochroniarstwo2.webp" alt="Doświadczenie i droga zawodowa trenera" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">O mnie</span>
@@ -447,7 +447,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-diagnostyka-funkcjonalna.html" class="post-card reveal" style="transition-delay:.1s" data-cats="trening">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/blog-3.webp" alt="Obserwacja ruchu i diagnostyka funkcjonalna" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Trening medyczny</span>
@@ -464,7 +464,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-skoki-w-treningu.html" class="post-card reveal" data-cats="trening bol">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/hyrox1.webp" alt="Dynamiczny trening i przygotowanie motoryczne" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Kontuzje</span>
@@ -481,7 +481,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./post-3-minutowy-reset.html" class="post-card reveal" style="transition-delay:.05s" data-cats="styl">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/IMG_2421.webp" alt="Spokojny krajobraz jako symbol krótkiej regeneracji" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Styl życia</span>
@@ -498,7 +498,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-stres-w-pracy.html" class="post-card reveal" style="transition-delay:.1s" data-cats="styl">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/las.webp" alt="Leśna ścieżka i wyciszenie po pracy" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Regeneracja</span>
@@ -515,7 +515,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-fizjoterapia-w-firmie.html" class="post-card reveal" data-cats="styl">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/MK4_0694_preview.webp" alt="Praca z ciałem poza klasycznym biurem" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Dla firm</span>
@@ -532,7 +532,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-dno-miednicy.html" class="post-card reveal" style="transition-delay:.05s" data-cats="trening">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/572843d1d26d70ef11f5c724c512a90d.webp" alt="Spokojna przestrzeń do bezpiecznego treningu medycznego" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Po porodzie</span>
@@ -549,7 +549,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-reedukacja-oddechowa.html" class="post-card reveal" style="transition-delay:.1s" data-cats="trening">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/IMG_0941.webp" alt="Woda i oddech jako obraz regulacji napięcia" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Oddech</span>
@@ -566,7 +566,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-urazy-na-nartach.html" class="post-card reveal" data-cats="sezonowe bol">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/narciarstwo.webp" alt="Narciarz na stoku w sezonie zimowym" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Sezonowe</span>
@@ -583,7 +583,7 @@ footer{background:var(--forest);padding:60px 0 36px}
       </a>
 
       <a href="./blog/post-kciuk-narciarza.html" class="post-card reveal" style="transition-delay:.05s" data-cats="sezonowe bol">
-        <div class="post-card-img"><div class="post-card-img-inner"></div></div>
+        <div class="post-card-img"><img src="./images/IMG_3853.webp" alt="Sporty zimowe i ryzyko urazów dłoni" loading="lazy"></div>
         <div class="post-card-body">
           <div class="post-card-meta">
             <span class="post-tag">Kontuzje</span>

@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Studio Las OS 3.0 | Clinical Command Center</title>
+  <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
+  <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
+  <meta property="og:locale" content="pl_PL" />
+  <meta property="og:image" content="https://trenermedycznywarszawa.github.io/studio-las-v11/images/damian-about.webp" />
   <style>
     :root {
       --ink: #f4efe6;
@@ -323,7 +327,7 @@
         <select id="clientSelect"></select>
       </div>
 
-      <nav class="nav" aria-label="GĹ‚Ăłwna nawigacja">
+      <nav class="nav" aria-label="Główna nawigacja">
         <button data-view="command" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/></svg><span>Centrum</span></button>
         <button data-view="client"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Klient</span></button>
         <button data-view="process"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Proces</span></button>
@@ -333,7 +337,7 @@
 
       <div class="side-card">
         <strong>Szorstka prawda</strong>
-        <p>Dashboard nie ma byÄ‡ Ĺ‚adny. Ma skracaÄ‡ drogÄ™ od obserwacji do decyzji i zostawiaÄ‡ czytelny Ĺ›lad procesu.</p>
+        <p>Dashboard nie ma być ładny. Ma skracać drogę od obserwacji do decyzji i zostawiać czytelny ślad procesu.</p>
       </div>
     </aside>
 
@@ -358,19 +362,19 @@
       <div class="panel-head">
         <div>
           <h2>Nowy klient</h2>
-          <p>Minimum danych, maksimum uĹĽytecznoĹ›ci. ResztÄ™ dopisujesz po diagnostyce.</p>
+          <p>Minimum danych, maksimum użyteczności. Resztę dopisujesz po diagnostyce.</p>
         </div>
         <button class="btn" data-close="clientModal">Zamknij</button>
       </div>
       <form id="clientForm" class="form-grid">
-        <div class="form-field"><label class="label">ImiÄ™ i nazwisko</label><input name="name" required /></div>
+        <div class="form-field"><label class="label">Imię i nazwisko</label><input name="name" required /></div>
         <div class="form-field"><label class="label">Kontakt</label><input name="contact" /></div>
-        <div class="form-field"><label class="label">Pakiet</label><select name="package"><option>Diagnostyka</option><option>FUNDAMENT</option><option>ROZWĂ“J</option><option>VIP Clinical</option></select></div>
-        <div class="form-field"><label class="label">Etap</label><select name="stage"><option value="1">1. Punkt startowy</option><option value="2">2. Fundament ruchu</option><option value="3">3. SiĹ‚a i stabilnoĹ›Ä‡</option><option value="4">4. Autonomia</option></select></div>
-        <div class="form-field full"><label class="label">Status zdrowia</label><input name="healthStatus" placeholder="np. L4/L5, kolano po artroskopii, powrĂłt po leczeniu" /></div>
+        <div class="form-field"><label class="label">Pakiet</label><select name="package"><option>Diagnostyka</option><option>FUNDAMENT</option><option>ROZWÓJ</option><option>VIP Clinical</option></select></div>
+        <div class="form-field"><label class="label">Etap</label><select name="stage"><option value="1">1. Punkt startowy</option><option value="2">2. Fundament ruchu</option><option value="3">3. Siła i stabilność</option><option value="4">4. Autonomia</option></select></div>
+        <div class="form-field full"><label class="label">Status zdrowia</label><input name="healthStatus" placeholder="np. L4/L5, kolano po artroskopii, powrót po leczeniu" /></div>
         <div class="form-field"><label class="label">Neurotyp / styl komunikacji</label><input name="neuroType" placeholder="np. Typ 1 - Dopaminowy" /></div>
-        <div class="form-field"><label class="label">Cel 12 tygodni</label><input name="goal" placeholder="np. wrĂłciÄ‡ do treningu bez bĂłlu plecĂłw" /></div>
-        <div class="form-field full"><label class="label">Logika decyzyjna</label><textarea name="decisionLogic" placeholder="Co wiemy? Czego nie wiemy? Jaka hipoteza prowadzi kolejny tydzieĹ„?"></textarea></div>
+        <div class="form-field"><label class="label">Cel 12 tygodni</label><input name="goal" placeholder="np. wrócić do treningu bez bólu pleców" /></div>
+        <div class="form-field full"><label class="label">Logika decyzyjna</label><textarea name="decisionLogic" placeholder="Co wiemy? Czego nie wiemy? Jaka hipoteza prowadzi kolejny tydzień?"></textarea></div>
         <button class="btn primary full" type="submit">Dodaj klienta</button>
       </form>
     </div>
@@ -387,16 +391,16 @@
       </div>
       <form id="sessionForm" class="form-grid">
         <div class="form-field"><label class="label">Data</label><input type="date" name="date" required /></div>
-        <div class="form-field"><label class="label">GotowoĹ›Ä‡ / energia 1-10</label><input type="number" min="1" max="10" name="readiness" value="7" /></div>
+        <div class="form-field"><label class="label">Gotowość / energia 1-10</label><input type="number" min="1" max="10" name="readiness" value="7" /></div>
         <div class="form-field"><label class="label">VAS przed 0-10</label><input type="number" min="0" max="10" name="vasBefore" value="5" /></div>
         <div class="form-field"><label class="label">VAS po 0-10</label><input type="number" min="0" max="10" name="vasAfter" value="3" /></div>
-        <div class="form-field"><label class="label">MobilnoĹ›Ä‡ %</label><input type="number" min="0" max="100" name="mobilityIndex" value="60" /></div>
-        <div class="form-field"><label class="label">Sen</label><select name="sleepQuality"><option>Bardzo sĹ‚aby</option><option>SĹ‚aby</option><option>PrzeciÄ™tny</option><option selected>Dobry</option><option>Bardzo dobry</option></select></div>
-        <div class="form-field full"><label class="label">Ä†wiczenia</label><textarea name="exercises" placeholder="KaĹĽde Ä‡wiczenie w nowej linii"></textarea></div>
-        <div class="form-field full"><label class="label">Obserwacje kliniczne</label><textarea name="notes" placeholder="Co siÄ™ zmieniĹ‚o? Co prowokuje objawy? Co dziaĹ‚a?"></textarea></div>
-        <div class="form-field full"><label class="label">Decyzja na kolejny krok</label><textarea name="decision" placeholder="KontynuowaÄ‡, regresowaÄ‡, progresowaÄ‡, konsultowaÄ‡?"></textarea></div>
-        <div class="form-field full"><label class="label">KamieĹ„ milowy</label><input name="milestone" placeholder="np. pierwszy hip hinge bez lÄ™ku i bĂłlu" /></div>
-        <button class="btn primary full" type="submit">Zapisz sesjÄ™</button>
+        <div class="form-field"><label class="label">Mobilność %</label><input type="number" min="0" max="100" name="mobilityIndex" value="60" /></div>
+        <div class="form-field"><label class="label">Sen</label><select name="sleepQuality"><option>Bardzo słaby</option><option>Słaby</option><option>Przeciętny</option><option selected>Dobry</option><option>Bardzo dobry</option></select></div>
+        <div class="form-field full"><label class="label">Ćwiczenia</label><textarea name="exercises" placeholder="Każde ćwiczenie w nowej linii"></textarea></div>
+        <div class="form-field full"><label class="label">Obserwacje kliniczne</label><textarea name="notes" placeholder="Co się zmieniło? Co prowokuje objawy? Co działa?"></textarea></div>
+        <div class="form-field full"><label class="label">Decyzja na kolejny krok</label><textarea name="decision" placeholder="Kontynuować, regresować, progresować, konsultować?"></textarea></div>
+        <div class="form-field full"><label class="label">Kamień milowy</label><input name="milestone" placeholder="np. pierwszy hip hinge bez lęku i bólu" /></div>
+        <button class="btn primary full" type="submit">Zapisz sesję</button>
       </form>
     </div>
   </div>
@@ -410,7 +414,7 @@
     const steps = [
       ["Punkt startowy", "Ankieta, wywiad, testy i hipoteza kliniczna."],
       ["Fundament ruchu", "Oddech, kontrola, tolerancja pozycji i bazowe wzorce."],
-      ["SiĹ‚a i stabilnoĹ›Ä‡", "Progres obciÄ…ĹĽeĹ„ bez utraty jakoĹ›ci i poczucia bezpieczeĹ„stwa."],
+      ["Siła i stabilność", "Progres obciążeń bez utraty jakości i poczucia bezpieczeństwa."],
       ["Autonomia", "Raport, plan samodzielny, kryteria nawrotu i dalszy standard."]
     ];
 
@@ -423,20 +427,20 @@
           contact: "+48 600 100 200",
           package: "FUNDAMENT",
           stage: 2,
-          healthStatus: "ZwiÄ™kszona czujnoĹ›Ä‡ L4/L5",
+          healthStatus: "Zwiększona czujność L4/L5",
           neuroType: "Typ 1 - Dopaminowy",
-          goal: "WrĂłciÄ‡ do treningu siĹ‚owego bez porannego bĂłlu i lÄ™ku przed zgiÄ™ciem.",
-          nextMilestone: "KlÄ™k jednonĂłĹĽ bez kompensacji",
-          decisionLogic: "Marek zaczyna ufaÄ‡ biodru. Nie Ĺ›cigamy ciÄ™ĹĽaru, dopĂłki poranny bĂłl nie utrzyma siÄ™ poniĹĽej 3/10 przez minimum tydzieĹ„.",
+          goal: "Wrócić do treningu siłowego bez porannego bólu i lęku przed zgięciem.",
+          nextMilestone: "Klęk jednonóż bez kompensacji",
+          decisionLogic: "Marek zaczyna ufać biodru. Nie ścigamy ciężaru, dopóki poranny ból nie utrzyma się poniżej 3/10 przez minimum tydzień.",
           tasks: [
-            { text: "SprawdziÄ‡ poranny bĂłl po hip hinge", done: false },
+            { text: "Sprawdzić poranny ból po hip hinge", done: false },
             { text: "Nagranie techniki przysiadu do skrzynki", done: false }
           ],
           sessions: [
-            { id: "s1", date: "2026-03-18", vasBefore: 7, vasAfter: 4, mobilityIndex: 55, readiness: 5, sleepQuality: "SĹ‚aby", exercises: ["Oddychanie przeponowe", "Aktywacja poĹ›ladka leĹĽÄ…c"], notes: "DuĹĽy lÄ™k przed ruchem. Tempo wolne, duĹĽo edukacji.", decision: "BudowaÄ‡ bezpieczeĹ„stwo w niskich pozycjach.", milestone: "" },
-            { id: "s2", date: "2026-03-25", vasBefore: 6, vasAfter: 3, mobilityIndex: 60, readiness: 6, sleepQuality: "SĹ‚aby", exercises: ["Dead Bug", "Mobilizacja biodra 90/90"], notes: "Lepsza kontrola oddechu.", decision: "DodaÄ‡ hip hinge z kijkiem.", milestone: "" },
-            { id: "s3", date: "2026-04-01", vasBefore: 5, vasAfter: 3, mobilityIndex: 64, readiness: 7, sleepQuality: "Dobry", exercises: ["Clamshells", "Hip Hinge", "Dead Bug"], notes: "BĂłl rano mniejszy, wiÄ™ksza pewnoĹ›Ä‡.", decision: "Powoli przechodziÄ‡ do pozycji wyĹĽszych.", milestone: "Bez bĂłlu przy wstawaniu ze stoĹ‚u" },
-            { id: "s4", date: "2026-04-10", vasBefore: 3, vasAfter: 2, mobilityIndex: 68, readiness: 8, sleepQuality: "Dobry", exercises: ["Hip Hinge", "Przysiad do skrzynki", "90/90"], notes: "Gotowy do klÄ™ku jednonĂłĹĽ za 2 sesje.", decision: "Nie zwiÄ™kszaÄ‡ objÄ™toĹ›ci, zwiÄ™kszyÄ‡ precyzjÄ™.", milestone: "" }
+            { id: "s1", date: "2026-03-18", vasBefore: 7, vasAfter: 4, mobilityIndex: 55, readiness: 5, sleepQuality: "Słaby", exercises: ["Oddychanie przeponowe", "Aktywacja pośladka leżąc"], notes: "Duży lęk przed ruchem. Tempo wolne, dużo edukacji.", decision: "Budować bezpieczeństwo w niskich pozycjach.", milestone: "" },
+            { id: "s2", date: "2026-03-25", vasBefore: 6, vasAfter: 3, mobilityIndex: 60, readiness: 6, sleepQuality: "Słaby", exercises: ["Dead Bug", "Mobilizacja biodra 90/90"], notes: "Lepsza kontrola oddechu.", decision: "Dodać hip hinge z kijkiem.", milestone: "" },
+            { id: "s3", date: "2026-04-01", vasBefore: 5, vasAfter: 3, mobilityIndex: 64, readiness: 7, sleepQuality: "Dobry", exercises: ["Clamshells", "Hip Hinge", "Dead Bug"], notes: "Ból rano mniejszy, większa pewność.", decision: "Powoli przechodzić do pozycji wyższych.", milestone: "Bez bólu przy wstawaniu ze stołu" },
+            { id: "s4", date: "2026-04-10", vasBefore: 3, vasAfter: 2, mobilityIndex: 68, readiness: 8, sleepQuality: "Dobry", exercises: ["Hip Hinge", "Przysiad do skrzynki", "90/90"], notes: "Gotowy do klęku jednonóż za 2 sesje.", decision: "Nie zwiększać objętości, zwiększyć precyzję.", milestone: "" }
           ]
         },
         {
@@ -447,12 +451,12 @@
           stage: 1,
           healthStatus: "Po artroskopii kolana prawego",
           neuroType: "Typ 3 - Serotoninowy",
-          goal: "WchodziÄ‡ po schodach bez lÄ™ku i bez reakcji bĂłlowej nastÄ™pnego dnia.",
-          nextMilestone: "Przysiad do Ĺ‚awki z kontrolÄ… kolana",
-          decisionLogic: "Potrzebuje przewidywalnoĹ›ci. KaĹĽda progresja dopiero po jasnym kryterium bezpieczeĹ„stwa.",
-          tasks: [{ text: "UstaliÄ‡ tolerancjÄ™ schodĂłw", done: false }],
+          goal: "Wchodzić po schodach bez lęku i bez reakcji bólowej następnego dnia.",
+          nextMilestone: "Przysiad do ławki z kontrolą kolana",
+          decisionLogic: "Potrzebuje przewidywalności. Każda progresja dopiero po jasnym kryterium bezpieczeństwa.",
+          tasks: [{ text: "Ustalić tolerancję schodów", done: false }],
           sessions: [
-            { id: "s1", date: "2026-04-08", vasBefore: 5, vasAfter: 4, mobilityIndex: 50, readiness: 5, sleepQuality: "PrzeciÄ™tny", exercises: ["Oddychanie", "Aktywacja VMO"], notes: "OstroĹĽna, dobrze reaguje na spokojne instrukcje.", decision: "Na razie nie dokĹ‚adaÄ‡ tempa.", milestone: "" }
+            { id: "s1", date: "2026-04-08", vasBefore: 5, vasAfter: 4, mobilityIndex: 50, readiness: 5, sleepQuality: "Przeciętny", exercises: ["Oddychanie", "Aktywacja VMO"], notes: "Ostrożna, dobrze reaguje na spokojne instrukcje.", decision: "Na razie nie dokładać tempa.", milestone: "" }
           ]
         }
       ]
@@ -492,9 +496,9 @@
     function risk(c) {
       const last = latest(c);
       if (!last) return { level: "gold", label: "Brak danych", reason: "Najpierw diagnostyka i pierwsza sesja." };
-      if (last.vasAfter >= 7 || last.vasAfter > last.vasBefore) return { level: "red", label: "Wysokie ryzyko", reason: "BĂłl po sesji jest wysoki albo roĹ›nie." };
-      if (last.readiness <= 4 || ["Bardzo sĹ‚aby", "SĹ‚aby"].includes(last.sleepQuality)) return { level: "gold", label: "ObciÄ…ĹĽenie ostroĹĽnie", reason: "GotowoĹ›Ä‡ lub sen ogranicza progresjÄ™." };
-      return { level: "green", label: "Stabilny", reason: "MoĹĽna rozwaĹĽyÄ‡ maĹ‚Ä… progresjÄ™." };
+      if (last.vasAfter >= 7 || last.vasAfter > last.vasBefore) return { level: "red", label: "Wysokie ryzyko", reason: "Ból po sesji jest wysoki albo rośnie." };
+      if (last.readiness <= 4 || ["Bardzo słaby", "Słaby"].includes(last.sleepQuality)) return { level: "gold", label: "Obciążenie ostrożnie", reason: "Gotowość lub sen ogranicza progresję." };
+      return { level: "green", label: "Stabilny", reason: "Można rozważyć małą progresję." };
     }
 
     function metrics(c = activeClient()) {
@@ -517,7 +521,7 @@
     }
 
     function renderShell() {
-      clientSelect.innerHTML = state.clients.map(c => `<option value="${c.id}" ${c.id === state.activeClientId ? "selected" : ""}>${escapeHtml(c.name)} Â· ${escapeHtml(c.package)}</option>`).join("");
+      clientSelect.innerHTML = state.clients.map(c => `<option value="${c.id}" ${c.id === state.activeClientId ? "selected" : ""}>${escapeHtml(c.name)} · ${escapeHtml(c.package)}</option>`).join("");
       document.querySelectorAll(".nav button").forEach(btn => btn.classList.toggle("active", btn.dataset.view === viewName));
       render();
     }
@@ -526,10 +530,10 @@
       const c = activeClient();
       const titles = {
         command: ["Clinical Command Center", "Dzisiejsze decyzje, ryzyka i priorytety pracy."],
-        client: ["Profil klienta", "Jedno miejsce na hipotezÄ™, cel, komunikacjÄ™ i czerwone flagi."],
-        process: ["Proces 12 tygodni", "Nie etap dla ozdoby, tylko logika przejĹ›cia do kolejnego standardu."],
-        sessions: ["Sesje i trend", "Historia obserwacji, bĂłlu, gotowoĹ›ci i decyzji."],
-        report: ["Raport dobrostanu", "Gotowy jÄ™zyk dla klienta bez rÄ™cznego skĹ‚adania notatek."]
+        client: ["Profil klienta", "Jedno miejsce na hipotezę, cel, komunikację i czerwone flagi."],
+        process: ["Proces 12 tygodni", "Nie etap dla ozdoby, tylko logika przejścia do kolejnego standardu."],
+        sessions: ["Sesje i trend", "Historia obserwacji, bólu, gotowości i decyzji."],
+        report: ["Raport dobrostanu", "Gotowy język dla klienta bez ręcznego składania notatek."]
       };
       $("#screenTitle").textContent = titles[viewName][0];
       $("#screenSubtitle").textContent = titles[viewName][1];
@@ -549,9 +553,9 @@
       view.innerHTML = `
         <div class="grid cols-4">
           ${kpi("Klienci aktywni", state.clients.length, `${stable} stabilnych klinicznie`, "good")}
-          ${kpi("Sesje Ĺ‚Ä…cznie", allSessions, "peĹ‚ny Ĺ›lad pracy", "info")}
-          ${kpi("VAS teraz", m.vasNow ?? "â€“", m.vasDelta !== null ? `zmiana od startu: -${m.vasDelta}` : "potrzebne dane", m.vasNow <= 3 ? "good" : m.vasNow <= 6 ? "warn" : "bad")}
-          ${kpi("MobilnoĹ›Ä‡", m.mobility !== null ? `${m.mobility}%` : "â€“", m.mobilityDelta !== null ? `+${m.mobilityDelta}% od startu` : "potrzebne dane", "good")}
+          ${kpi("Sesje łącznie", allSessions, "pełny ślad pracy", "info")}
+          ${kpi("VAS teraz", m.vasNow ?? "–", m.vasDelta !== null ? `zmiana od startu: -${m.vasDelta}` : "potrzebne dane", m.vasNow <= 3 ? "good" : m.vasNow <= 6 ? "warn" : "bad")}
+          ${kpi("Mobilność", m.mobility !== null ? `${m.mobility}%` : "–", m.mobilityDelta !== null ? `+${m.mobilityDelta}% od startu` : "potrzebne dane", "good")}
         </div>
         <div class="grid cols-3">
           <section class="panel span-2">
@@ -561,17 +565,17 @@
             </div>
           </section>
           <section class="panel">
-            <div class="panel-head"><div><h2>Priorytet dziĹ›</h2><p>${escapeHtml(active.name)}</p></div>${pill(risk(active).label, risk(active).level)}</div>
+            <div class="panel-head"><div><h2>Priorytet dziś</h2><p>${escapeHtml(active.name)}</p></div>${pill(risk(active).label, risk(active).level)}</div>
             ${priorityBlock(active)}
           </section>
         </div>
         <div class="grid cols-2">
           <section class="panel">
-            <div class="panel-head"><h2>Kamienie milowe</h2>${pill("dowody postÄ™pu", "green")}</div>
-            <div class="grid">${milestones.length ? milestones.map(m => `<div class="task-row"><div class="name">${escapeHtml(m.text)}</div><div class="meta">${escapeHtml(m.client)} Â· ${m.date}</div></div>`).join("") : `<p>Jeszcze brak kamieni milowych.</p>`}</div>
+            <div class="panel-head"><h2>Kamienie milowe</h2>${pill("dowody postępu", "green")}</div>
+            <div class="grid">${milestones.length ? milestones.map(m => `<div class="task-row"><div class="name">${escapeHtml(m.text)}</div><div class="meta">${escapeHtml(m.client)} · ${m.date}</div></div>`).join("") : `<p>Jeszcze brak kamieni milowych.</p>`}</div>
           </section>
           <section class="panel">
-            <div class="panel-head"><h2>Trend aktywnego klienta</h2>${pill("VAS + mobilnoĹ›Ä‡", "blue")}</div>
+            <div class="panel-head"><h2>Trend aktywnego klienta</h2>${pill("VAS + mobilność", "blue")}</div>
             ${chart(active)}
           </section>
         </div>
@@ -591,7 +595,7 @@
           <button class="btn client-open" data-id="${c.id}">
             <span>
               <span class="name">${escapeHtml(c.name)}</span><br>
-              <span class="meta">${escapeHtml(c.package)} Â· Krok ${c.stage} Â· ${m.sessions} sesji Â· ${escapeHtml(c.healthStatus || "bez statusu")}</span>
+              <span class="meta">${escapeHtml(c.package)} · Krok ${c.stage} · ${m.sessions} sesji · ${escapeHtml(c.healthStatus || "bez statusu")}</span>
             </span>
           </button>
           <div>${pill(r.label, r.level)}</div>
@@ -605,11 +609,11 @@
       return `
         <div class="grid">
           <div class="panel soft"><div class="label">Interpretacja</div><p>${escapeHtml(r.reason)}</p></div>
-          <div class="panel soft"><div class="label">NastÄ™pny milestone</div><p>${escapeHtml(c.nextMilestone || "Brak. To jest luka, nie neutralny brak.")}</p></div>
+          <div class="panel soft"><div class="label">Następny milestone</div><p>${escapeHtml(c.nextMilestone || "Brak. To jest luka, nie neutralny brak.")}</p></div>
           <div class="panel soft"><div class="label">Ostatnia decyzja</div><p>${escapeHtml(l?.decision || c.decisionLogic || "Brak decyzji. Bez decyzji dashboard jest notatnikiem, nie systemem.")}</p></div>
           <div>
             <div class="label" style="margin-bottom:8px">Zadania</div>
-            <div class="grid">${tasks.length ? tasks.map((t,i) => `<div class="task-row"><label><input type="checkbox" data-task="${i}" ${t.done ? "checked" : ""}> ${escapeHtml(t.text)}</label></div>`).join("") : `<p>Brak zadaĹ„. Dodaj konkret po sesji.</p>`}</div>
+            <div class="grid">${tasks.length ? tasks.map((t,i) => `<div class="task-row"><label><input type="checkbox" data-task="${i}" ${t.done ? "checked" : ""}> ${escapeHtml(t.text)}</label></div>`).join("") : `<p>Brak zadań. Dodaj konkret po sesji.</p>`}</div>
           </div>
         </div>`;
     }
@@ -619,33 +623,33 @@
       const m = metrics(c);
       view.innerHTML = `
         <div class="grid cols-4">
-          ${kpi("VAS", m.vasNow ?? "â€“", m.vasDelta !== null ? `-${m.vasDelta} od startu` : "brak trendu", m.vasNow <= 3 ? "good" : "warn")}
-          ${kpi("MobilnoĹ›Ä‡", m.mobility !== null ? `${m.mobility}%` : "â€“", m.mobilityDelta !== null ? `+${m.mobilityDelta}%` : "brak trendu", "good")}
+          ${kpi("VAS", m.vasNow ?? "–", m.vasDelta !== null ? `-${m.vasDelta} od startu` : "brak trendu", m.vasNow <= 3 ? "good" : "warn")}
+          ${kpi("Mobilność", m.mobility !== null ? `${m.mobility}%` : "–", m.mobilityDelta !== null ? `+${m.mobilityDelta}%` : "brak trendu", "good")}
           ${kpi("Etap", `Krok ${c.stage}`, steps[c.stage - 1]?.[0] || "Proces", "info")}
-          ${kpi("Sesje", c.sessions.length, "jakoĹ›Ä‡ danych > iloĹ›Ä‡", "info")}
+          ${kpi("Sesje", c.sessions.length, "jakość danych > ilość", "info")}
         </div>
         <section class="panel">
-          <div class="panel-head"><div><h2>${escapeHtml(c.name)}</h2><p>${escapeHtml(c.contact || "brak kontaktu")} Â· ${escapeHtml(c.package)}</p></div>${pill(risk(c).label, risk(c).level)}</div>
+          <div class="panel-head"><div><h2>${escapeHtml(c.name)}</h2><p>${escapeHtml(c.contact || "brak kontaktu")} · ${escapeHtml(c.package)}</p></div>${pill(risk(c).label, risk(c).level)}</div>
           <div class="grid cols-2">
             ${fieldBlock("Cel 12 tygodni", c.goal)}
             ${fieldBlock("Status zdrowia", c.healthStatus)}
             ${fieldBlock("Neurotyp / komunikacja", c.neuroType)}
-            ${fieldBlock("NastÄ™pny milestone", c.nextMilestone)}
-            <div class="panel soft span-2"><div class="label">Logika decyzyjna</div><p>${escapeHtml(c.decisionLogic || "Brak. I tu trzeba byÄ‡ brutalnie uczciwym: bez hipotezy roboczej zbierasz dane, ale nie prowadzisz procesu.")}</p></div>
+            ${fieldBlock("Następny milestone", c.nextMilestone)}
+            <div class="panel soft span-2"><div class="label">Logika decyzyjna</div><p>${escapeHtml(c.decisionLogic || "Brak. I tu trzeba być brutalnie uczciwym: bez hipotezy roboczej zbierasz dane, ale nie prowadzisz procesu.")}</p></div>
           </div>
         </section>
       `;
     }
 
     function fieldBlock(label, value) {
-      return `<div class="panel soft"><div class="label">${label}</div><p>${escapeHtml(value || "â€“")}</p></div>`;
+      return `<div class="panel soft"><div class="label">${label}</div><p>${escapeHtml(value || "–")}</p></div>`;
     }
 
     function renderProcess() {
       const c = activeClient();
       view.innerHTML = `
         <section class="panel">
-          <div class="panel-head"><div><h2>Proces klienta</h2><p>${escapeHtml(c.name)} Â· aktualnie krok ${c.stage}</p></div>${pill("zmiana etapu zapisuje decyzjÄ™", "blue")}</div>
+          <div class="panel-head"><div><h2>Proces klienta</h2><p>${escapeHtml(c.name)} · aktualnie krok ${c.stage}</p></div>${pill("zmiana etapu zapisuje decyzję", "blue")}</div>
           <div class="progress-line">
             ${steps.map((s, i) => `<button class="step ${c.stage === i + 1 ? "active" : ""} ${c.stage > i + 1 ? "done" : ""}" data-stage="${i + 1}">
               ${pill(`Krok ${i + 1}`, c.stage >= i + 1 ? "green" : "")}
@@ -654,18 +658,18 @@
           </div>
         </section>
         <section class="panel">
-          <div class="panel-head"><h2>Kryteria przejĹ›cia</h2>${pill("bez tego etap to dekoracja", "gold")}</div>
+          <div class="panel-head"><h2>Kryteria przejścia</h2>${pill("bez tego etap to dekoracja", "gold")}</div>
           <div class="grid cols-2">
-            ${fieldBlock("Krok 1 â†’ 2", "Rozumiemy problem, mamy baseline VAS/mobilnoĹ›Ä‡, wiemy co prowokuje objawy i co daje ulgÄ™.")}
-            ${fieldBlock("Krok 2 â†’ 3", "Klient toleruje bazowe wzorce, bĂłl po sesji nie roĹ›nie, a lÄ™k przed ruchem spada.")}
-            ${fieldBlock("Krok 3 â†’ 4", "ObciÄ…ĹĽenie roĹ›nie bez utraty jakoĹ›ci, sen i gotowoĹ›Ä‡ nie lecÄ… w dĂłĹ‚.")}
-            ${fieldBlock("Krok 4 â†’ koniec", "Klient zna wĹ‚asny standard, ma plan samodzielny i kryteria, kiedy wrĂłciÄ‡ po pomoc.")}
+            ${fieldBlock("Krok 1 → 2", "Rozumiemy problem, mamy baseline VAS/mobilność, wiemy co prowokuje objawy i co daje ulgę.")}
+            ${fieldBlock("Krok 2 → 3", "Klient toleruje bazowe wzorce, ból po sesji nie rośnie, a lęk przed ruchem spada.")}
+            ${fieldBlock("Krok 3 → 4", "Obciążenie rośnie bez utraty jakości, sen i gotowość nie lecą w dół.")}
+            ${fieldBlock("Krok 4 → koniec", "Klient zna własny standard, ma plan samodzielny i kryteria, kiedy wrócić po pomoc.")}
           </div>
         </section>
       `;
       document.querySelectorAll("[data-stage]").forEach(btn => btn.addEventListener("click", () => {
         c.stage = Number(btn.dataset.stage);
-        c.decisionLogic = `${today()} Â· etap zmieniony na krok ${c.stage}: ${steps[c.stage - 1][0]}.\n\n${c.decisionLogic || ""}`.trim();
+        c.decisionLogic = `${today()} · etap zmieniony na krok ${c.stage}: ${steps[c.stage - 1][0]}.\n\n${c.decisionLogic || ""}`.trim();
         save();
         toast("Etap procesu zaktualizowany");
         renderShell();
@@ -701,14 +705,14 @@
           <div>${pill(s.date, "blue")}</div>
           <div class="session-main">
             <div class="session-metrics">
-              ${pill(`VAS ${s.vasBefore} â†’ ${s.vasAfter}`, s.vasAfter <= 3 ? "green" : s.vasAfter <= 6 ? "gold" : "red")}
-              ${pill(`MobilnoĹ›Ä‡ ${s.mobilityIndex}%`, "green")}
-              ${pill(`GotowoĹ›Ä‡ ${s.readiness || "â€“"}/10`, (s.readiness || 0) >= 7 ? "green" : "gold")}
-              ${pill(s.sleepQuality || "sen â€“", "blue")}
+              ${pill(`VAS ${s.vasBefore} → ${s.vasAfter}`, s.vasAfter <= 3 ? "green" : s.vasAfter <= 6 ? "gold" : "red")}
+              ${pill(`Mobilność ${s.mobilityIndex}%`, "green")}
+              ${pill(`Gotowość ${s.readiness || "–"}/10`, (s.readiness || 0) >= 7 ? "green" : "gold")}
+              ${pill(s.sleepQuality || "sen –", "blue")}
             </div>
             <div class="meta">${escapeHtml(s.notes || "Brak obserwacji.")}</div>
             ${s.decision ? `<div class="name">Decyzja: ${escapeHtml(s.decision)}</div>` : ""}
-            ${s.exercises?.length ? `<div class="meta">Ä†wiczenia: ${s.exercises.map(escapeHtml).join(", ")}</div>` : ""}
+            ${s.exercises?.length ? `<div class="meta">Ćwiczenia: ${s.exercises.map(escapeHtml).join(", ")}</div>` : ""}
           </div>
           <div>${s.milestone ? pill(s.milestone, "green") : ""}</div>
         </div>`;
@@ -718,7 +722,7 @@
       const c = activeClient();
       view.innerHTML = `
         <section class="panel">
-          <div class="panel-head"><div><h2>Raport dla klienta</h2><p>JÄ™zyk spokojny, konkretny i premium. Bez medycznego zadÄ™cia.</p></div><button class="btn primary" id="copyReportBtn">Kopiuj raport</button></div>
+          <div class="panel-head"><div><h2>Raport dla klienta</h2><p>Język spokojny, konkretny i premium. Bez medycznego zadęcia.</p></div><button class="btn primary" id="copyReportBtn">Kopiuj raport</button></div>
           <div class="report" id="reportText">${escapeHtml(buildReport(c))}</div>
         </section>
       `;
@@ -743,9 +747,9 @@ ${c.goal || "Do doprecyzowania po diagnostyce."}
 
 Co widzimy w danych:
 - VAS aktualnie: ${m.vasNow ?? "brak danych"}
-- Zmiana bĂłlu od startu: ${m.vasDelta !== null ? "-" + m.vasDelta + " pkt" : "brak danych"}
-- MobilnoĹ›Ä‡ aktualnie: ${m.mobility !== null ? m.mobility + "%" : "brak danych"}
-- Zmiana mobilnoĹ›ci od startu: ${m.mobilityDelta !== null ? "+" + m.mobilityDelta + "%" : "brak danych"}
+- Zmiana bólu od startu: ${m.vasDelta !== null ? "-" + m.vasDelta + " pkt" : "brak danych"}
+- Mobilność aktualnie: ${m.mobility !== null ? m.mobility + "%" : "brak danych"}
+- Zmiana mobilności od startu: ${m.mobilityDelta !== null ? "+" + m.mobilityDelta + "%" : "brak danych"}
 
 Ostatnia obserwacja:
 ${l?.notes || "Brak ostatniej obserwacji."}
@@ -757,11 +761,11 @@ Kamienie milowe:
 ${milestones}
 
 Komentarz:
-Proces idzie wtedy dobrze, gdy ciaĹ‚o nie tylko wykonuje wiÄ™cej, ale reaguje spokojniej. Dlatego patrzymy jednoczeĹ›nie na bĂłl, mobilnoĹ›Ä‡, sen, gotowoĹ›Ä‡ i jakoĹ›Ä‡ ruchu.`;
+Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje spokojniej. Dlatego patrzymy jednocześnie na ból, mobilność, sen, gotowość i jakość ruchu.`;
     }
 
     function chart(c) {
-      if (c.sessions.length < 2) return `<p>Potrzebne minimum dwie sesje, ĹĽeby trend miaĹ‚ sens.</p>`;
+      if (c.sessions.length < 2) return `<p>Potrzebne minimum dwie sesje, żeby trend miał sens.</p>`;
       const w = 640, h = 170, pad = 24;
       const vas = c.sessions.map((s, i) => point(i, c.sessions.length, s.vasAfter, 0, 10, w, h, pad, true)).join(" ");
       const mob = c.sessions.map((s, i) => point(i, c.sessions.length, s.mobilityIndex, 0, 100, w, h, pad, false)).join(" ");
@@ -770,12 +774,12 @@ Proces idzie wtedy dobrze, gdy ciaĹ‚o nie tylko wykonuje wiÄ™cej, ale reag
         const p2 = pointParts(i, c.sessions.length, s.mobilityIndex, 0, 100, w, h, pad, false);
         return `<circle cx="${p1.x}" cy="${p1.y}" r="4" fill="var(--red)"/><circle cx="${p2.x}" cy="${p2.y}" r="4" fill="var(--green-2)"/>`;
       }).join("");
-      return `<div class="chart"><svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Trend VAS i mobilnoĹ›ci">
+      return `<div class="chart"><svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Trend VAS i mobilności">
         <path d="M${pad} ${h-pad}H${w-pad}" stroke="var(--line)"/><path d="M${pad} ${pad}V${h-pad}" stroke="var(--line)"/>
         <polyline points="${vas}" fill="none" stroke="var(--red)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         <polyline points="${mob}" fill="none" stroke="var(--green-2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         ${dots}
-        <text x="${w-pad}" y="${pad}" text-anchor="end" fill="var(--muted)" font-size="12">zielony: mobilnoĹ›Ä‡ Â· czerwony: VAS</text>
+        <text x="${w-pad}" y="${pad}" text-anchor="end" fill="var(--muted)" font-size="12">zielony: mobilność · czerwony: VAS</text>
       </svg></div>`;
     }
 
@@ -814,7 +818,7 @@ Proces idzie wtedy dobrze, gdy ciaĹ‚o nie tylko wykonuje wiÄ™cej, ale reag
 
     function openSessionModal() {
       const c = activeClient();
-      $("#sessionClientName").textContent = `${c.name} Â· ${c.package}`;
+      $("#sessionClientName").textContent = `${c.name} · ${c.package}`;
       $("#sessionForm").date.value = today();
       $("#sessionForm").mobilityIndex.value = latest(c)?.mobilityIndex || 60;
       $("#sessionModal").classList.add("open");
@@ -840,7 +844,7 @@ Proces idzie wtedy dobrze, gdy ciaĹ‚o nie tylko wykonuje wiÄ™cej, ale reag
     function importLegacy() {
       try {
         const raw = localStorage.getItem(LEGACY_KEY);
-        if (!raw) return toast("Nie znaleziono danych v1.3 w tej przeglÄ…darce");
+        if (!raw) return toast("Nie znaleziono danych v1.3 w tej przeglądarce");
         const legacy = JSON.parse(raw);
         state = {
           activeClientId: legacy.activeClientId,
@@ -930,7 +934,7 @@ Proces idzie wtedy dobrze, gdy ciaĹ‚o nie tylko wykonuje wiÄ™cej, ale reag
         milestone: fd.get("milestone").trim()
       };
       c.sessions.push(session);
-      if (session.decision) c.decisionLogic = `${session.date} Â· ${session.decision}\n\n${c.decisionLogic || ""}`.trim();
+      if (session.decision) c.decisionLogic = `${session.date} · ${session.decision}\n\n${c.decisionLogic || ""}`.trim();
       if (session.milestone) c.nextMilestone = "";
       save();
       e.currentTarget.reset();

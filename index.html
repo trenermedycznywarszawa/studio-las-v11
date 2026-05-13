@@ -133,117 +133,6 @@
     .btn-outline { color:var(--cedar); border-color:var(--cedar); }
     .btn-outline:hover { background:var(--cedar); color:var(--white); }
 
-    .nav {
-      position:fixed;
-      inset:0 0 auto 0;
-      height:72px;
-      z-index:100;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 28px;
-      color:var(--white);
-      background:rgba(23,37,30,.9);
-      backdrop-filter:blur(16px);
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-
-    .logo {
-      font-family:var(--display);
-      font-size:1.45rem;
-      letter-spacing:.08em;
-      font-weight:500;
-    }
-
-    .logo span { color:var(--cedar-light); }
-
-    .nav-links {
-      display:flex;
-      gap:28px;
-      align-items:center;
-      list-style:none;
-    }
-
-    .nav-links a {
-      font-size:.76rem;
-      letter-spacing:.13em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.78);
-      transition:color var(--t);
-    }
-
-    .nav-links a:hover { color:var(--cedar-light); }
-
-.client-panel-link{display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.78);transition:color var(--t),text-shadow var(--t),transform var(--t),border-color var(--t)}
-.client-panel-link:hover,.client-panel-link:focus-visible{color:var(--cedar-light);text-shadow:0 0 18px rgba(141,173,120,.28);transform:translateY(-1px)}
-.client-panel-icon{width:15px;height:15px;flex:0 0 auto;stroke:currentColor;stroke-width:1.55;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.92;transition:opacity var(--t),transform var(--t)}
-.client-panel-link:hover .client-panel-icon,.client-panel-link:focus-visible .client-panel-icon{opacity:1;transform:translateY(-1px)}
-.nav-mobile .client-panel-link{min-height:44px;justify-content:flex-start;color:rgba(255,255,255,.86)}
-
-    .client-zone-link {
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-    }
-
-    .client-zone-link svg {
-      width:15px;
-      height:15px;
-      flex:0 0 auto;
-    }
-
-    .nav-links .btn {
-      min-height:42px;
-      padding:10px 18px;
-      color:var(--white);
-    }
-
-    .nav-hamburger {
-      display:none;
-      flex-direction:column;
-      gap:5px;
-      background:none;
-      border:0;
-      padding:8px;
-      cursor:pointer;
-    }
-
-    .nav-hamburger span {
-      width:24px;
-      height:2px;
-      background:var(--white);
-      display:block;
-    }
-
-    .nav-mobile {
-      display:none;
-      position:fixed;
-      top:72px;
-      left:0;
-      right:0;
-      z-index:99;
-      background:var(--forest);
-      border-bottom:1px solid rgba(255,255,255,.08);
-      padding:22px 24px 28px;
-    }
-
-    .nav-mobile.open {
-      display:grid;
-      gap:16px;
-    }
-
-    .nav-mobile a {
-      color:rgba(255,255,255,.82);
-      padding:8px 0;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      font-size:.96rem;
-    }
-
-    .nav-mobile a:last-child {
-      color:var(--cedar-light);
-      font-weight:600;
-    }
-
     .hero {
       position:relative;
       min-height:100vh;
@@ -966,8 +855,6 @@
     }
 
     @media (max-width:980px) {
-      .nav-links { display:none; }
-      .nav-hamburger { display:flex; }
       .hero { min-height:780px; }
       .hero-bg img { object-position:58% center; }
       .trust-grid,
@@ -1088,7 +975,29 @@
 
       .footer-inner { display:grid; }
     }
-  </style>
+  
+/* Unified global navigation */
+.site-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(23,37,30,.94);box-shadow:0 2px 24px rgba(0,0,0,.15);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.08)}
+.site-logo{font-family:var(--font-display,var(--display,Georgia,serif));font-size:1.35rem;font-weight:500;letter-spacing:.08em;color:var(--white,#fff)}
+.site-logo span{color:var(--cedar-light,var(--cedar,#b8935a))}
+.site-nav-links{display:flex;align-items:center;gap:clamp(18px,2vw,32px);list-style:none;margin:0;padding:0}
+.site-nav-links a,.site-nav-mobile a{font-size:.8rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8);transition:color var(--t,var(--transition,.25s ease)),background var(--t,var(--transition,.25s ease)),border-color var(--t,var(--transition,.25s ease)),transform var(--t,var(--transition,.25s ease))}
+.site-nav-links a:hover,.site-nav-links a.active,.site-nav-mobile a:hover,.site-nav-mobile a.active{color:var(--cedar-light,#d5b982)}
+.site-nav-cta{display:inline-flex;align-items:center;justify-content:center;padding:12px 20px;border:1px solid var(--cedar,#b8935a);background:transparent;color:rgba(255,255,255,.86)!important;line-height:1;white-space:nowrap}
+.site-nav-cta:hover,.site-nav-cta.active{background:rgba(184,147,90,.12);color:var(--cedar-light,#d5b982)!important;border-color:var(--cedar-light,#d5b982)}
+.site-client-link{display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.68)!important;white-space:nowrap}
+.site-client-link:hover,.site-client-link:focus-visible{color:var(--cedar-light,#d5b982)!important;transform:translateY(-1px)}
+.site-client-icon{width:15px;height:15px;flex:0 0 auto;stroke:currentColor;stroke-width:1.55;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.site-nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:transparent;border:0;padding:8px}
+.site-nav-toggle span{display:block;width:24px;height:2px;background:var(--white,#fff)}
+.site-nav-mobile{display:none;position:fixed;top:68px;left:0;right:0;z-index:99;flex-direction:column;gap:16px;padding:24px;background:var(--forest,#17251e);box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.site-nav-mobile.open{display:flex}
+.site-nav-mobile a{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.site-nav-mobile .site-nav-cta{margin-top:4px;padding:14px 18px;border-bottom:1px solid var(--cedar,#b8935a)}
+.site-nav-mobile .site-client-link{min-height:44px;justify-content:flex-start;color:rgba(255,255,255,.72)!important}
+@media(max-width:980px){.site-nav-links{display:none}.site-nav-toggle{display:flex}}
+@media(max-width:640px){.site-nav{height:64px;padding:0 18px}.site-nav-mobile{top:64px;max-height:calc(100vh - 64px);overflow-y:auto}.site-logo{font-size:1.25rem}}
+</style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -1112,29 +1021,26 @@
 </head>
 
 <body>
-  <nav class="nav" aria-label="Nawigacja główna">
-    <a class="logo" href="./index.html">Studio <span>Las</span></a>
-
-    <ul class="nav-links">
-      <li><a href="./index.html">Strona główna</a></li>
-      <li><a href="./metoda-i-pakiety.html">Metoda i pakiety</a></li>
-      <li><a href="./blog.html">Blog</a></li>
-      <li><a href="./ankieta-kontakt.html#ankieta" class="btn btn-primary">Ankieta</a></li>
-      <li><a href="./strefa-klienta.html" class="client-panel-link"><svg class="client-panel-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></a></li>
-    </ul>
-
-    <button class="nav-hamburger" id="hamburger" aria-label="Otwórz menu" aria-expanded="false" aria-controls="navMobile" type="button">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
-
-  <div class="nav-mobile" id="navMobile">
-    <a href="./index.html">Strona główna</a>
-    <a href="./metoda-i-pakiety.html">Metoda i pakiety</a>
-    <a href="./blog.html">Blog</a>
-    <a href="./ankieta-kontakt.html#ankieta">Ankieta / Kontakt</a>
-    <a href="./strefa-klienta.html" class="client-panel-link"><svg class="client-panel-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></a>
-  </div>
+  <nav class="site-nav" aria-label="Nawigacja główna">
+  <a class="site-logo" href="./index.html">Studio <span>Las</span></a>
+  <ul class="site-nav-links">
+    <li><a href="./index.html" class="active">Strona główna</a></li>
+    <li><a href="./metoda-i-pakiety.html">Metoda i pakiety</a></li>
+    <li><a href="./blog.html">Blog</a></li>
+    <li><a href="./ankieta-kontakt.html#ankieta" class="site-nav-cta">ANKIETA / KONTAKT</a></li>
+    <li><!-- future client portal --><a href="#" class="site-client-link" aria-label="Panel klienta – funkcja w przygotowaniu"><svg class="site-client-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></a></li>
+  </ul>
+  <button class="site-nav-toggle" id="hamburger" aria-label="Otwórz menu" aria-expanded="false" aria-controls="navMobile" type="button">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="site-nav-mobile nav-mobile" id="navMobile">
+  <a href="./index.html" class="active">Strona główna</a>
+  <a href="./metoda-i-pakiety.html">Metoda i pakiety</a>
+  <a href="./blog.html">Blog</a>
+  <a href="./ankieta-kontakt.html#ankieta" class="site-nav-cta">ANKIETA / KONTAKT</a>
+  <!-- future client portal --><a href="#" class="site-client-link" aria-label="Panel klienta – funkcja w przygotowaniu"><svg class="site-client-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></a>
+</div>
 
   <a class="btn btn-primary sticky-cta" href="./ankieta-kontakt.html#ankieta">Wypełnij ankietę</a>
 
@@ -1625,5 +1531,28 @@
       });
     }
   </script>
+<script>
+(function initSiteNavigation(){
+  const toggle=document.getElementById('hamburger');
+  const menu=document.getElementById('navMobile');
+  if(!toggle||!menu)return;
+  const setOpen=(open)=>{
+    menu.classList.toggle('open',open);
+    toggle.setAttribute('aria-expanded',open?'true':'false');
+    toggle.setAttribute('aria-label',open?'Zamknij menu':'Otwórz menu');
+  };
+  toggle.addEventListener('click',(event)=>{
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    setOpen(!menu.classList.contains('open'));
+  },true);
+  menu.querySelectorAll('a').forEach(link=>{
+    link.addEventListener('click',()=>setOpen(false));
+  });
+  document.addEventListener('keydown',(event)=>{
+    if(event.key==='Escape')setOpen(false);
+  });
+})();
+</script>
 </body>
 </html>

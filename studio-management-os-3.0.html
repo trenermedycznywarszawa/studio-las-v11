@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 3.0 | Clinical Command Center</title>
+  <title>Studio Las OS 4.1 | Evidence-Based Client Panel</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -100,6 +100,7 @@
     .nav .client-panel-link { text-decoration: none; }
     .nav .client-panel-link:hover,
     .nav .client-panel-link:focus-visible { color: var(--ink); background: rgba(255,255,255,.04); border-color: rgba(127,176,105,.18); }
+    body.client-mode .side-card { display: none; }
 
     .side-card {
       margin-top: auto;
@@ -129,6 +130,8 @@
     .title h1 { margin: 0; font-size: 20px; line-height: 1.15; font-family: Georgia, serif; font-weight: 700; }
     .title p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
     .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .top-role { align-self: center; }
+    [hidden] { display: none !important; }
 
     .btn {
       min-height: 40px;
@@ -209,6 +212,37 @@
     .pill.gold { color: #f1c981; border-color: rgba(216,166,87,.38); background: rgba(216,166,87,.12); }
     .pill.red { color: #f1aaa3; border-color: rgba(211,107,98,.38); background: rgba(211,107,98,.12); }
     .pill.blue { color: #a6cce4; border-color: rgba(117,167,200,.38); background: rgba(117,167,200,.12); }
+
+    .portal-hero { border-color: rgba(127,176,105,.34); background: linear-gradient(135deg, rgba(127,176,105,.14), rgba(31,33,31,.78)); }
+    .portal-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .portal-focus { border-color: rgba(216,166,87,.38); background: linear-gradient(135deg, rgba(216,166,87,.11), rgba(23,25,24,.9)); }
+    .portal-info, .portal-metric, .doc-card, .exercise-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(31,33,31,.56);
+      padding: 13px;
+    }
+    .portal-info p, .portal-metric p, .doc-card p { margin: 7px 0 0; }
+    .portal-metric strong { display: block; margin-top: 8px; font-size: 24px; line-height: 1; }
+    .doc-card { min-height: 118px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; }
+    .exercise-list { display: grid; gap: 10px; }
+    .task-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+    .task-row label { display: flex; gap: 10px; align-items: flex-start; }
+    .task-row.done .name, .task-row.done .meta { color: var(--faint); text-decoration: line-through; }
+    .measurement-list { display: grid; gap: 10px; }
+    .measurement-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(31,33,31,.56);
+      padding: 13px;
+      display: grid;
+      gap: 10px;
+    }
+    .measurement-main { border-color: rgba(117,167,200,.42); background: linear-gradient(135deg, rgba(117,167,200,.12), rgba(23,25,24,.9)); }
+    .measurement-metrics { display: flex; flex-wrap: wrap; gap: 8px; }
+    .file-note { color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .file-status { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .form-message { color: var(--muted); font-size: 12px; line-height: 1.45; margin: 0; }
 
     .progress-line { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .step {
@@ -295,7 +329,7 @@
     @media (max-width: 980px) {
       .app { grid-template-columns: 1fr; }
       .side { position: static; height: auto; }
-      .nav { grid-template-columns: repeat(6, 1fr); }
+      .nav { grid-template-columns: repeat(8, 1fr); }
       .nav button,
       .nav .client-panel-link { justify-content: center; padding: 10px 8px; }
       .nav span { display: none; }
@@ -309,6 +343,7 @@
       .content, .topbar { padding: 16px; }
       .form-grid { grid-template-columns: 1fr; }
       .progress-line { grid-template-columns: 1fr; }
+      .task-form { grid-template-columns: 1fr; }
       .actions { width: 100%; }
       .btn { flex: 1; }
     }
@@ -324,7 +359,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Clinical OS 3.0</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 4.1</span></div>
       </div>
 
       <div class="client-switcher">
@@ -337,8 +372,10 @@
         <button data-view="client"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Klient</span></button>
         <button data-view="process"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Proces</span></button>
         <button data-view="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4a2 2 0 0 1 2-2h11l3 3v14.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg><span>Sesje</span></button>
+        <button data-view="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Zadania</span></button>
+        <button data-view="measurements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 3-3 3 2 5-7"/><path d="M18 7h2v2"/></svg><span>Pomiary</span></button>
         <button data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>Raport</span></button>
-        <a href="strefa-klienta.html" class="client-panel-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></a>
+        <button data-view="clientPortal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></button>
       </nav>
 
       <div class="side-card">
@@ -350,13 +387,16 @@
     <main class="main">
       <header class="topbar">
         <div class="title">
-          <h1 id="screenTitle">Clinical Command Center</h1>
-          <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki i procesu 12 tygodni.</p>
+          <h1 id="screenTitle">Evidence-Based Command Center</h1>
+          <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 4.1</span>
+          <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
           <button class="btn primary" id="newSessionBtn">Nowa sesja</button>
+          <button class="btn primary" id="newMeasurementBtn">Nowy pomiar</button>
         </div>
       </header>
       <section class="content" id="view"></section>
@@ -375,9 +415,18 @@
       <form id="clientForm" class="form-grid">
         <div class="form-field"><label class="label">Imię i nazwisko</label><input name="name" required /></div>
         <div class="form-field"><label class="label">Kontakt</label><input name="contact" /></div>
+        <div class="form-field"><label class="label">Email</label><input type="email" name="email" /></div>
+        <div class="form-field"><label class="label">Telefon</label><input name="phone" /></div>
         <div class="form-field"><label class="label">Pakiet</label><select name="package"><option>Diagnostyka</option><option>FUNDAMENT</option><option>ROZWÓJ</option><option>VIP Clinical</option></select></div>
         <div class="form-field"><label class="label">Etap</label><select name="stage"><option value="1">1. Punkt startowy</option><option value="2">2. Fundament ruchu</option><option value="3">3. Siła i stabilność</option><option value="4">4. Autonomia</option></select></div>
+        <div class="form-field"><label class="label">Data startu</label><input type="date" name="startDate" /></div>
+        <div class="form-field"><label class="label">Następny termin</label><input type="date" name="nextSessionDate" /></div>
+        <div class="form-field"><label class="label">Następny przegląd</label><input type="date" name="nextReviewDate" /></div>
+        <div class="form-field"><label class="label">Motywacja</label><input name="motivation" placeholder="Co klient chce odzyskać?" /></div>
         <div class="form-field full"><label class="label">Status zdrowia</label><input name="healthStatus" placeholder="np. L4/L5, kolano po artroskopii, powrót po leczeniu" /></div>
+        <div class="form-field full"><label class="label">Obawy</label><textarea name="fears" placeholder="Czego klient się boi, czego unika, co warto nazwać po ludzku?"></textarea></div>
+        <div class="form-field full"><label class="label">Przeciwwskazania</label><textarea name="contraindications" placeholder="Ograniczenia, których trzeba pilnować w planie."></textarea></div>
+        <div class="form-field full"><label class="label">Czerwone flagi</label><textarea name="redFlags" placeholder="Sygnały, przy których zatrzymujemy progresję lub odsyłamy do konsultacji."></textarea></div>
         <div class="form-field"><label class="label">Neurotyp / styl komunikacji</label><input name="neuroType" placeholder="np. Typ 1 - Dopaminowy" /></div>
         <div class="form-field"><label class="label">Cel 12 tygodni</label><input name="goal" placeholder="np. wrócić do treningu bez bólu pleców" /></div>
         <div class="form-field full"><label class="label">Logika decyzyjna</label><textarea name="decisionLogic" placeholder="Co wiemy? Czego nie wiemy? Jaka hipoteza prowadzi kolejny tydzień?"></textarea></div>
@@ -411,9 +460,50 @@
     </div>
   </div>
 
+  <div class="modal" id="measurementModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="panel-head">
+        <div>
+          <h2>Nowy pomiar Tanita</h2>
+          <p id="measurementClientName">Metryki, PDF i interpretacja dla aktualnego klienta.</p>
+        </div>
+        <button class="btn" data-close="measurementModal">Zamknij</button>
+      </div>
+      <form id="measurementForm" class="form-grid">
+        <div class="form-field"><label class="label">Data pomiaru</label><input type="date" name="date" required /></div>
+        <div class="form-field"><label class="label">Waga kg</label><input type="number" step="0.01" name="weightKg" /></div>
+        <div class="form-field"><label class="label">Tłuszcz %</label><input type="number" step="0.01" name="fatPercent" /></div>
+        <div class="form-field"><label class="label">Masa tłuszczu kg</label><input type="number" step="0.01" name="fatMassKg" /></div>
+        <div class="form-field"><label class="label">Masa beztłuszczowa kg</label><input type="number" step="0.01" name="fatFreeMassKg" /></div>
+        <div class="form-field"><label class="label">Masa mięśniowa kg</label><input type="number" step="0.01" name="muscleMassKg" /></div>
+        <div class="form-field"><label class="label">Woda %</label><input type="number" step="0.01" name="bodyWaterPercent" /></div>
+        <div class="form-field"><label class="label">Woda kg</label><input type="number" step="0.01" name="bodyWaterKg" /></div>
+        <div class="form-field"><label class="label">Visceral fat rating</label><input type="number" step="0.1" name="visceralFatRating" /></div>
+        <div class="form-field"><label class="label">BMR kcal</label><input type="number" step="1" name="bmrKcal" /></div>
+        <div class="form-field"><label class="label">Wiek metaboliczny</label><input type="number" step="1" name="metabolicAge" /></div>
+        <div class="form-field"><label class="label">BMI</label><input type="number" step="0.01" name="bmi" /></div>
+        <div class="form-field"><label class="label">Masa kości kg</label><input type="number" step="0.01" name="boneMassKg" /></div>
+        <div class="form-field"><label class="label">Protein kg</label><input type="number" step="0.01" name="proteinKg" /></div>
+        <div class="form-field full">
+          <label class="label">Upload PDF Tanita</label>
+          <input type="file" name="tanitaPdf" accept="application/pdf" />
+          <div class="file-status">
+            <span class="file-note" id="measurementPdfName">Brak załączonego PDF.</span>
+            <span class="pill gold" id="measurementPdfStatus">Wymaga ręcznego uzupełnienia</span>
+          </div>
+          <p class="form-message" id="measurementPdfMessage"></p>
+        </div>
+        <div class="form-field full"><label class="label">Interpretacja trenera</label><textarea name="trainerInterpretation" placeholder="Co wynika z danych, a czego z nich nie wolno nadinterpretować?"></textarea></div>
+        <div class="form-field full"><label class="label">Podsumowanie dla klienta</label><textarea name="clientSummary" placeholder="Krótko, spokojnie i bez straszenia liczbami."></textarea></div>
+        <button class="btn primary full" type="submit">Zapisz pomiar</button>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
+    const APP_VERSION = "4.1";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
 
@@ -442,6 +532,30 @@
             { text: "Sprawdzić poranny ból po hip hinge", done: false },
             { text: "Nagranie techniki przysiadu do skrzynki", done: false }
           ],
+          measurements: [
+            {
+              id: "m-demo-2025-07-18",
+              date: "2025-07-18",
+              source: "Tanita",
+              weightKg: 84.1,
+              fatPercent: 17.1,
+              fatMassKg: 14.38,
+              fatFreeMassKg: 69.72,
+              muscleMassKg: 66.30,
+              bodyWaterPercent: 62.70,
+              bodyWaterKg: 52.73,
+              visceralFatRating: 5.5,
+              bmrKcal: 2030,
+              metabolicAge: 25,
+              bmi: 25.70,
+              boneMassKg: 3.50,
+              proteinKg: 13.57,
+              pdfName: "",
+              pdfDataUrl: "",
+              trainerInterpretation: "Kompozycja ciała jest dobrym punktem odniesienia do monitorowania trendu, ale decyzje treningowe powinny wynikać z połączenia danych Tanita, objawów, testów ruchowych i tolerancji obciążenia.",
+              clientSummary: "Ten pomiar traktujemy jako punkt odniesienia. Najważniejszy będzie trend w czasie, nie pojedynczy wynik."
+            }
+          ],
           sessions: [
             { id: "s1", date: "2026-03-18", vasBefore: 7, vasAfter: 4, mobilityIndex: 55, readiness: 5, sleepQuality: "Słaby", exercises: ["Oddychanie przeponowe", "Aktywacja pośladka leżąc"], notes: "Duży lęk przed ruchem. Tempo wolne, dużo edukacji.", decision: "Budować bezpieczeństwo w niskich pozycjach.", milestone: "" },
             { id: "s2", date: "2026-03-25", vasBefore: 6, vasAfter: 3, mobilityIndex: 60, readiness: 6, sleepQuality: "Słaby", exercises: ["Dead Bug", "Mobilizacja biodra 90/90"], notes: "Lepsza kontrola oddechu.", decision: "Dodać hip hinge z kijkiem.", milestone: "" },
@@ -468,8 +582,120 @@
       ]
     };
 
+    function defaultHomePlan() {
+      return { title: "", frequency: "", duration: "", instructions: "", exercises: [] };
+    }
+
+    function normalizeNumber(value) {
+      if (value === "" || value === null || value === undefined) return null;
+      const n = Number(String(value).replace(",", "."));
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function migrateMeasurement(measurement = {}) {
+      return {
+        ...measurement,
+        id: measurement.id || `m${Date.now()}`,
+        date: measurement.date || "",
+        source: measurement.source || "Tanita",
+        weightKg: normalizeNumber(measurement.weightKg),
+        fatPercent: normalizeNumber(measurement.fatPercent),
+        fatMassKg: normalizeNumber(measurement.fatMassKg),
+        fatFreeMassKg: normalizeNumber(measurement.fatFreeMassKg),
+        muscleMassKg: normalizeNumber(measurement.muscleMassKg),
+        bodyWaterPercent: normalizeNumber(measurement.bodyWaterPercent),
+        bodyWaterKg: normalizeNumber(measurement.bodyWaterKg),
+        visceralFatRating: normalizeNumber(measurement.visceralFatRating),
+        bmrKcal: normalizeNumber(measurement.bmrKcal),
+        metabolicAge: normalizeNumber(measurement.metabolicAge),
+        bmi: normalizeNumber(measurement.bmi),
+        boneMassKg: normalizeNumber(measurement.boneMassKg),
+        proteinKg: normalizeNumber(measurement.proteinKg),
+        pdfName: measurement.pdfName || "",
+        pdfDataUrl: measurement.pdfDataUrl || "",
+        sourceMode: measurement.sourceMode || (measurement.pdfDataUrl ? "pdf" : "manual"),
+        pdfAutoFilled: Boolean(measurement.pdfAutoFilled),
+        trainerInterpretation: measurement.trainerInterpretation || "",
+        clientSummary: measurement.clientSummary || ""
+      };
+    }
+
+    function migrateSession(session = {}) {
+      const exercises = Array.isArray(session.exercises)
+        ? session.exercises
+        : String(session.exercises || "").split("\n").map(x => x.trim()).filter(Boolean);
+      return {
+        ...session,
+        id: session.id || `s${session.date || Date.now()}`,
+        date: session.date || "",
+        readiness: Number(session.readiness || session.energy || 7),
+        vasBefore: Number(session.vasBefore ?? 0),
+        vasAfter: Number(session.vasAfter ?? 0),
+        mobilityIndex: Number(session.mobilityIndex ?? 0),
+        sleepQuality: session.sleepQuality || session.sleep || "Dobry",
+        exercises,
+        notes: session.notes || "",
+        decision: session.decision || "",
+        milestone: session.milestone || ""
+      };
+    }
+
+    function migrateClient(client = {}) {
+      const plan = client.homePlan && typeof client.homePlan === "object" ? client.homePlan : defaultHomePlan();
+      const exercises = Array.isArray(plan.exercises)
+        ? plan.exercises.map(ex => ({
+          name: ex?.name || "",
+          dosage: ex?.dosage || "",
+          note: ex?.note || ""
+        })).filter(ex => ex.name || ex.dosage || ex.note)
+        : [];
+
+      return {
+        ...client,
+        id: client.id || `SL-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`,
+        name: client.name || "Nowy klient",
+        contact: client.contact || "",
+        email: client.email || "",
+        phone: client.phone || "",
+        startDate: client.startDate || "",
+        nextSessionDate: client.nextSessionDate || "",
+        nextReviewDate: client.nextReviewDate || "",
+        motivation: client.motivation || "",
+        fears: client.fears || "",
+        contraindications: client.contraindications || "",
+        redFlags: client.redFlags || "",
+        package: client.package || "Diagnostyka",
+        stage: Number(client.stage || 1),
+        healthStatus: client.healthStatus || "",
+        neuroType: client.neuroType || client.neuroProfile || "",
+        goal: client.goal || "",
+        nextMilestone: client.nextMilestone || "",
+        decisionLogic: client.decisionLogic || "",
+        tasks: Array.isArray(client.tasks) ? client.tasks : [],
+        checkins: Array.isArray(client.checkins) ? client.checkins : [],
+        documents: Array.isArray(client.documents) ? client.documents : [],
+        measurements: Array.isArray(client.measurements) ? client.measurements.map(migrateMeasurement) : [],
+        homePlan: {
+          title: plan.title || "",
+          frequency: plan.frequency || "",
+          duration: plan.duration || "",
+          instructions: plan.instructions || "",
+          exercises
+        },
+        sessions: Array.isArray(client.sessions) ? client.sessions.map(migrateSession) : []
+      };
+    }
+
+    function migrateState(data = {}) {
+      const sourceClients = Array.isArray(data.clients) && data.clients.length ? data.clients : seed.clients;
+      const clients = sourceClients.map(migrateClient);
+      const activeClientId = clients.some(c => c.id === data.activeClientId) ? data.activeClientId : clients[0]?.id || "";
+      return { ...data, activeClientId, clients };
+    }
+
     let state = load();
     let viewName = "command";
+    let pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
 
     const $ = (sel) => document.querySelector(sel);
     const view = $("#view");
@@ -478,12 +704,21 @@
     function load() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) return JSON.parse(saved);
+        if (saved) {
+          const migrated = migrateState(JSON.parse(saved));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+          return migrated;
+        }
       } catch (e) {}
-      return structuredClone(seed);
+      const migrated = migrateState(structuredClone(seed));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+      } catch (e) {}
+      return migrated;
     }
 
     function save() {
+      state = migrateState(state);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
@@ -492,11 +727,11 @@
     }
 
     function latest(c = activeClient()) {
-      return c.sessions[c.sessions.length - 1] || null;
+      return c?.sessions?.[c.sessions.length - 1] || null;
     }
 
     function first(c = activeClient()) {
-      return c.sessions[0] || null;
+      return c?.sessions?.[0] || null;
     }
 
     function risk(c) {
@@ -514,7 +749,7 @@
         vasDelta: l && f ? f.vasBefore - l.vasAfter : null,
         mobility: l ? l.mobilityIndex : null,
         mobilityDelta: l && f ? l.mobilityIndex - f.mobilityIndex : null,
-        sessions: c.sessions.length
+        sessions: c?.sessions?.length || 0
       };
     }
 
@@ -527,7 +762,13 @@
     }
 
     function renderShell() {
-      clientSelect.innerHTML = state.clients.map(c => `<option value="${c.id}" ${c.id === state.activeClientId ? "selected" : ""}>${escapeHtml(c.name)} · ${escapeHtml(c.package)}</option>`).join("");
+      const c = activeClient();
+      const clientMode = viewName === "clientPortal";
+      document.body.classList.toggle("client-mode", clientMode);
+      clientSelect.disabled = clientMode;
+      clientSelect.innerHTML = clientMode && c
+        ? `<option value="${c.id}" selected>${escapeHtml(c.name)} · ${escapeHtml(c.package)}</option>`
+        : state.clients.map(c => `<option value="${c.id}" ${c.id === state.activeClientId ? "selected" : ""}>${escapeHtml(c.name)} · ${escapeHtml(c.package)}</option>`).join("");
       document.querySelectorAll(".nav button").forEach(btn => btn.classList.toggle("active", btn.dataset.view === viewName));
       render();
     }
@@ -535,19 +776,34 @@
     function render() {
       const c = activeClient();
       const titles = {
-        command: ["Clinical Command Center", "Dzisiejsze decyzje, ryzyka i priorytety pracy."],
+        command: ["Evidence-Based Command Center", "Dzisiejsze decyzje, ryzyka, priorytety i dane procesu."],
         client: ["Profil klienta", "Jedno miejsce na hipotezę, cel, komunikację i czerwone flagi."],
         process: ["Proces 12 tygodni", "Nie etap dla ozdoby, tylko logika przejścia do kolejnego standardu."],
         sessions: ["Sesje i trend", "Historia obserwacji, bólu, gotowości i decyzji."],
-        report: ["Raport dobrostanu", "Gotowy język dla klienta bez ręcznego składania notatek."]
+        tasks: ["Zadania", "Aktywne rzeczy do dopięcia dla wybranego klienta."],
+        measurements: ["Pomiary", "Warstwa Tanita: metryki, PDF i interpretacja w kontekście procesu."],
+        report: ["Raport dobrostanu", "Gotowy język dla klienta bez ręcznego składania notatek."],
+        clientPortal: ["Panel klienta", "Prosty widok procesu dla aktualnie wybranego klienta."]
       };
-      $("#screenTitle").textContent = titles[viewName][0];
-      $("#screenSubtitle").textContent = titles[viewName][1];
+      const title = titles[viewName] || titles.command;
+      const clientMode = viewName === "clientPortal";
+      $("#screenTitle").textContent = title[0];
+      $("#screenSubtitle").textContent = title[1];
+      $("#versionBadge").textContent = `Studio Las OS ${APP_VERSION}`;
+      $("#roleBadge").textContent = clientMode ? "Widok klienta" : "Widok trenera";
+      $("#roleBadge").className = `pill top-role ${clientMode ? "green" : "blue"}`;
+      ["#importLegacyBtn", "#newClientBtn", "#newSessionBtn", "#newMeasurementBtn"].forEach(sel => {
+        const el = $(sel);
+        if (el) el.hidden = clientMode;
+      });
       if (viewName === "command") renderCommand();
       if (viewName === "client") renderClient();
       if (viewName === "process") renderProcess();
       if (viewName === "sessions") renderSessions();
+      if (viewName === "tasks") renderTasks();
+      if (viewName === "measurements") renderMeasurements();
       if (viewName === "report") renderReport();
+      if (viewName === "clientPortal") renderClientPortal();
     }
 
     function renderCommand() {
@@ -724,6 +980,433 @@
         </div>`;
     }
 
+    function renderTasks() {
+      const c = activeClient();
+      const tasks = c.tasks || [];
+      const openTasks = tasks.filter(t => !t.done).length;
+      view.innerHTML = `
+        <section class="panel">
+          <div class="panel-head"><div><h2>Zadania klienta</h2><p>${escapeHtml(c.name)} · rzeczy do domknięcia przed kolejnym krokiem.</p></div>${pill(`${openTasks} aktywne`, openTasks ? "gold" : "green")}</div>
+          <form id="taskForm" class="task-form">
+            <input name="taskText" required placeholder="Dodaj konkretne zadanie dla tego klienta" />
+            <button class="btn primary" type="submit">Dodaj</button>
+          </form>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Lista zadań</h2>${pill(`${tasks.length} łącznie`, "blue")}</div>
+          <div class="grid">
+            ${tasks.length ? tasks.map((task, i) => `
+              <div class="task-row ${task.done ? "done" : ""}">
+                <label>
+                  <input type="checkbox" data-task-toggle="${i}" ${task.done ? "checked" : ""}>
+                  <span>
+                    <span class="name">${escapeHtml(task.text)}</span><br>
+                    <span class="meta">${task.done ? "wykonane" : "do zrobienia"}${task.createdAt ? ` · dodane ${escapeHtml(task.createdAt)}` : ""}</span>
+                  </span>
+                </label>
+              </div>`).join("") : `<p>Brak zadań dla aktywnego klienta.</p>`}
+          </div>
+        </section>
+      `;
+
+      $("#taskForm").addEventListener("submit", e => {
+        e.preventDefault();
+        const text = new FormData(e.currentTarget).get("taskText").trim();
+        if (!text) return;
+        c.tasks.push({ text, done: false, createdAt: today() });
+        save();
+        renderTasks();
+        toast("Dodano zadanie");
+      });
+
+      document.querySelectorAll("[data-task-toggle]").forEach(input => input.addEventListener("change", () => {
+        c.tasks[Number(input.dataset.taskToggle)].done = input.checked;
+        save();
+        renderTasks();
+        toast("Zadanie zaktualizowane");
+      }));
+    }
+
+    function renderMeasurements() {
+      const c = activeClient();
+      const measurements = sortedMeasurements(c);
+      const latest = measurements[0] || null;
+      view.innerHTML = `
+        <section class="panel">
+          <div class="panel-head">
+            <div><h2>Najnowszy pomiar Tanita</h2><p>${escapeHtml(c.name)} · dane traktujemy jako trend, nie wyrok.</p></div>
+            ${pill(latest ? formatDate(latest.date) : "brak pomiaru", latest ? "blue" : "gold")}
+          </div>
+          ${latest ? renderMeasurementMain(latest) : `<p>Brak pomiarów dla aktywnego klienta. Dodaj pierwszy pomiar ręcznie lub z PDF Tanita.</p>`}
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Trend Tanita</h2>${pill(`${measurements.length} pomiarów`, measurements.length ? "green" : "gold")}</div>
+          ${renderMeasurementTrend(c)}
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Historia pomiarów</h2><button class="btn primary" id="inlineMeasurementBtn">Nowy pomiar</button></div>
+          <div class="measurement-list">
+            ${measurements.length ? measurements.map(measurementRow).join("") : `<p>Historia pojawi się po pierwszym pomiarze.</p>`}
+          </div>
+        </section>
+      `;
+      $("#inlineMeasurementBtn")?.addEventListener("click", openMeasurementModal);
+      bindPdfButtons();
+    }
+
+    function renderMeasurementMain(m) {
+      return `
+        <div class="measurement-card measurement-main">
+          <div class="measurement-metrics">
+            ${pill(formatDate(m.date), "blue")}
+            ${pill(`Waga ${formatMetric(m.weightKg, "kg")}`, "blue")}
+            ${pill(`Fat ${formatMetric(m.fatPercent, "%")}`, "gold")}
+            ${pill(`Mięśnie ${formatMetric(m.muscleMassKg, "kg")}`, "green")}
+            ${pill(`Total body water ${formatMetric(m.bodyWaterPercent, "%")}`, "blue")}
+            ${pill(`Visceral fat ${formatMetric(m.visceralFatRating, "")}`, "gold")}
+            ${pill(`BMI ${formatMetric(m.bmi, "")}`, "blue")}
+            ${pill(`BMR ${formatMetric(m.bmrKcal, "kcal")}`, "blue")}
+            ${pill(m.pdfDataUrl ? "PDF załączony" : "PDF brak", m.pdfDataUrl ? "green" : "gold")}
+            ${pill(measurementOrigin(m), measurementOriginTone(m))}
+          </div>
+          <div class="grid cols-2">
+            ${fieldBlock("Interpretacja trenera", m.trainerInterpretation || "Brak interpretacji trenera.")}
+            ${fieldBlock("Podsumowanie dla klienta", m.clientSummary || "Brak podsumowania dla klienta.")}
+          </div>
+          <p>Pojedynczy pomiar nie jest diagnozą. Najważniejszy jest trend i zestawienie z objawami, testami ruchowymi oraz tolerancją obciążenia.</p>
+          <div class="portal-meta">
+            ${m.pdfName ? pill(`PDF: ${m.pdfName}`, "blue") : pill("PDF niezałączony", "gold")}
+            ${m.pdfDataUrl ? `<button class="btn" data-open-pdf="${escapeHtml(m.id)}">Otwórz PDF</button>` : ""}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMeasurementTrend(c) {
+      const first = firstMeasurement(c);
+      const latest = latestMeasurement(c);
+      if (!latest) return `<p>Potrzebny jest minimum jeden pomiar, żeby pokazać bieżący punkt odniesienia.</p>`;
+      const cards = [
+        ["Waga", latest.weightKg, first?.weightKg, "kg"],
+        ["Fat %", latest.fatPercent, first?.fatPercent, "%"],
+        ["Muscle mass", latest.muscleMassKg, first?.muscleMassKg, "kg"],
+        ["Visceral fat", latest.visceralFatRating, first?.visceralFatRating, ""],
+        ["Body water", latest.bodyWaterPercent, first?.bodyWaterPercent, "%"]
+      ];
+      return `<div class="grid cols-4">${cards.map(([label, now, start, unit]) => `
+        <div class="portal-metric">
+          <div class="label">${escapeHtml(label)}</div>
+          <strong>${formatMetric(now, unit)}</strong>
+          <p>${formatDelta(now, start, unit)} od pierwszego pomiaru</p>
+        </div>`).join("")}</div>`;
+    }
+
+    function measurementRow(m) {
+      return `
+        <div class="measurement-card">
+          <div class="panel-head">
+            <div>
+              <div class="name">${escapeHtml(formatDate(m.date))}</div>
+              <div class="meta">${escapeHtml(measurementOrigin(m))} · ${m.pdfName ? escapeHtml(m.pdfName) : "bez PDF"}</div>
+            </div>
+            ${pill(m.pdfDataUrl ? "PDF gotowy" : "PDF brak", m.pdfDataUrl ? "green" : "gold")}
+          </div>
+          <div class="measurement-metrics">
+            ${pill(`Waga ${formatMetric(m.weightKg, "kg")}`, "blue")}
+            ${pill(`Fat ${formatMetric(m.fatPercent, "%")}`, "gold")}
+            ${pill(`Mięśnie ${formatMetric(m.muscleMassKg, "kg")}`, "green")}
+            ${pill(`Woda ${formatMetric(m.bodyWaterPercent, "%")}`, "blue")}
+            ${pill(`BMR ${formatMetric(m.bmrKcal, "kcal")}`, "blue")}
+          </div>
+          ${m.trainerInterpretation ? `<div class="meta">${escapeHtml(m.trainerInterpretation)}</div>` : ""}
+          ${m.clientSummary ? `<div class="name">Dla klienta: ${escapeHtml(m.clientSummary)}</div>` : ""}
+          ${m.pdfDataUrl ? `<div><button class="btn" data-open-pdf="${escapeHtml(m.id)}">Otwórz PDF</button></div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderClientPortal() {
+      const c = activeClient();
+      const m = metrics(c);
+      const l = latest(c);
+      const stageName = steps[c.stage - 1]?.[0] || "Proces indywidualny";
+      const decision = l?.decision || c.decisionLogic || "Najbliższy krok zostanie doprecyzowany po diagnostyce lub kolejnej sesji.";
+      view.innerHTML = `
+        <section class="panel portal-hero">
+          <div class="panel-head">
+            <div>
+              <h2>${escapeHtml(c.name)}</h2>
+              <p>${escapeHtml(c.package)} · ${escapeHtml(stageName)}</p>
+            </div>
+            ${pill(portalStatus(c), portalStatusTone(c))}
+          </div>
+          <div class="portal-meta">
+            ${pill(`Pakiet: ${c.package || "do ustalenia"}`, "blue")}
+            ${pill(`Etap: ${stageName}`, "green")}
+            ${pill(`${m.sessions} sesji`, "blue")}
+            ${c.nextSessionDate ? pill(`Następny termin: ${formatDate(c.nextSessionDate)}`, "gold") : ""}
+            ${pill(`Status: ${portalStatus(c)}`, portalStatusTone(c))}
+          </div>
+        </section>
+
+        <section class="panel portal-focus">
+          <div class="panel-head"><div><h2>Co robimy teraz</h2><p>Najważniejszy kierunek na ten moment.</p></div>${pill("priorytet", "gold")}</div>
+          <div class="grid cols-3">
+            <div class="portal-info"><div class="label">Aktualny priorytet</div><p>${escapeHtml(portalPriority(c))}</p></div>
+            <div class="portal-info"><div class="label">Ostatnia decyzja</div><p>${escapeHtml(decision)}</p></div>
+            <div class="portal-info"><div class="label">Czego teraz nie przyspieszamy</div><p>${escapeHtml(portalPaceLimit(c, l))}</p></div>
+          </div>
+          <p>${escapeHtml(portalExplanation(c, l))}</p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Plan domowy</h2>${pill("do wykonania między sesjami", "green")}</div>
+          ${renderHomePlan(c)}
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Ostatni pomiar Tanita</h2>${pill("punkt odniesienia", "blue")}</div>
+          ${renderPortalMeasurement(c)}
+        </section>
+
+        <div class="grid cols-2">
+          <section class="panel">
+            <div class="panel-head"><h2>Ostatnia sesja</h2>${pill(l?.date ? formatDate(l.date) : "brak", "blue")}</div>
+            ${renderPortalLastSession(c)}
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Postęp</h2>${pill("proste metryki", "green")}</div>
+            ${renderPortalProgress(c)}
+          </section>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Dokumenty</h2>${pill("status", "blue")}</div>
+          <div class="grid cols-4">${renderPortalDocuments(c)}</div>
+        </section>
+      `;
+      bindPdfButtons();
+    }
+
+    function renderPortalMeasurement(c) {
+      const m = latestMeasurement(c);
+      if (!m) return `<p>Pomiar Tanita pojawi się tutaj po pierwszym zapisie.</p>`;
+      return `
+        <div class="measurement-card measurement-main">
+        <div class="grid cols-3">
+          <div class="portal-info"><div class="label">Data</div><p>${escapeHtml(formatDate(m.date))}</p></div>
+          <div class="portal-info"><div class="label">Waga</div><p>${formatMetric(m.weightKg, "kg")}</p></div>
+          <div class="portal-info"><div class="label">Fat %</div><p>${formatMetric(m.fatPercent, "%")}</p></div>
+          <div class="portal-info"><div class="label">Masa mięśniowa</div><p>${formatMetric(m.muscleMassKg, "kg")}</p></div>
+          <div class="portal-info"><div class="label">Woda %</div><p>${formatMetric(m.bodyWaterPercent, "%")}</p></div>
+        </div>
+        <div class="portal-info" style="margin-top:12px"><div class="label">Podsumowanie</div><p>${escapeHtml(m.clientSummary || "Najważniejszy jest trend w czasie, nie pojedynczy wynik.")}</p></div>
+        ${m.pdfDataUrl ? `<div style="margin-top:12px"><button class="btn" data-open-pdf="${escapeHtml(m.id)}">Otwórz PDF Tanita</button></div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderHomePlan(c) {
+      const plan = c.homePlan || defaultHomePlan();
+      const hasPlan = plan.title || plan.frequency || plan.duration || plan.instructions || plan.exercises.length;
+      if (!hasPlan) return `<p>Plan domowy zostanie uzupełniony po diagnostyce lub najbliższej sesji.</p>`;
+      return `
+        <div class="grid cols-3">
+          <div class="portal-info"><div class="label">Nazwa</div><p>${escapeHtml(plan.title || "Plan domowy")}</p></div>
+          <div class="portal-info"><div class="label">Częstotliwość</div><p>${escapeHtml(plan.frequency || "Do ustalenia")}</p></div>
+          <div class="portal-info"><div class="label">Czas</div><p>${escapeHtml(plan.duration || "Do ustalenia")}</p></div>
+        </div>
+        ${plan.instructions ? `<div class="portal-info" style="margin-top:12px"><div class="label">Instrukcja</div><p>${escapeHtml(plan.instructions)}</p></div>` : ""}
+        <div class="exercise-list" style="margin-top:12px">
+          ${plan.exercises.length ? plan.exercises.map(ex => `
+            <div class="exercise-card">
+              <div class="name">${escapeHtml(ex.name)}</div>
+              <div class="meta">${escapeHtml(ex.dosage || "Dawkowanie do ustalenia")}${ex.note ? ` · ${escapeHtml(ex.note)}` : ""}</div>
+            </div>`).join("") : `<p>Ćwiczenia zostaną dopisane po najbliższej sesji.</p>`}
+        </div>
+      `;
+    }
+
+    function renderPortalLastSession(c) {
+      const l = latest(c);
+      if (!l) return `<p>Ostatnia sesja pojawi się tutaj po pierwszym zapisie pracy.</p>`;
+      return `
+        <div class="grid">
+          <div class="portal-info"><div class="label">Data</div><p>${escapeHtml(formatDate(l.date))}</p></div>
+          <div class="portal-info"><div class="label">Ćwiczenia</div><p>${l.exercises?.length ? l.exercises.map(escapeHtml).join(", ") : "Brak zapisanych ćwiczeń."}</p></div>
+          <div class="portal-info"><div class="label">Obserwacje</div><p>${escapeHtml(l.notes || "Brak zapisanych obserwacji.")}</p></div>
+          <div class="portal-info"><div class="label">Decyzja</div><p>${escapeHtml(l.decision || c.decisionLogic || "Decyzja zostanie dopisana po sesji.")}</p></div>
+          ${l.milestone ? `<div class="portal-info"><div class="label">Milestone</div><p>${escapeHtml(l.milestone)}</p></div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderPortalProgress(c) {
+      const m = metrics(c);
+      const milestone = lastMilestone(c);
+      const items = [
+        ["VAS teraz", m.vasNow ?? "–"],
+        ["Zmiana VAS od startu", m.vasDelta !== null ? formatPainChange(m.vasDelta) : "–"],
+        ["Mobilność teraz", m.mobility !== null ? `${m.mobility}%` : "–"],
+        ["Zmiana mobilności od startu", m.mobilityDelta !== null ? formatMobilityChange(m.mobilityDelta) : "–"],
+        ["Liczba sesji", m.sessions],
+        ["Ostatni milestone", milestone || "–"]
+      ];
+      return `<div class="grid cols-3">${items.map(item => `<div class="portal-metric"><div class="label">${escapeHtml(item[0])}</div><strong>${escapeHtml(item[1])}</strong></div>`).join("")}</div>`;
+    }
+
+    function renderPortalDocuments(c) {
+      return portalDocuments(c).map(doc => `
+        <div class="doc-card">
+          <div>
+            <div class="name">${escapeHtml(doc.title)}</div>
+            <p>${escapeHtml(doc.description)}</p>
+          </div>
+          ${pill(doc.status, documentTone(doc.status))}
+        </div>`).join("");
+    }
+
+    function portalDocuments(c) {
+      const hasHomePlan = (c.homePlan?.exercises || []).length >= 1;
+      const sessionCount = c.sessions.length;
+      return [
+        {
+          title: "Mapa Startowa Ciała",
+          status: c.goal && c.healthStatus ? "gotowy" : (c.goal || c.healthStatus ? "aktywny" : "w przygotowaniu"),
+          description: "Punkt startowy, cel i najważniejsze informacje o ciele."
+        },
+        {
+          title: "Plan Domowy",
+          status: hasHomePlan ? "gotowy" : (c.homePlan?.title || c.homePlan?.instructions ? "aktywny" : "w przygotowaniu"),
+          description: "Ćwiczenia i dawki do pracy między spotkaniami."
+        },
+        {
+          title: "Raport 12 Tygodni",
+          status: sessionCount >= 8 ? "gotowy" : (sessionCount > 0 ? "aktywny" : "w przygotowaniu"),
+          description: "Podsumowanie danych, decyzji i zmian w procesie."
+        },
+        {
+          title: "Plan Kontynuacji",
+          status: sessionCount >= 8 ? "gotowy" : "w przygotowaniu",
+          description: "Co dalej po pierwszym większym cyklu pracy."
+        }
+      ];
+    }
+
+    function documentTone(status) {
+      if (status === "gotowy") return "green";
+      if (status === "aktywny") return "blue";
+      return "gold";
+    }
+
+    function portalStatus(c) {
+      const l = latest(c);
+      if (!l) return "przed pierwszą sesją";
+      if (l.vasAfter > l.vasBefore) return "zwalniamy tempo";
+      if (l.vasAfter <= 3 && (l.readiness || 0) >= 7) return "spokojny postęp";
+      return "w trakcie procesu";
+    }
+
+    function portalStatusTone(c) {
+      const status = portalStatus(c);
+      if (status === "spokojny postęp") return "green";
+      if (status === "zwalniamy tempo") return "gold";
+      return "blue";
+    }
+
+    function portalPriority(c) {
+      return c.nextMilestone || c.goal || steps[c.stage - 1]?.[0] || "Ustalić najbliższy, konkretny krok.";
+    }
+
+    function portalPaceLimit(c, l) {
+      if (!l) return "Nie przyspieszamy przed diagnostyką i pierwszą spokojną obserwacją reakcji ciała.";
+      if (l.vasAfter > l.vasBefore) return "Nie dokładamy intensywności, dopóki reakcja po sesji nie będzie spokojniejsza.";
+      if ((l.readiness || 0) <= 4) return "Nie dokładamy objętości przy słabej gotowości lub regeneracji.";
+      if (c.stage <= 2) return "Nie ścigamy ciężaru, tempa ani zakresu za cenę jakości ruchu.";
+      return "Nie pomijamy rozgrzewki, kontroli jakości ruchu i ustalonego tempa progresji.";
+    }
+
+    function portalExplanation(c, l) {
+      if (l?.decision) return "Najbliższy krok wynika z ostatniej sesji. Trzymamy się go, żeby ciało miało czas zareagować przewidywalnie, bez niepotrzebnego pośpiechu.";
+      return "Ten panel pokazuje tylko to, co jest potrzebne klientowi teraz: kierunek pracy, plan domowy, ostatnią sesję i prosty postęp.";
+    }
+
+    function lastMilestone(c) {
+      return [...c.sessions].reverse().find(s => s.milestone)?.milestone || "";
+    }
+
+    function sortedMeasurements(c = activeClient()) {
+      return [...(c?.measurements || [])].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+    }
+
+    function latestMeasurement(c = activeClient()) {
+      return sortedMeasurements(c)[0] || null;
+    }
+
+    function firstMeasurement(c = activeClient()) {
+      const measurements = sortedMeasurements(c);
+      return measurements[measurements.length - 1] || null;
+    }
+
+    function bindPdfButtons() {
+      document.querySelectorAll("[data-open-pdf]").forEach(btn => btn.addEventListener("click", () => openMeasurementPdf(btn.dataset.openPdf)));
+    }
+
+    function measurementOrigin(m) {
+      if (m.pdfAutoFilled || m.sourceMode === "pdf-autofill") return "PDF + autouzupełnienie";
+      if (m.pdfDataUrl || m.sourceMode === "pdf") return "PDF Tanita";
+      return "Ręczny wpis";
+    }
+
+    function measurementOriginTone(m) {
+      if (m.pdfAutoFilled || m.sourceMode === "pdf-autofill") return "green";
+      if (m.pdfDataUrl || m.sourceMode === "pdf") return "blue";
+      return "gold";
+    }
+
+    function openMeasurementPdf(id) {
+      const m = (activeClient().measurements || []).find(item => item.id === id);
+      if (!m?.pdfDataUrl) return toast("Brak PDF dla tego pomiaru");
+      const win = window.open("", "_blank", "noopener");
+      if (!win) return toast("Przeglądarka zablokowała nowe okno");
+      win.document.write(`<iframe title="${escapeHtml(m.pdfName || "Tanita PDF")}" src="${m.pdfDataUrl}" style="border:0;width:100%;height:100vh"></iframe>`);
+      win.document.close();
+    }
+
+    function formatMetric(value, unit = "") {
+      if (value === null || value === undefined || value === "") return "–";
+      const rounded = Number.isInteger(Number(value)) ? Number(value) : Number(value).toFixed(2).replace(/\.?0+$/, "");
+      return `${rounded}${unit ? " " + unit : ""}`;
+    }
+
+    function formatDelta(now, start, unit = "") {
+      if (now === null || now === undefined || start === null || start === undefined) return "–";
+      const delta = Number(now) - Number(start);
+      if (!Number.isFinite(delta)) return "–";
+      const sign = delta > 0 ? "+" : "";
+      const rounded = Number.isInteger(delta) ? delta : delta.toFixed(2).replace(/\.?0+$/, "");
+      return `${sign}${rounded}${unit ? " " + unit : ""}`;
+    }
+
+    function formatDate(value) {
+      if (!value) return "";
+      const parts = String(value).split("-");
+      if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
+      return value;
+    }
+
+    function formatPainChange(value) {
+      if (value > 0) return `-${value} pkt`;
+      if (value < 0) return `+${Math.abs(value)} pkt`;
+      return "0 pkt";
+    }
+
+    function formatMobilityChange(value) {
+      if (value > 0) return `+${value}%`;
+      if (value < 0) return `${value}%`;
+      return "0%";
+    }
+
     function renderReport() {
       const c = activeClient();
       view.innerHTML = `
@@ -766,8 +1449,32 @@ ${l?.decision || c.decisionLogic || "Do ustalenia po kolejnej sesji."}
 Kamienie milowe:
 ${milestones}
 
+Dane Tanita:
+${buildTanitaReportSection(c)}
+
 Komentarz:
 Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje spokojniej. Dlatego patrzymy jednocześnie na ból, mobilność, sen, gotowość i jakość ruchu.`;
+    }
+
+    function buildTanitaReportSection(c) {
+      const first = firstMeasurement(c);
+      const latest = latestMeasurement(c);
+      if (!latest) return "Brak pomiarów Tanita dla tego klienta.";
+      const count = (c.measurements || []).length;
+      const intro = `Tanita — kompozycja ciała
+- Najnowszy pomiar: ${latest.date || "brak daty"} · waga ${formatMetric(latest.weightKg, "kg")} · fat ${formatMetric(latest.fatPercent, "%")} · masa mięśniowa ${formatMetric(latest.muscleMassKg, "kg")} · body water ${formatMetric(latest.bodyWaterPercent, "%")}
+- PDF Tanita: ${latest.pdfDataUrl ? "załączony" : "brak załącznika"}`;
+      if (count < 2) {
+        return `${intro}
+- To jest punkt odniesienia. Wnioski trendowe pojawią się po kolejnym pomiarze.`;
+      }
+      return `${intro}
+- Pierwszy pomiar: ${first?.date || "brak daty"} · waga ${formatMetric(first?.weightKg, "kg")} · fat ${formatMetric(first?.fatPercent, "%")} · masa mięśniowa ${formatMetric(first?.muscleMassKg, "kg")} · body water ${formatMetric(first?.bodyWaterPercent, "%")}
+- Różnica wagi: ${formatDelta(latest.weightKg, first?.weightKg, "kg")}
+- Różnica fat %: ${formatDelta(latest.fatPercent, first?.fatPercent, "%")}
+- Różnica masy mięśniowej: ${formatDelta(latest.muscleMassKg, first?.muscleMassKg, "kg")}
+- Różnica body water %: ${formatDelta(latest.bodyWaterPercent, first?.bodyWaterPercent, "%")}
+- Interpretacja trenera: ${latest.trainerInterpretation || "Brak interpretacji trenera."}`;
     }
 
     function chart(c) {
@@ -831,6 +1538,17 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       $("#sessionModal").setAttribute("aria-hidden", "false");
     }
 
+    function openMeasurementModal() {
+      const c = activeClient();
+      pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+      $("#measurementClientName").textContent = `${c.name} · pomiar Tanita`;
+      $("#measurementForm").reset();
+      $("#measurementForm").date.value = today();
+      setMeasurementPdfStatus("Brak załączonego PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+      $("#measurementModal").classList.add("open");
+      $("#measurementModal").setAttribute("aria-hidden", "false");
+    }
+
     function closeModal(id) {
       $("#" + id).classList.remove("open");
       $("#" + id).setAttribute("aria-hidden", "true");
@@ -852,9 +1570,9 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
         const raw = localStorage.getItem(LEGACY_KEY);
         if (!raw) return toast("Nie znaleziono danych v1.3 w tej przeglądarce");
         const legacy = JSON.parse(raw);
-        state = {
+        state = migrateState({
           activeClientId: legacy.activeClientId,
-          clients: legacy.clients.map(c => ({
+          clients: (legacy.clients || []).map(c => ({
             ...c,
             neuroType: c.neuroType || c.neuroProfile || "",
             goal: c.goal || c.nextMilestone || "",
@@ -866,13 +1584,195 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
               sleepQuality: s.sleepQuality || s.sleep || "Dobry"
             }))
           }))
-        };
+        });
         save();
         renderShell();
         toast("Zaimportowano dane z v1.3");
       } catch (e) {
         toast("Import nieudany");
       }
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve({ name: "", dataUrl: "" });
+        const reader = new FileReader();
+        reader.onload = () => resolve({ name: file.name, dataUrl: String(reader.result || "") });
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function readFileAsArrayBuffer(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve(new ArrayBuffer(0));
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    async function readTanitaPdfFile(file) {
+      const [{ name, dataUrl }, buffer] = await Promise.all([
+        readFileAsDataUrl(file),
+        readFileAsArrayBuffer(file)
+      ]);
+      let rawText = "";
+      try {
+        rawText = new TextDecoder("utf-8", { fatal: false }).decode(buffer);
+      } catch (error) {
+        rawText = "";
+      }
+      const parsed = parseTanitaPdfText(rawText);
+      const hasParsed = Object.values(parsed).some(value => value !== null && value !== "" && value !== undefined);
+      return {
+        name,
+        dataUrl,
+        rawText,
+        parsed,
+        autoFilled: hasParsed,
+        sourceMode: hasParsed ? "pdf-autofill" : "pdf"
+      };
+    }
+
+    function parseTanitaPdfText(rawText) {
+      const text = normalizePdfText(rawText);
+      const parsed = {
+        date: extractDate(text),
+        weightKg: extractLabeledNumber(text, ["Weight", "Body Weight", "Waga"]),
+        fatPercent: extractLabeledNumber(text, ["Fat %", "Body Fat %", "Body Fat", "Tłuszcz %"]),
+        fatMassKg: extractLabeledNumber(text, ["Fat Mass", "Masa tłuszczu"]),
+        fatFreeMassKg: extractLabeledNumber(text, ["Fat Free Mass", "FFM", "Masa beztłuszczowa"]),
+        muscleMassKg: extractLabeledNumber(text, ["Muscle Mass", "Masa mięśniowa"]),
+        bodyWaterPercent: extractBodyWaterPercent(text) ?? extractLabeledNumber(text, ["Total Body Water %", "Body Water %", "TBW %", "Woda %"]),
+        bodyWaterKg: extractBodyWaterKg(text) ?? extractLabeledNumber(text, ["Woda kg", "Body Water kg", "TBW kg"], { preferKg: true }),
+        visceralFatRating: extractLabeledNumber(text, ["Visceral Fat Rating", "Visceral Fat", "VFR"]),
+        bmrKcal: extractLabeledNumber(text, ["BMR", "Basal Metabolic Rate"]),
+        metabolicAge: extractLabeledNumber(text, ["Metabolic Age", "Wiek metaboliczny"]),
+        bmi: extractLabeledNumber(text, ["BMI"]),
+        boneMassKg: extractLabeledNumber(text, ["Bone Mass", "Masa kości"]),
+        proteinKg: extractLabeledNumber(text, ["Protein", "Protein kg", "Białko"])
+      };
+
+      if (Object.values(parsed).filter(value => value !== null && value !== "").length < 4) {
+        const fallback = parseTanitaNumberSequence(text);
+        Object.keys(parsed).forEach(key => {
+          if ((parsed[key] === null || parsed[key] === "") && fallback[key] !== undefined) parsed[key] = fallback[key];
+        });
+      }
+      return parsed;
+    }
+
+    function applyTanitaParsedData(parsed) {
+      const form = $("#measurementForm");
+      if (!form || !parsed) return false;
+      const fields = ["date", "weightKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "muscleMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
+      let filled = false;
+      fields.forEach(name => {
+        const value = parsed[name];
+        if (value === null || value === undefined || value === "") return;
+        if (!form.elements[name]) return;
+        form.elements[name].value = value;
+        filled = true;
+      });
+      return filled;
+    }
+
+    function normalizePdfText(rawText = "") {
+      return String(rawText)
+        .replace(/\0/g, " ")
+        .replace(/[()<>[\]{}]/g, " ")
+        .replace(/\\[rn]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function extractDate(text) {
+      const labeled = text.match(/(?:Date|Data)\D{0,30}(\d{4}[-/.]\d{1,2}[-/.]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4})/i);
+      const any = labeled || text.match(/(\d{4}[-/.]\d{1,2}[-/.]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4})/);
+      return any ? normalizeDateValue(any[1]) : "";
+    }
+
+    function normalizeDateValue(value) {
+      const parts = String(value).replace(/[/.]/g, "-").split("-").map(part => part.padStart(2, "0"));
+      if (parts.length !== 3) return value;
+      if (parts[0].length === 4) return `${parts[0]}-${parts[1]}-${parts[2]}`;
+      const year = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
+      return `${year}-${parts[1]}-${parts[0]}`;
+    }
+
+    function extractLabeledNumber(text, labels, options = {}) {
+      for (const label of labels) {
+        const pattern = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+        const regex = new RegExp(`${pattern}[\\s:=/-]{0,20}(-?\\d{1,4}(?:[\\.,]\\d{1,3})?)`, "i");
+        const match = text.match(regex);
+        if (match) return normalizeNumber(match[1]);
+
+        const wideRegex = new RegExp(`${pattern}[\\s\\S]{0,80}?(-?\\d{1,4}(?:[\\.,]\\d{1,3})?)\\s*(?:${options.preferKg ? "kg|KG" : "%|kg|KG|kcal|Kcal|years|yrs"})?`, "i");
+        const wideMatch = text.match(wideRegex);
+        if (wideMatch) return normalizeNumber(wideMatch[1]);
+      }
+      return null;
+    }
+
+    function extractBodyWaterKg(text) {
+      const match = text.match(/(?:Total\s+Body\s+Water|Body\s+Water|TBW|Woda)[\s\S]{0,90}?(-?\d{1,4}(?:[\.,]\d{1,3})?)\s*%[\s\S]{0,40}?(-?\d{1,4}(?:[\.,]\d{1,3})?)\s*(?:kg|KG)/i);
+      return match ? normalizeNumber(match[2]) : null;
+    }
+
+    function extractBodyWaterPercent(text) {
+      const match = text.match(/(?:Total\s+Body\s+Water|Body\s+Water|TBW|Woda)[\s\S]{0,90}?(-?\d{1,4}(?:[\.,]\d{1,3})?)\s*%/i);
+      return match ? normalizeNumber(match[1]) : null;
+    }
+
+    function parseTanitaNumberSequence(text) {
+      const numbers = [...text.matchAll(/-?\d{1,4}(?:[\\.,]\d{1,3})?/g)]
+        .map(match => normalizeNumber(match[0]))
+        .filter(value => value !== null);
+      const keys = ["weightKg", "muscleMassKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
+      let best = { score: 0, values: {} };
+
+      for (let i = 0; i <= numbers.length - keys.length; i++) {
+        const slice = numbers.slice(i, i + keys.length);
+        const candidate = Object.fromEntries(keys.map((key, index) => [key, slice[index]]));
+        const score = scoreTanitaSequence(candidate);
+        if (score > best.score) best = { score, values: candidate };
+      }
+
+      return best.score >= 9 ? best.values : {};
+    }
+
+    function scoreTanitaSequence(m) {
+      let score = 0;
+      if (inRange(m.weightKg, 30, 250)) score++;
+      if (inRange(m.muscleMassKg, 15, 150)) score++;
+      if (inRange(m.fatPercent, 3, 60)) score++;
+      if (inRange(m.fatMassKg, 2, 120)) score++;
+      if (inRange(m.fatFreeMassKg, 20, 220)) score++;
+      if (inRange(m.bodyWaterPercent, 30, 80)) score++;
+      if (inRange(m.bodyWaterKg, 15, 140)) score++;
+      if (inRange(m.visceralFatRating, 1, 30)) score++;
+      if (inRange(m.bmrKcal, 800, 4500)) score++;
+      if (inRange(m.metabolicAge, 12, 90)) score++;
+      if (inRange(m.bmi, 10, 60)) score++;
+      if (inRange(m.boneMassKg, 1, 8)) score++;
+      if (inRange(m.proteinKg, 2, 35)) score++;
+      if (Math.abs(m.weightKg - (m.fatMassKg + m.fatFreeMassKg)) <= 2) score += 2;
+      if (Math.abs(m.bodyWaterKg - (m.weightKg * m.bodyWaterPercent / 100)) <= 3) score += 2;
+      return score;
+    }
+
+    function inRange(value, min, max) {
+      return Number.isFinite(value) && value >= min && value <= max;
+    }
+
+    function setMeasurementPdfStatus(nameText, statusText, tone = "gold", message = "") {
+      $("#measurementPdfName").textContent = nameText;
+      const status = $("#measurementPdfStatus");
+      status.textContent = statusText;
+      status.className = `pill ${tone}`;
+      $("#measurementPdfMessage").textContent = message;
     }
 
     clientSelect.addEventListener("change", e => {
@@ -888,12 +1788,48 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
 
     $("#newClientBtn").addEventListener("click", openClientModal);
     $("#newSessionBtn").addEventListener("click", openSessionModal);
+    $("#newMeasurementBtn").addEventListener("click", openMeasurementModal);
     $("#importLegacyBtn").addEventListener("click", importLegacy);
 
     document.querySelectorAll("[data-close]").forEach(btn => btn.addEventListener("click", () => closeModal(btn.dataset.close)));
     document.querySelectorAll(".modal").forEach(modal => modal.addEventListener("click", e => {
       if (e.target === modal) closeModal(modal.id);
     }));
+
+    $("#measurementForm").tanitaPdf.addEventListener("change", async e => {
+      const file = e.target.files?.[0];
+      if (!file) {
+        pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+        setMeasurementPdfStatus("Brak załączonego PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+        return;
+      }
+      if (file.type !== "application/pdf") {
+        e.target.value = "";
+        pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+        setMeasurementPdfStatus("Wybierz plik PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+        return toast("Załącznik musi być plikiem PDF");
+      }
+      setMeasurementPdfStatus(`Załączono: ${file.name}`, "PDF załączony", "blue", "Próbuję wstępnie odczytać dane z PDF.");
+      try {
+        pendingMeasurementPdf = await readTanitaPdfFile(file);
+        const applied = applyTanitaParsedData(pendingMeasurementPdf.parsed);
+        if (applied) {
+          pendingMeasurementPdf.autoFilled = true;
+          pendingMeasurementPdf.sourceMode = "pdf-autofill";
+          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Dane odczytane automatycznie", "green", "Dane z PDF zostały wstępnie uzupełnione. Sprawdź je przed zapisem.");
+          toast("Dane z PDF zostały wstępnie uzupełnione. Sprawdź je przed zapisem.");
+        } else {
+          pendingMeasurementPdf.autoFilled = false;
+          pendingMeasurementPdf.sourceMode = "pdf";
+          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Wymaga ręcznego uzupełnienia", "gold", "PDF został załączony, ale danych nie udało się automatycznie odczytać. Uzupełnij pola ręcznie.");
+          toast("PDF został załączony, ale danych nie udało się automatycznie odczytać. Uzupełnij pola ręcznie.");
+        }
+      } catch (error) {
+        pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+        setMeasurementPdfStatus("Nie udało się odczytać PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+        toast("Nie udało się odczytać PDF");
+      }
+    });
 
     $("#clientForm").addEventListener("submit", e => {
       e.preventDefault();
@@ -902,6 +1838,15 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
         id: `SL-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`,
         name: fd.get("name").trim(),
         contact: fd.get("contact").trim(),
+        email: fd.get("email").trim(),
+        phone: fd.get("phone").trim(),
+        startDate: fd.get("startDate"),
+        nextSessionDate: fd.get("nextSessionDate"),
+        nextReviewDate: fd.get("nextReviewDate"),
+        motivation: fd.get("motivation").trim(),
+        fears: fd.get("fears").trim(),
+        contraindications: fd.get("contraindications").trim(),
+        redFlags: fd.get("redFlags").trim(),
         package: fd.get("package"),
         stage: Number(fd.get("stage")),
         healthStatus: fd.get("healthStatus").trim(),
@@ -909,10 +1854,14 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
         goal: fd.get("goal").trim(),
         nextMilestone: "",
         decisionLogic: fd.get("decisionLogic").trim(),
+        homePlan: defaultHomePlan(),
+        checkins: [],
+        documents: [],
+        measurements: [],
         tasks: [],
         sessions: []
       };
-      state.clients.push(c);
+      state.clients.push(migrateClient(c));
       state.activeClientId = c.id;
       save();
       e.currentTarget.reset();
@@ -920,6 +1869,54 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       viewName = "client";
       renderShell();
       toast("Dodano klienta");
+    });
+
+    $("#measurementForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const c = activeClient();
+      const fd = new FormData(e.currentTarget);
+      const file = e.currentTarget.tanitaPdf.files?.[0];
+      let pdf = pendingMeasurementPdf;
+      if (file && !pdf.dataUrl) {
+        try {
+          pdf = await readTanitaPdfFile(file);
+        } catch (error) {
+          return toast("Nie udało się odczytać PDF");
+        }
+      }
+      const measurement = migrateMeasurement({
+        id: `m${Date.now()}`,
+        date: fd.get("date"),
+        source: "Tanita",
+        weightKg: fd.get("weightKg"),
+        fatPercent: fd.get("fatPercent"),
+        fatMassKg: fd.get("fatMassKg"),
+        fatFreeMassKg: fd.get("fatFreeMassKg"),
+        muscleMassKg: fd.get("muscleMassKg"),
+        bodyWaterPercent: fd.get("bodyWaterPercent"),
+        bodyWaterKg: fd.get("bodyWaterKg"),
+        visceralFatRating: fd.get("visceralFatRating"),
+        bmrKcal: fd.get("bmrKcal"),
+        metabolicAge: fd.get("metabolicAge"),
+        bmi: fd.get("bmi"),
+        boneMassKg: fd.get("boneMassKg"),
+        proteinKg: fd.get("proteinKg"),
+        pdfName: pdf.name,
+        pdfDataUrl: pdf.dataUrl,
+        sourceMode: pdf.sourceMode || (pdf.dataUrl ? "pdf" : "manual"),
+        pdfAutoFilled: Boolean(pdf.autoFilled),
+        trainerInterpretation: fd.get("trainerInterpretation").trim(),
+        clientSummary: fd.get("clientSummary").trim()
+      });
+      c.measurements.push(measurement);
+      save();
+      e.currentTarget.reset();
+      pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+      setMeasurementPdfStatus("Brak załączonego PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+      closeModal("measurementModal");
+      viewName = "measurements";
+      renderShell();
+      toast("Pomiar zapisany");
     });
 
     $("#sessionForm").addEventListener("submit", e => {

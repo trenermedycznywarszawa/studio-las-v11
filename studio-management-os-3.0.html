@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 4.2 | Evidence-Based Client Panel</title>
+  <title>Studio Las OS 4.3 | Evidence-Based Client Panel</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -368,7 +368,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 4.2</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 4.3</span></div>
       </div>
 
       <div class="client-switcher">
@@ -400,7 +400,7 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 4.2</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 4.3</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
@@ -504,10 +504,9 @@
           <div class="measurement-readout" id="tanitaReadout">
             <div class="label">Odczyt z PDF</div>
             <p class="form-message" id="tanitaReadoutStatus">PDF nie został jeszcze załączony.</p>
-            <p class="form-message"><strong>Rozpoznane:</strong> <span id="tanitaReadoutRecognized">–</span></p>
-            <p class="form-message"><strong>Uzupełnij ręcznie:</strong> <span id="tanitaReadoutMissing">–</span></p>
-            <p class="form-message">Dane z PDF wymagają sprawdzenia przed zapisem.</p>
+            <p class="form-message" id="tanitaReadoutDetail">Po załączeniu PDF dane liczbowe wpisz ręcznie z raportu Tanita.</p>
           </div>
+          <button class="btn warning" id="tanitaDemoBtn" type="button">DEMO · Wstaw przykładowe dane Tanita</button>
         </div>
         <div class="form-field full"><label class="label">Interpretacja trenera</label><textarea name="trainerInterpretation" placeholder="Co wynika z danych, a czego z nich nie wolno nadinterpretować?"></textarea></div>
         <div class="form-field full"><label class="label">Podsumowanie dla klienta</label><textarea name="clientSummary" placeholder="Krótko, spokojnie i bez straszenia liczbami."></textarea></div>
@@ -519,7 +518,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "4.2";
+    const APP_VERSION = "4.3";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
     const TANITA_FIELD_ORDER = ["date", "weightKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "muscleMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
@@ -643,12 +642,12 @@
     }
 
     function migrateMeasurement(measurement = {}) {
-      const inputMethod = ["manual", "pdf", "pdf-autofill"].includes(measurement.inputMethod)
+      const inputMethod = ["manual", "pdf", "pdf-autofill", "demo"].includes(measurement.inputMethod)
         ? measurement.inputMethod
         : (measurement.pdfAutoFilled || measurement.sourceMode === "pdf-autofill" ? "pdf-autofill" : (measurement.pdfDataUrl || measurement.sourceMode === "pdf" ? "pdf" : "manual"));
-      const parseStatus = ["not_attempted", "success", "partial", "failed"].includes(measurement.parseStatus)
+      const parseStatus = ["not_attempted", "success", "partial", "failed", "manual_required", "demo"].includes(measurement.parseStatus)
         ? measurement.parseStatus
-        : (inputMethod === "pdf-autofill" ? "success" : (inputMethod === "pdf" ? "failed" : "not_attempted"));
+        : (inputMethod === "pdf-autofill" ? "success" : (inputMethod === "pdf" ? "manual_required" : "not_attempted"));
       const parsedFields = Array.isArray(measurement.parsedFields)
         ? measurement.parsedFields.filter(field => TANITA_FIELD_ORDER.includes(field))
         : [];
@@ -766,6 +765,25 @@
         inputMethod: "manual",
         parseStatus: "not_attempted",
         parsedFields: []
+      };
+    }
+
+    function demoTanitaData() {
+      return {
+        date: "2025-07-18",
+        weightKg: 84.1,
+        fatPercent: 17.10,
+        fatMassKg: 14.38,
+        fatFreeMassKg: 69.72,
+        muscleMassKg: 66.30,
+        bodyWaterPercent: 62.70,
+        bodyWaterKg: 52.73,
+        visceralFatRating: 5.5,
+        bmrKcal: 2030,
+        metabolicAge: 25,
+        bmi: 25.70,
+        boneMassKg: 3.50,
+        proteinKg: 13.57
       };
     }
 
@@ -1150,6 +1168,7 @@
             ${fieldBlock("Podsumowanie dla klienta", m.clientSummary || "Brak podsumowania dla klienta.")}
           </div>
           <p>Pojedynczy pomiar nie jest diagnozą. Najważniejszy jest trend i zestawienie z objawami, testami ruchowymi oraz tolerancją obciążenia.</p>
+          ${measurementInputNote(m) ? `<p>${escapeHtml(measurementInputNote(m))}</p>` : ""}
           <div class="portal-meta">
             ${m.pdfName ? pill(`PDF: ${m.pdfName}`, "blue") : pill("PDF niezałączony", "gold")}
             ${m.pdfDataUrl ? `<button class="btn" data-open-pdf="${escapeHtml(m.id)}">Otwórz PDF</button>` : ""}
@@ -1194,6 +1213,7 @@
             ${pill(`Woda ${formatMetric(m.bodyWaterPercent, "%")}`, "blue")}
             ${pill(`BMR ${formatMetric(m.bmrKcal, "kcal")}`, "blue")}
           </div>
+          ${measurementInputNote(m) ? `<div class="meta">${escapeHtml(measurementInputNote(m))}</div>` : ""}
           ${m.trainerInterpretation ? `<div class="meta">${escapeHtml(m.trainerInterpretation)}</div>` : ""}
           ${m.clientSummary ? `<div class="name">Dla klienta: ${escapeHtml(m.clientSummary)}</div>` : ""}
           ${m.pdfDataUrl ? `<div><button class="btn" data-open-pdf="${escapeHtml(m.id)}">Otwórz PDF</button></div>` : ""}
@@ -1429,15 +1449,25 @@
     }
 
     function measurementOrigin(m) {
-      if (m.inputMethod === "pdf-autofill" || m.pdfAutoFilled || m.sourceMode === "pdf-autofill") return "PDF + autouzupełnienie";
-      if (m.inputMethod === "pdf" || m.pdfDataUrl || m.sourceMode === "pdf") return "PDF Tanita";
-      return "Ręczny wpis";
+      if (m.inputMethod === "demo" || m.parseStatus === "demo") return "Dane demo";
+      if (m.inputMethod === "pdf" || m.pdfDataUrl || m.sourceMode === "pdf") return "PDF załączony";
+      return "Dane wpisane ręcznie";
     }
 
     function measurementOriginTone(m) {
-      if (m.inputMethod === "pdf-autofill" || m.pdfAutoFilled || m.sourceMode === "pdf-autofill") return "green";
+      if (m.inputMethod === "demo" || m.parseStatus === "demo") return "gold";
       if (m.inputMethod === "pdf" || m.pdfDataUrl || m.sourceMode === "pdf") return "blue";
-      return "gold";
+      return "green";
+    }
+
+    function measurementInputNote(m) {
+      if (m.inputMethod === "pdf" && m.parseStatus === "manual_required") {
+        return "PDF zapisany. Dane liczbowe zostały wpisane ręcznie lub wymagają uzupełnienia.";
+      }
+      if (m.inputMethod === "demo" || m.parseStatus === "demo") {
+        return "Dane demo służą wyłącznie do testowania widoku i wymagają sprawdzenia przed pracą na realnym kliencie.";
+      }
+      return "";
     }
 
     function openMeasurementPdf(id) {
@@ -1621,7 +1651,7 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       $("#measurementForm").reset();
       $("#measurementForm").date.value = today();
       setMeasurementPdfStatus("Brak załączonego PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
-      updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER);
+      updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER, "Po załączeniu PDF dane liczbowe wpisz ręcznie z raportu Tanita.");
       $("#measurementModal").classList.add("open");
       $("#measurementModal").setAttribute("aria-hidden", "false");
     }
@@ -1680,45 +1710,22 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       });
     }
 
-    function readFileAsArrayBuffer(file) {
-      return new Promise((resolve, reject) => {
-        if (!file) return resolve(new ArrayBuffer(0));
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsArrayBuffer(file);
-      });
-    }
-
     async function readTanitaPdfFile(file) {
-      const [{ name, dataUrl }, buffer] = await Promise.all([
-        readFileAsDataUrl(file),
-        readFileAsArrayBuffer(file)
-      ]);
-      let rawText = "";
-      try {
-        rawText = new TextDecoder("utf-8", { fatal: false }).decode(buffer);
-      } catch (error) {
-        rawText = "";
-      }
-      const parsed = parseTanitaPdfText(rawText);
-      const parsedFields = parsedFieldNames(parsed);
-      const keyCount = parsedFields.filter(field => TANITA_KEY_FIELDS.includes(field)).length;
-      const parseStatus = keyCount >= 5 ? "success" : (parsedFields.length ? "partial" : "failed");
-      const inputMethod = parsedFields.length ? "pdf-autofill" : "pdf";
+      const { name, dataUrl } = await readFileAsDataUrl(file);
       return {
         name,
         dataUrl,
-        rawText,
-        parsed,
-        autoFilled: parsedFields.length > 0,
-        sourceMode: inputMethod,
-        inputMethod,
-        parseStatus,
-        parsedFields
+        rawText: "",
+        parsed: {},
+        autoFilled: false,
+        sourceMode: "pdf",
+        inputMethod: "pdf",
+        parseStatus: "manual_required",
+        parsedFields: []
       };
     }
 
+    // Do not use this on raw PDF bytes. Use only on already extracted text.
     function parseTanitaPdfText(rawText) {
       const raw = String(rawText || "");
       const text = normalizePdfText(raw);
@@ -1764,10 +1771,10 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       const inputMethod = appliedFields.length ? "pdf-autofill" : "pdf";
       const recognizedText = appliedFields.map(field => TANITA_FIELD_LABELS[field]).join(", ");
       const message = parseStatus === "success"
-        ? `Dane z PDF zostały wstępnie uzupełnione: ${recognizedText}. Sprawdź je przed zapisem.`
+        ? `Dane z wyodrębnionego tekstu testowego zostały wstępnie uzupełnione: ${recognizedText}. Sprawdź je przed zapisem.`
         : (parseStatus === "partial"
-          ? "PDF został załączony. Część danych odczytano automatycznie, pozostałe uzupełnij ręcznie."
-          : "PDF został załączony, ale danych nie udało się automatycznie odczytać. Uzupełnij pola ręcznie.");
+          ? "Część danych z wyodrębnionego tekstu testowego odczytano, pozostałe uzupełnij ręcznie."
+          : "Z wyodrębnionego tekstu testowego nie udało się odczytać danych. Uzupełnij pola ręcznie.");
       updateTanitaReadout(message, appliedFields, missingFields);
       return { applied: appliedFields.length > 0, appliedFields, missingFields, parseStatus, inputMethod, message };
     }
@@ -1845,6 +1852,15 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
           input.value = "";
           delete input.dataset.autofilled;
         }
+      });
+    }
+
+    function clearTanitaMeasurementFields(form) {
+      TANITA_FIELD_ORDER.forEach(field => {
+        const input = form?.elements?.[field];
+        if (!input) return;
+        input.value = "";
+        delete input.dataset.autofilled;
       });
     }
 
@@ -2054,21 +2070,30 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       return TANITA_FIELD_ORDER.filter(field => parsed[field] !== null && parsed[field] !== undefined && parsed[field] !== "");
     }
 
-    function updateTanitaReadout(statusText, recognizedFields = [], missingFields = []) {
+    function updateTanitaReadout(statusText, recognizedFields = [], missingFields = [], detailText = "") {
       const status = $("#tanitaReadoutStatus");
-      const recognized = $("#tanitaReadoutRecognized");
-      const missing = $("#tanitaReadoutMissing");
-      if (!status || !recognized || !missing) return;
+      const detail = $("#tanitaReadoutDetail");
+      if (!status || !detail) return;
       status.textContent = statusText || "PDF nie został jeszcze załączony.";
-      recognized.textContent = recognizedFields.length ? recognizedFields.map(field => TANITA_FIELD_LABELS[field]).join(", ") : "–";
-      missing.textContent = missingFields.length ? missingFields.map(field => TANITA_FIELD_LABELS[field]).join(", ") : "–";
+      if (detailText) {
+        detail.textContent = detailText;
+      } else if (recognizedFields.length) {
+        detail.textContent = `Rozpoznane pola: ${recognizedFields.map(field => TANITA_FIELD_LABELS[field]).join(", ")}. Dane wymagają sprawdzenia przed zapisem.`;
+      } else if (missingFields.length) {
+        detail.textContent = `Uzupełnij ręcznie: ${missingFields.map(field => TANITA_FIELD_LABELS[field]).join(", ")}.`;
+      } else {
+        detail.textContent = "Po załączeniu PDF dane liczbowe wpisz ręcznie z raportu Tanita.";
+      }
     }
 
     function validateMeasurementBeforeSave(fd) {
       const rules = [
         ["weightKg", "Waga kg"],
         ["fatPercent", "Tłuszcz %"],
-        ["muscleMassKg", "Masa mięśniowa kg"]
+        ["muscleMassKg", "Masa mięśniowa kg"],
+        ["bodyWaterPercent", "Woda %"],
+        ["bmi", "BMI"],
+        ["bmrKcal", "BMR kcal"]
       ];
       for (const [field, label] of rules) {
         const raw = fd.get(field);
@@ -2080,6 +2105,32 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
         }
       }
       return "";
+    }
+
+    function applyDemoTanitaData() {
+      const form = $("#measurementForm");
+      if (!form) return;
+      const demo = demoTanitaData();
+      clearTanitaMeasurementFields(form);
+      TANITA_FIELD_ORDER.forEach(field => {
+        if (!form.elements[field]) return;
+        form.elements[field].value = demo[field] ?? "";
+      });
+      pendingMeasurementPdf = {
+        ...pendingMeasurementPdf,
+        inputMethod: "demo",
+        sourceMode: "demo",
+        parseStatus: "demo",
+        parsedFields: [...TANITA_FIELD_ORDER],
+        autoFilled: false
+      };
+      updateTanitaReadout(
+        "Dane demo wstawione ręcznie",
+        TANITA_FIELD_ORDER,
+        [],
+        "Wstawiono przykładowe dane demo. Sprawdź i zmień je przed zapisem, jeśli pracujesz na realnym kliencie."
+      );
+      toast("Wstawiono przykładowe dane demo. Sprawdź i zmień je przed zapisem, jeśli pracujesz na realnym kliencie.");
     }
 
     function testTanitaParser() {
@@ -2194,6 +2245,7 @@ Initial 83.45 64.95 18.10
     $("#newClientBtn").addEventListener("click", openClientModal);
     $("#newSessionBtn").addEventListener("click", openSessionModal);
     $("#newMeasurementBtn").addEventListener("click", openMeasurementModal);
+    $("#tanitaDemoBtn").addEventListener("click", applyDemoTanitaData);
     $("#importLegacyBtn").addEventListener("click", importLegacy);
 
     document.querySelectorAll("[data-close]").forEach(btn => btn.addEventListener("click", () => closeModal(btn.dataset.close)));
@@ -2206,40 +2258,32 @@ Initial 83.45 64.95 18.10
       if (!file) {
         pendingMeasurementPdf = initialMeasurementPdf();
         setMeasurementPdfStatus("Brak załączonego PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
-        updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER);
+        updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER, "Po załączeniu PDF dane liczbowe wpisz ręcznie z raportu Tanita.");
         return;
       }
       if (file.type !== "application/pdf") {
         e.target.value = "";
         pendingMeasurementPdf = initialMeasurementPdf();
         setMeasurementPdfStatus("Wybierz plik PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
-        updateTanitaReadout("Załącznik nie jest plikiem PDF.", [], TANITA_FIELD_ORDER);
+        updateTanitaReadout("Załącznik nie jest plikiem PDF.", [], TANITA_FIELD_ORDER, "Wybierz plik w formacie PDF, a dane liczbowe wpisz ręcznie z raportu.");
         return toast("Załącznik musi być plikiem PDF");
       }
-      setMeasurementPdfStatus(`Załączono: ${file.name}`, "PDF załączony", "blue", "Próbuję wstępnie odczytać dane z PDF.");
-      updateTanitaReadout("Trwa próba odczytu danych z PDF.", [], TANITA_FIELD_ORDER);
       try {
         pendingMeasurementPdf = await readTanitaPdfFile(file);
-        const applied = applyTanitaParsedData(pendingMeasurementPdf.parsed);
-        pendingMeasurementPdf.parsedFields = applied.appliedFields;
-        pendingMeasurementPdf.parseStatus = applied.parseStatus;
-        pendingMeasurementPdf.inputMethod = applied.inputMethod;
-        pendingMeasurementPdf.sourceMode = applied.inputMethod;
-        pendingMeasurementPdf.autoFilled = applied.applied;
-        if (applied.parseStatus === "success") {
-          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Dane odczytane automatycznie", "green", applied.message);
-          toast("Dane z PDF zostały wstępnie uzupełnione. Sprawdź je przed zapisem.");
-        } else if (applied.parseStatus === "partial") {
-          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Dane częściowo odczytane", "gold", applied.message);
-          toast("Część danych z PDF odczytano automatycznie.");
-        } else {
-          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Wymaga ręcznego uzupełnienia", "gold", applied.message);
-          toast("PDF został załączony, ale danych nie udało się automatycznie odczytać. Uzupełnij pola ręcznie.");
-        }
+        clearTanitaMeasurementFields($("#measurementForm"));
+        const manualMessage = "PDF został załączony. Automatyczny odczyt danych z realnego pliku PDF jest tymczasowo wyłączony, żeby nie wpisywać błędnych wartości. Uzupełnij pola ręcznie na podstawie raportu.";
+        setMeasurementPdfStatus(`Załączono: ${file.name}`, "PDF załączony", "blue", manualMessage);
+        updateTanitaReadout(
+          "PDF załączony — ręczne uzupełnienie wymagane",
+          [],
+          TANITA_FIELD_ORDER,
+          "Ten PDF został zapisany jako dokument klienta. Dane liczbowe wpisz ręcznie z raportu Tanita. Obecna wersja nie próbuje czytać surowego PDF, ponieważ mogłoby to wprowadzić błędne wartości."
+        );
+        toast("PDF został załączony. Uzupełnij pola ręcznie na podstawie raportu.");
       } catch (error) {
         pendingMeasurementPdf = initialMeasurementPdf();
         setMeasurementPdfStatus("Nie udało się odczytać PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
-        updateTanitaReadout("PDF został załączony, ale danych nie udało się automatycznie odczytać. Uzupełnij pola ręcznie.", [], TANITA_FIELD_ORDER);
+        updateTanitaReadout("Nie udało się zapisać PDF.", [], TANITA_FIELD_ORDER, "Spróbuj załączyć plik ponownie albo zapisz pomiar bez dokumentu PDF.");
         toast("Nie udało się odczytać PDF");
       }
     });
@@ -2319,7 +2363,7 @@ Initial 83.45 64.95 18.10
         pdfName: pdf.name,
         pdfDataUrl: pdf.dataUrl,
         inputMethod: pdf.inputMethod || pdf.sourceMode || (pdf.dataUrl ? "pdf" : "manual"),
-        parseStatus: pdf.parseStatus || (pdf.dataUrl ? "failed" : "not_attempted"),
+        parseStatus: pdf.parseStatus || (pdf.dataUrl ? "manual_required" : "not_attempted"),
         parsedFields: Array.isArray(pdf.parsedFields) ? pdf.parsedFields : [],
         sourceMode: pdf.sourceMode || pdf.inputMethod || (pdf.dataUrl ? "pdf" : "manual"),
         pdfAutoFilled: Boolean(pdf.autoFilled),
@@ -2331,7 +2375,7 @@ Initial 83.45 64.95 18.10
       e.currentTarget.reset();
       pendingMeasurementPdf = initialMeasurementPdf();
       setMeasurementPdfStatus("Brak załączonego PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
-      updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER);
+      updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER, "Po załączeniu PDF dane liczbowe wpisz ręcznie z raportu Tanita.");
       closeModal("measurementModal");
       viewName = "measurements";
       renderShell();

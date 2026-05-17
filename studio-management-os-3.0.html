@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 4.3 | Evidence-Based Client Panel</title>
+  <title>Studio Las OS 5.0 | Polar Load Response</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -338,7 +338,7 @@
     @media (max-width: 980px) {
       .app { grid-template-columns: 1fr; }
       .side { position: static; height: auto; }
-      .nav { grid-template-columns: repeat(8, 1fr); }
+      .nav { grid-template-columns: repeat(9, 1fr); }
       .nav button,
       .nav .client-panel-link { justify-content: center; padding: 10px 8px; }
       .nav span { display: none; }
@@ -368,7 +368,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 4.3</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 5.0</span></div>
       </div>
 
       <div class="client-switcher">
@@ -383,6 +383,7 @@
         <button data-view="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4a2 2 0 0 1 2-2h11l3 3v14.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg><span>Sesje</span></button>
         <button data-view="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Zadania</span></button>
         <button data-view="measurements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 3-3 3 2 5-7"/><path d="M18 7h2v2"/></svg><span>Pomiary</span></button>
+        <button data-view="polar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/><path d="M3 12h4l2-4 4 8 2-4h6"/></svg><span>Polar</span></button>
         <button data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>Raport</span></button>
         <button data-view="clientPortal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></button>
       </nav>
@@ -400,12 +401,13 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 4.3</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 5.0</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
           <button class="btn primary" id="newSessionBtn">Nowa sesja</button>
           <button class="btn primary" id="newMeasurementBtn">Nowy pomiar</button>
+          <button class="btn primary" id="newPolarBtn">Nowy odczyt Polar</button>
         </div>
       </header>
       <section class="content" id="view"></section>
@@ -515,10 +517,41 @@
     </div>
   </div>
 
+  <div class="modal" id="polarModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="panel-head">
+        <div>
+          <h2>Nowy odczyt Polar</h2>
+          <p id="polarClientName">Tolerancja obciążenia po sesji, wpisywana ręcznie z Polar Verity Sense.</p>
+        </div>
+        <button class="btn" data-close="polarModal">Zamknij</button>
+      </div>
+      <form id="polarForm" class="form-grid">
+        <div class="form-field"><label class="label">Data</label><input type="date" name="date" required /></div>
+        <div class="form-field"><label class="label">Typ sesji</label><input name="sessionType" placeholder="np. siła, kontrola, cardio zone 2" /></div>
+        <div class="form-field"><label class="label">Czas treningu min</label><input type="number" step="1" name="durationMin" /></div>
+        <div class="form-field"><label class="label">HR avg</label><input type="number" step="1" name="hrAvg" /></div>
+        <div class="form-field"><label class="label">HR max</label><input type="number" step="1" name="hrMax" /></div>
+        <div class="form-field"><label class="label">Strefa lekka min</label><input type="number" step="1" name="zoneLightMin" /></div>
+        <div class="form-field"><label class="label">Strefa umiarkowana min</label><input type="number" step="1" name="zoneModerateMin" /></div>
+        <div class="form-field"><label class="label">Strefa wysoka min</label><input type="number" step="1" name="zoneHighMin" /></div>
+        <div class="form-field"><label class="label">RPE klienta 1-10</label><input type="number" min="1" max="10" step="1" name="rpe" /></div>
+        <div class="form-field"><label class="label">VAS przed 0-10</label><input type="number" min="0" max="10" step="1" name="vasBefore" /></div>
+        <div class="form-field"><label class="label">VAS po 0-10</label><input type="number" min="0" max="10" step="1" name="vasAfter" /></div>
+        <div class="form-field"><label class="label">Gotowość 1-10</label><input type="number" min="1" max="10" step="1" name="readiness" /></div>
+        <div class="form-field"><label class="label">Sen</label><select name="sleepQuality"><option>Bardzo słaby</option><option>Słaby</option><option selected>Przeciętny</option><option>Dobry</option><option>Bardzo dobry</option></select></div>
+        <div class="form-field"><label class="label">Decyzja</label><select name="loadDecision"><option value="progress">Progres</option><option value="maintain" selected>Utrzymaj</option><option value="regress">Cofnij</option><option value="consult">Konsultacja</option></select></div>
+        <div class="form-field full"><label class="label">Notatka trenera</label><textarea name="trainerNote" placeholder="Co mówi reakcja organizmu o tempie progresji?"></textarea></div>
+        <div class="form-field full"><label class="label">Podsumowanie dla klienta</label><textarea name="clientSummary" placeholder="Spokojny język dla klienta, bez oceniania formy."></textarea></div>
+        <button class="btn primary full" type="submit">Zapisz odczyt Polar</button>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "4.3";
+    const APP_VERSION = "5.0";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
     const TANITA_FIELD_ORDER = ["date", "weightKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "muscleMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
@@ -553,6 +586,24 @@
       bmi: [12, 60],
       boneMassKg: [1, 8],
       proteinKg: [2, 40]
+    };
+    const POLAR_RANGES = {
+      durationMin: [1, 300],
+      hrAvg: [40, 220],
+      hrMax: [60, 240],
+      zoneLightMin: [0, 300],
+      zoneModerateMin: [0, 300],
+      zoneHighMin: [0, 300],
+      rpe: [1, 10],
+      vasBefore: [0, 10],
+      vasAfter: [0, 10],
+      readiness: [1, 10]
+    };
+    const LOAD_DECISIONS = {
+      progress: "Progres",
+      maintain: "Utrzymaj",
+      regress: "Cofnij",
+      consult: "Konsultacja"
     };
 
     const steps = [
@@ -605,6 +656,46 @@
               pdfDataUrl: "",
               trainerInterpretation: "Kompozycja ciała jest dobrym punktem odniesienia do monitorowania trendu, ale decyzje treningowe powinny wynikać z połączenia danych Tanita, objawów, testów ruchowych i tolerancji obciążenia.",
               clientSummary: "Ten pomiar traktujemy jako punkt odniesienia. Najważniejszy będzie trend w czasie, nie pojedynczy wynik."
+            }
+          ],
+          polarSessions: [
+            {
+              id: "p-demo-2026-04-03",
+              date: "2026-04-03",
+              sessionType: "Siła techniczna + kontrola",
+              durationMin: 52,
+              hrAvg: 118,
+              hrMax: 152,
+              zoneLightMin: 24,
+              zoneModerateMin: 22,
+              zoneHighMin: 4,
+              rpe: 6,
+              vasBefore: 3,
+              vasAfter: 2,
+              readiness: 8,
+              sleepQuality: "Dobry",
+              trainerNote: "Reakcja spokojna. Można rozważyć małą progresję objętości lub trudności technicznej.",
+              clientSummary: "Organizm dobrze przyjął tę sesję. Kolejny krok możemy zrobić spokojnie, bez przyspieszania.",
+              loadDecision: "progress"
+            },
+            {
+              id: "p-demo-2026-04-09",
+              date: "2026-04-09",
+              sessionType: "Dłuższa sesja siłowa",
+              durationMin: 64,
+              hrAvg: 137,
+              hrMax: 184,
+              zoneLightMin: 16,
+              zoneModerateMin: 28,
+              zoneHighMin: 18,
+              rpe: 9,
+              vasBefore: 3,
+              vasAfter: 6,
+              readiness: 4,
+              sleepQuality: "Słaby",
+              trainerNote: "Wysokie RPE, słaby sen i wzrost VAS sugerują cofnięcie obciążenia oraz obserwację reakcji po 24 h.",
+              clientSummary: "Ta sesja była dla organizmu mocniejszym bodźcem. Najbliżej nie dokładamy tempa, tylko wracamy do spokojniejszego wariantu.",
+              loadDecision: "regress"
             }
           ],
           sessions: [
@@ -701,6 +792,29 @@
       };
     }
 
+    function migratePolarSession(session = {}) {
+      return {
+        ...session,
+        id: session.id || `p${session.date || Date.now()}`,
+        date: session.date || "",
+        sessionType: session.sessionType || "",
+        durationMin: normalizeNumber(session.durationMin),
+        hrAvg: normalizeNumber(session.hrAvg),
+        hrMax: normalizeNumber(session.hrMax),
+        zoneLightMin: normalizeNumber(session.zoneLightMin),
+        zoneModerateMin: normalizeNumber(session.zoneModerateMin),
+        zoneHighMin: normalizeNumber(session.zoneHighMin),
+        rpe: normalizeNumber(session.rpe),
+        vasBefore: normalizeNumber(session.vasBefore),
+        vasAfter: normalizeNumber(session.vasAfter),
+        readiness: normalizeNumber(session.readiness),
+        sleepQuality: session.sleepQuality || "Przeciętny",
+        trainerNote: session.trainerNote || "",
+        clientSummary: session.clientSummary || "",
+        loadDecision: LOAD_DECISIONS[session.loadDecision] ? session.loadDecision : "maintain"
+      };
+    }
+
     function migrateClient(client = {}) {
       const plan = client.homePlan && typeof client.homePlan === "object" ? client.homePlan : defaultHomePlan();
       const exercises = Array.isArray(plan.exercises)
@@ -736,6 +850,7 @@
         checkins: Array.isArray(client.checkins) ? client.checkins : [],
         documents: Array.isArray(client.documents) ? client.documents : [],
         measurements: Array.isArray(client.measurements) ? client.measurements.map(migrateMeasurement) : [],
+        polarSessions: Array.isArray(client.polarSessions) ? client.polarSessions.map(migratePolarSession) : [],
         homePlan: {
           title: plan.title || "",
           frequency: plan.frequency || "",
@@ -876,6 +991,7 @@
         sessions: ["Sesje i trend", "Historia obserwacji, bólu, gotowości i decyzji."],
         tasks: ["Zadania", "Aktywne rzeczy do dopięcia dla wybranego klienta."],
         measurements: ["Pomiary", "Warstwa Tanita: metryki, PDF i interpretacja w kontekście procesu."],
+        polar: ["Polar Load Response", "Tolerancja obciążenia z Polar Verity Sense wpisywana po sesji."],
         report: ["Raport dobrostanu", "Gotowy język dla klienta bez ręcznego składania notatek."],
         clientPortal: ["Panel klienta", "Prosty widok procesu dla aktualnie wybranego klienta."]
       };
@@ -886,7 +1002,7 @@
       $("#versionBadge").textContent = `Studio Las OS ${APP_VERSION}`;
       $("#roleBadge").textContent = clientMode ? "Widok klienta" : "Widok trenera";
       $("#roleBadge").className = `pill top-role ${clientMode ? "green" : "blue"}`;
-      ["#importLegacyBtn", "#newClientBtn", "#newSessionBtn", "#newMeasurementBtn"].forEach(sel => {
+      ["#importLegacyBtn", "#newClientBtn", "#newSessionBtn", "#newMeasurementBtn", "#newPolarBtn"].forEach(sel => {
         const el = $(sel);
         if (el) el.hidden = clientMode;
       });
@@ -896,6 +1012,7 @@
       if (viewName === "sessions") renderSessions();
       if (viewName === "tasks") renderTasks();
       if (viewName === "measurements") renderMeasurements();
+      if (viewName === "polar") renderPolar();
       if (viewName === "report") renderReport();
       if (viewName === "clientPortal") renderClientPortal();
     }
@@ -1221,6 +1338,100 @@
       `;
     }
 
+    function renderPolar() {
+      const c = activeClient();
+      const sessions = sortedPolarSessions(c);
+      const latest = sessions[0] || null;
+      view.innerHTML = `
+        <section class="panel">
+          <div class="panel-head">
+            <div><h2>Najnowszy odczyt Polar</h2><p>${escapeHtml(c.name)} · tolerancja obciążenia po sesji.</p></div>
+            ${pill(latest ? formatDate(latest.date) : "brak odczytu", latest ? assessLoadTolerance(latest).level : "gold")}
+          </div>
+          ${latest ? renderPolarMain(latest) : `<p>Brak odczytów Polar dla aktywnego klienta. Dodaj pierwszy odczyt ręcznie po sesji.</p>`}
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Trend obciążenia</h2>${pill(`${sessions.length} odczytów`, sessions.length ? "green" : "gold")}</div>
+          ${renderPolarTrend(c)}
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Historia Polar</h2><button class="btn primary" id="inlinePolarBtn">Nowy odczyt Polar</button></div>
+          <div class="measurement-list">
+            ${sessions.length ? sessions.map(polarRow).join("") : `<p>Historia pojawi się po pierwszym odczycie.</p>`}
+          </div>
+        </section>
+      `;
+      $("#inlinePolarBtn")?.addEventListener("click", openPolarModal);
+    }
+
+    function renderPolarMain(session) {
+      const tolerance = assessLoadTolerance(session);
+      return `
+        <div class="measurement-card measurement-main">
+          <div class="measurement-metrics">
+            ${pill(formatDate(session.date), "blue")}
+            ${pill(session.sessionType || "typ sesji", "blue")}
+            ${pill(`HR avg ${formatMetric(session.hrAvg, "")}`, "blue")}
+            ${pill(`HR max ${formatMetric(session.hrMax, "")}`, "gold")}
+            ${pill(`RPE ${formatMetric(session.rpe, "")}`, "gold")}
+            ${pill(`VAS ${formatMetric(session.vasBefore, "")}→${formatMetric(session.vasAfter, "")}`, "blue")}
+            ${pill(`Gotowość ${formatMetric(session.readiness, "")}`, "green")}
+            ${pill(loadDecisionLabel(session.loadDecision), loadDecisionTone(session.loadDecision))}
+            ${pill(tolerance.label, tolerance.level)}
+          </div>
+          <div class="grid cols-2">
+            ${fieldBlock("Interpretacja tolerancji", tolerance.explanation)}
+            ${fieldBlock("Notatka trenera", session.trainerNote || "Brak notatki trenera.")}
+          </div>
+          ${session.clientSummary ? `<div class="portal-info"><div class="label">Dla klienta</div><p>${escapeHtml(session.clientSummary)}</p></div>` : ""}
+          <p>To wsparcie decyzji treningowej, nie diagnoza medyczna. Łączymy HR, RPE, VAS, gotowość i sen z obserwacją ruchu.</p>
+        </div>
+      `;
+    }
+
+    function renderPolarTrend(c) {
+      const first = firstPolarSession(c);
+      const latest = latestPolarSession(c);
+      if (!latest) return `<p>Potrzebny jest minimum jeden odczyt, żeby pokazać bieżący punkt odniesienia.</p>`;
+      const cards = [
+        ["RPE", latest.rpe, first?.rpe, ""],
+        ["VAS po", latest.vasAfter, first?.vasAfter, ""],
+        ["Gotowość", latest.readiness, first?.readiness, ""],
+        ["HR avg", latest.hrAvg, first?.hrAvg, ""]
+      ];
+      return `<div class="grid cols-4">${cards.map(([label, now, start, unit]) => `
+        <div class="portal-metric">
+          <div class="label">${escapeHtml(label)}</div>
+          <strong>${formatMetric(now, unit)}</strong>
+          <p>${formatDelta(now, start, unit)} od pierwszego odczytu</p>
+        </div>`).join("")}</div>`;
+    }
+
+    function polarRow(session) {
+      const tolerance = assessLoadTolerance(session);
+      return `
+        <div class="measurement-card">
+          <div class="panel-head">
+            <div>
+              <div class="name">${escapeHtml(formatDate(session.date))}</div>
+              <div class="meta">${escapeHtml(session.sessionType || "typ sesji nieopisany")} · ${escapeHtml(loadDecisionLabel(session.loadDecision))}</div>
+            </div>
+            ${pill(tolerance.label, tolerance.level)}
+          </div>
+          <div class="measurement-metrics">
+            ${pill(`HR avg ${formatMetric(session.hrAvg, "")}`, "blue")}
+            ${pill(`HR max ${formatMetric(session.hrMax, "")}`, "gold")}
+            ${pill(`RPE ${formatMetric(session.rpe, "")}`, "gold")}
+            ${pill(`VAS ${formatMetric(session.vasBefore, "")}→${formatMetric(session.vasAfter, "")}`, "blue")}
+            ${pill(`Gotowość ${formatMetric(session.readiness, "")}`, "green")}
+            ${pill(loadDecisionLabel(session.loadDecision), loadDecisionTone(session.loadDecision))}
+          </div>
+          <div class="meta">${escapeHtml(tolerance.explanation)}</div>
+          ${session.clientSummary ? `<div class="name">Dla klienta: ${escapeHtml(session.clientSummary)}</div>` : ""}
+        </div>
+      `;
+    }
+
     function renderClientPortal() {
       const c = activeClient();
       const m = metrics(c);
@@ -1265,6 +1476,11 @@
           ${renderPortalMeasurement(c)}
         </section>
 
+        <section class="panel">
+          <div class="panel-head"><h2>Reakcja organizmu na trening</h2>${pill("tempo progresji", "green")}</div>
+          ${renderPortalPolar(c)}
+        </section>
+
         <div class="grid cols-2">
           <section class="panel">
             <div class="panel-head"><h2>Ostatnia sesja</h2>${pill(l?.date ? formatDate(l.date) : "brak", "blue")}</div>
@@ -1298,6 +1514,24 @@
         </div>
         <div class="portal-info" style="margin-top:12px"><div class="label">Podsumowanie</div><p>${escapeHtml(m.clientSummary || "Najważniejszy jest trend w czasie, nie pojedynczy wynik.")}</p></div>
         ${m.pdfDataUrl ? `<div style="margin-top:12px"><button class="btn" data-open-pdf="${escapeHtml(m.id)}">Otwórz PDF Tanita</button></div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderPortalPolar(c) {
+      const session = latestPolarSession(c);
+      if (!session) return `<p>Reakcja organizmu na trening pojawi się tutaj po pierwszym odczycie Polar.</p>`;
+      return `
+        <div class="measurement-card measurement-main">
+          <div class="grid cols-3">
+            <div class="portal-info"><div class="label">Data</div><p>${escapeHtml(formatDate(session.date))}</p></div>
+            <div class="portal-info"><div class="label">Typ sesji</div><p>${escapeHtml(session.sessionType || "Sesja treningowa")}</p></div>
+            <div class="portal-info"><div class="label">RPE</div><p>${formatMetric(session.rpe, "")}</p></div>
+            <div class="portal-info"><div class="label">VAS po</div><p>${formatMetric(session.vasAfter, "")}</p></div>
+            <div class="portal-info"><div class="label">Gotowość</div><p>${formatMetric(session.readiness, "")}</p></div>
+          </div>
+          <div class="portal-info" style="margin-top:12px"><div class="label">Podsumowanie</div><p>${escapeHtml(session.clientSummary || "Te dane pomagają dobrać tempo progresji. Nie oceniamy formy, tylko reakcję organizmu.")}</p></div>
+          <p>Te dane pomagają dobrać tempo progresji. Nie oceniamy formy, tylko reakcję organizmu.</p>
         </div>
       `;
     }
@@ -1444,6 +1678,19 @@
       return measurements[measurements.length - 1] || null;
     }
 
+    function sortedPolarSessions(c = activeClient()) {
+      return [...(c?.polarSessions || [])].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+    }
+
+    function latestPolarSession(c = activeClient()) {
+      return sortedPolarSessions(c)[0] || null;
+    }
+
+    function firstPolarSession(c = activeClient()) {
+      const sessions = sortedPolarSessions(c);
+      return sessions[sessions.length - 1] || null;
+    }
+
     function bindPdfButtons() {
       document.querySelectorAll("[data-open-pdf]").forEach(btn => btn.addEventListener("click", () => openMeasurementPdf(btn.dataset.openPdf)));
     }
@@ -1468,6 +1715,69 @@
         return "Dane demo służą wyłącznie do testowania widoku i wymagają sprawdzenia przed pracą na realnym kliencie.";
       }
       return "";
+    }
+
+    function assessLoadTolerance(polarSession = {}) {
+      const vasBefore = normalizeNumber(polarSession.vasBefore);
+      const vasAfter = normalizeNumber(polarSession.vasAfter);
+      const rpe = normalizeNumber(polarSession.rpe);
+      const hrAvg = normalizeNumber(polarSession.hrAvg);
+      const hrMax = normalizeNumber(polarSession.hrMax);
+      const zoneHighMin = normalizeNumber(polarSession.zoneHighMin) || 0;
+      const readiness = normalizeNumber(polarSession.readiness);
+      const sleep = polarSession.sleepQuality || "";
+
+      if (vasBefore !== null && vasAfter !== null && vasAfter > vasBefore + 2) {
+        return {
+          level: "red",
+          label: "Zwolnij obciążenie",
+          explanation: "VAS po sesji wzrósł o więcej niż 2 punkty względem startu. To sygnał, żeby cofnąć bodziec i sprawdzić reakcję po odpoczynku."
+        };
+      }
+      if (rpe !== null && rpe >= 9 && ((hrMax !== null && hrAvg !== null && hrMax >= hrAvg + 42) || zoneHighMin >= 15)) {
+        return {
+          level: "red",
+          label: "Bodziec za mocny",
+          explanation: "Wysokie RPE połączone z wysokim HR max albo dłuższą strefą wysoką sugeruje ostrożność przed kolejną progresją."
+        };
+      }
+      if (readiness !== null && readiness <= 4) {
+        return {
+          level: "gold",
+          label: "Utrzymaj lub skróć",
+          explanation: "Niska gotowość ogranicza tolerancję obciążenia. Warto utrzymać plan lub zmniejszyć trudność bez traktowania tego jak porażki."
+        };
+      }
+      if (["Słaby", "Bardzo słaby"].includes(sleep)) {
+        return {
+          level: "gold",
+          label: "Sen ogranicza progres",
+          explanation: "Słabszy sen może zawężać tolerancję na bodziec. Decyzję o progresji warto oprzeć też na reakcji po 24 godzinach."
+        };
+      }
+      if ((vasBefore === null || vasAfter === null || vasAfter <= vasBefore) && readiness !== null && readiness >= 6 && rpe !== null && rpe <= 7) {
+        return {
+          level: "green",
+          label: "Dobra tolerancja",
+          explanation: "VAS po sesji nie rośnie, gotowość jest stabilna, a RPE zostaje w kontrolowanym zakresie. Można rozważyć małą progresję."
+        };
+      }
+      return {
+        level: "gold",
+        label: "Obserwuj trend",
+        explanation: "Odczyt jest neutralny. Najważniejsze jest porównanie kilku sesji, reakcji bólowej, gotowości i snu."
+      };
+    }
+
+    function loadDecisionLabel(value) {
+      return LOAD_DECISIONS[value] || "Utrzymaj";
+    }
+
+    function loadDecisionTone(value) {
+      if (value === "progress") return "green";
+      if (value === "regress") return "gold";
+      if (value === "consult") return "red";
+      return "blue";
     }
 
     function openMeasurementPdf(id) {
@@ -1558,6 +1868,9 @@ ${milestones}
 Dane Tanita:
 ${buildTanitaReportSection(c)}
 
+Tolerancja obciążenia — Polar:
+${buildPolarReportSection(c)}
+
 Komentarz:
 Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje spokojniej. Dlatego patrzymy jednocześnie na ból, mobilność, sen, gotowość i jakość ruchu.`;
     }
@@ -1581,6 +1894,34 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
 - Różnica masy mięśniowej: ${formatDelta(latest.muscleMassKg, first?.muscleMassKg, "kg")}
 - Różnica body water %: ${formatDelta(latest.bodyWaterPercent, first?.bodyWaterPercent, "%")}
 - Interpretacja trenera: ${latest.trainerInterpretation || "Brak interpretacji trenera."}`;
+    }
+
+    function buildPolarReportSection(c) {
+      const sessions = sortedPolarSessions(c);
+      if (!sessions.length) return "Brak odczytów Polar dla tego klienta.";
+      const latest = sessions[0];
+      const avgRpe = average(sessions.map(s => s.rpe));
+      const avgVasAfter = average(sessions.map(s => s.vasAfter));
+      const first = sessions[sessions.length - 1];
+      const readinessTrend = formatDelta(latest.readiness, first?.readiness, "");
+      const tolerance = assessLoadTolerance(latest);
+      return `- Liczba odczytów: ${sessions.length}
+- Średni RPE: ${formatAverage(avgRpe)}
+- Średni VAS po: ${formatAverage(avgVasAfter)}
+- Trend gotowości: ${readinessTrend}
+- Ostatnia decyzja: ${loadDecisionLabel(latest.loadDecision)}
+- Wniosek trenera: ${latest.trainerNote || tolerance.explanation}`;
+    }
+
+    function average(values = []) {
+      const clean = values.map(normalizeNumber).filter(value => value !== null);
+      if (!clean.length) return null;
+      return clean.reduce((sum, value) => sum + value, 0) / clean.length;
+    }
+
+    function formatAverage(value) {
+      if (value === null || value === undefined || !Number.isFinite(Number(value))) return "brak danych";
+      return Number(value).toFixed(1).replace(/\.0$/, "");
     }
 
     function chart(c) {
@@ -1654,6 +1995,18 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER, "Po załączeniu PDF dane liczbowe wpisz ręcznie z raportu Tanita.");
       $("#measurementModal").classList.add("open");
       $("#measurementModal").setAttribute("aria-hidden", "false");
+    }
+
+    function openPolarModal() {
+      const c = activeClient();
+      $("#polarClientName").textContent = `${c.name} · odczyt Polar`;
+      $("#polarForm").reset();
+      $("#polarForm").date.value = today();
+      $("#polarForm").vasBefore.value = latest(c)?.vasBefore ?? "";
+      $("#polarForm").vasAfter.value = latest(c)?.vasAfter ?? "";
+      $("#polarForm").readiness.value = latest(c)?.readiness ?? "";
+      $("#polarModal").classList.add("open");
+      $("#polarModal").setAttribute("aria-hidden", "false");
     }
 
     function closeModal(id) {
@@ -2107,6 +2460,31 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       return "";
     }
 
+    function validatePolarBeforeSave(fd) {
+      const rules = [
+        ["durationMin", "Czas treningu min"],
+        ["hrAvg", "HR avg"],
+        ["hrMax", "HR max"],
+        ["zoneLightMin", "Strefa lekka min"],
+        ["zoneModerateMin", "Strefa umiarkowana min"],
+        ["zoneHighMin", "Strefa wysoka min"],
+        ["rpe", "RPE"],
+        ["vasBefore", "VAS przed"],
+        ["vasAfter", "VAS po"],
+        ["readiness", "Gotowość"]
+      ];
+      for (const [field, label] of rules) {
+        const raw = fd.get(field);
+        if (raw === "" || raw === null || raw === undefined) continue;
+        const value = cleanNumber(raw);
+        const range = POLAR_RANGES[field];
+        if (!range || value === null || value < range[0] || value > range[1]) {
+          return `${label} musi być w zakresie ${range[0]}–${range[1]}.`;
+        }
+      }
+      return "";
+    }
+
     function applyDemoTanitaData() {
       const form = $("#measurementForm");
       if (!form) return;
@@ -2245,6 +2623,7 @@ Initial 83.45 64.95 18.10
     $("#newClientBtn").addEventListener("click", openClientModal);
     $("#newSessionBtn").addEventListener("click", openSessionModal);
     $("#newMeasurementBtn").addEventListener("click", openMeasurementModal);
+    $("#newPolarBtn").addEventListener("click", openPolarModal);
     $("#tanitaDemoBtn").addEventListener("click", applyDemoTanitaData);
     $("#importLegacyBtn").addEventListener("click", importLegacy);
 
@@ -2315,6 +2694,7 @@ Initial 83.45 64.95 18.10
         checkins: [],
         documents: [],
         measurements: [],
+        polarSessions: [],
         tasks: [],
         sessions: []
       };
@@ -2380,6 +2760,40 @@ Initial 83.45 64.95 18.10
       viewName = "measurements";
       renderShell();
       toast("Pomiar zapisany");
+    });
+
+    $("#polarForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const c = activeClient();
+      const fd = new FormData(e.currentTarget);
+      const validationError = validatePolarBeforeSave(fd);
+      if (validationError) return toast(validationError);
+      const polarSession = migratePolarSession({
+        id: `p${Date.now()}`,
+        date: fd.get("date"),
+        sessionType: fd.get("sessionType").trim(),
+        durationMin: fd.get("durationMin"),
+        hrAvg: fd.get("hrAvg"),
+        hrMax: fd.get("hrMax"),
+        zoneLightMin: fd.get("zoneLightMin"),
+        zoneModerateMin: fd.get("zoneModerateMin"),
+        zoneHighMin: fd.get("zoneHighMin"),
+        rpe: fd.get("rpe"),
+        vasBefore: fd.get("vasBefore"),
+        vasAfter: fd.get("vasAfter"),
+        readiness: fd.get("readiness"),
+        sleepQuality: fd.get("sleepQuality"),
+        trainerNote: fd.get("trainerNote").trim(),
+        clientSummary: fd.get("clientSummary").trim(),
+        loadDecision: fd.get("loadDecision")
+      });
+      c.polarSessions.push(polarSession);
+      save();
+      e.currentTarget.reset();
+      closeModal("polarModal");
+      viewName = "polar";
+      renderShell();
+      toast("Odczyt Polar zapisany");
     });
 
     $("#sessionForm").addEventListener("submit", e => {

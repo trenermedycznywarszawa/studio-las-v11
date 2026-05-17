@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 4.1 | Evidence-Based Client Panel</title>
+  <title>Studio Las OS 4.2 | Evidence-Based Client Panel</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -243,6 +243,15 @@
     .file-note { color: var(--muted); font-size: 12px; line-height: 1.4; }
     .file-status { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .form-message { color: var(--muted); font-size: 12px; line-height: 1.45; margin: 0; }
+    .measurement-readout {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(15,17,16,.34);
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+    }
+    .measurement-readout .form-message strong { color: var(--ink); }
 
     .progress-line { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .step {
@@ -359,7 +368,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 4.1</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 4.2</span></div>
       </div>
 
       <div class="client-switcher">
@@ -391,7 +400,7 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 4.1</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 4.2</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
@@ -492,6 +501,13 @@
             <span class="pill gold" id="measurementPdfStatus">Wymaga ręcznego uzupełnienia</span>
           </div>
           <p class="form-message" id="measurementPdfMessage"></p>
+          <div class="measurement-readout" id="tanitaReadout">
+            <div class="label">Odczyt z PDF</div>
+            <p class="form-message" id="tanitaReadoutStatus">PDF nie został jeszcze załączony.</p>
+            <p class="form-message"><strong>Rozpoznane:</strong> <span id="tanitaReadoutRecognized">–</span></p>
+            <p class="form-message"><strong>Uzupełnij ręcznie:</strong> <span id="tanitaReadoutMissing">–</span></p>
+            <p class="form-message">Dane z PDF wymagają sprawdzenia przed zapisem.</p>
+          </div>
         </div>
         <div class="form-field full"><label class="label">Interpretacja trenera</label><textarea name="trainerInterpretation" placeholder="Co wynika z danych, a czego z nich nie wolno nadinterpretować?"></textarea></div>
         <div class="form-field full"><label class="label">Podsumowanie dla klienta</label><textarea name="clientSummary" placeholder="Krótko, spokojnie i bez straszenia liczbami."></textarea></div>
@@ -503,9 +519,42 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "4.1";
+    const APP_VERSION = "4.2";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
+    const TANITA_FIELD_ORDER = ["date", "weightKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "muscleMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
+    const TANITA_KEY_FIELDS = ["date", "weightKg", "fatPercent", "muscleMassKg", "fatMassKg", "bodyWaterPercent", "bmrKcal", "visceralFatRating", "bmi"];
+    const TANITA_FIELD_LABELS = {
+      date: "data",
+      weightKg: "waga",
+      fatPercent: "tłuszcz %",
+      fatMassKg: "masa tłuszczu",
+      fatFreeMassKg: "masa beztłuszczowa",
+      muscleMassKg: "masa mięśniowa",
+      bodyWaterPercent: "woda %",
+      bodyWaterKg: "woda kg",
+      visceralFatRating: "visceral fat",
+      bmrKcal: "BMR",
+      metabolicAge: "wiek metaboliczny",
+      bmi: "BMI",
+      boneMassKg: "masa kości",
+      proteinKg: "protein"
+    };
+    const TANITA_RANGES = {
+      weightKg: [30, 250],
+      fatPercent: [3, 60],
+      fatMassKg: [1, 120],
+      fatFreeMassKg: [20, 180],
+      muscleMassKg: [15, 150],
+      bodyWaterPercent: [30, 80],
+      bodyWaterKg: [15, 120],
+      visceralFatRating: [1, 30],
+      bmrKcal: [800, 4000],
+      metabolicAge: [12, 100],
+      bmi: [12, 60],
+      boneMassKg: [1, 8],
+      proteinKg: [2, 40]
+    };
 
     const steps = [
       ["Punkt startowy", "Ankieta, wywiad, testy i hipoteza kliniczna."],
@@ -537,6 +586,9 @@
               id: "m-demo-2025-07-18",
               date: "2025-07-18",
               source: "Tanita",
+              inputMethod: "manual",
+              parseStatus: "not_attempted",
+              parsedFields: [],
               weightKg: 84.1,
               fatPercent: 17.1,
               fatMassKg: 14.38,
@@ -587,17 +639,27 @@
     }
 
     function normalizeNumber(value) {
-      if (value === "" || value === null || value === undefined) return null;
-      const n = Number(String(value).replace(",", "."));
-      return Number.isFinite(n) ? n : null;
+      return cleanNumber(value);
     }
 
     function migrateMeasurement(measurement = {}) {
+      const inputMethod = ["manual", "pdf", "pdf-autofill"].includes(measurement.inputMethod)
+        ? measurement.inputMethod
+        : (measurement.pdfAutoFilled || measurement.sourceMode === "pdf-autofill" ? "pdf-autofill" : (measurement.pdfDataUrl || measurement.sourceMode === "pdf" ? "pdf" : "manual"));
+      const parseStatus = ["not_attempted", "success", "partial", "failed"].includes(measurement.parseStatus)
+        ? measurement.parseStatus
+        : (inputMethod === "pdf-autofill" ? "success" : (inputMethod === "pdf" ? "failed" : "not_attempted"));
+      const parsedFields = Array.isArray(measurement.parsedFields)
+        ? measurement.parsedFields.filter(field => TANITA_FIELD_ORDER.includes(field))
+        : [];
       return {
         ...measurement,
         id: measurement.id || `m${Date.now()}`,
         date: measurement.date || "",
         source: measurement.source || "Tanita",
+        inputMethod,
+        parseStatus,
+        parsedFields,
         weightKg: normalizeNumber(measurement.weightKg),
         fatPercent: normalizeNumber(measurement.fatPercent),
         fatMassKg: normalizeNumber(measurement.fatMassKg),
@@ -613,8 +675,8 @@
         proteinKg: normalizeNumber(measurement.proteinKg),
         pdfName: measurement.pdfName || "",
         pdfDataUrl: measurement.pdfDataUrl || "",
-        sourceMode: measurement.sourceMode || (measurement.pdfDataUrl ? "pdf" : "manual"),
-        pdfAutoFilled: Boolean(measurement.pdfAutoFilled),
+        sourceMode: inputMethod,
+        pdfAutoFilled: inputMethod === "pdf-autofill",
         trainerInterpretation: measurement.trainerInterpretation || "",
         clientSummary: measurement.clientSummary || ""
       };
@@ -693,9 +755,23 @@
       return { ...data, activeClientId, clients };
     }
 
+    function initialMeasurementPdf() {
+      return {
+        name: "",
+        dataUrl: "",
+        rawText: "",
+        parsed: {},
+        autoFilled: false,
+        sourceMode: "manual",
+        inputMethod: "manual",
+        parseStatus: "not_attempted",
+        parsedFields: []
+      };
+    }
+
     let state = load();
     let viewName = "command";
-    let pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+    let pendingMeasurementPdf = initialMeasurementPdf();
 
     const $ = (sel) => document.querySelector(sel);
     const view = $("#view");
@@ -1353,14 +1429,14 @@
     }
 
     function measurementOrigin(m) {
-      if (m.pdfAutoFilled || m.sourceMode === "pdf-autofill") return "PDF + autouzupełnienie";
-      if (m.pdfDataUrl || m.sourceMode === "pdf") return "PDF Tanita";
+      if (m.inputMethod === "pdf-autofill" || m.pdfAutoFilled || m.sourceMode === "pdf-autofill") return "PDF + autouzupełnienie";
+      if (m.inputMethod === "pdf" || m.pdfDataUrl || m.sourceMode === "pdf") return "PDF Tanita";
       return "Ręczny wpis";
     }
 
     function measurementOriginTone(m) {
-      if (m.pdfAutoFilled || m.sourceMode === "pdf-autofill") return "green";
-      if (m.pdfDataUrl || m.sourceMode === "pdf") return "blue";
+      if (m.inputMethod === "pdf-autofill" || m.pdfAutoFilled || m.sourceMode === "pdf-autofill") return "green";
+      if (m.inputMethod === "pdf" || m.pdfDataUrl || m.sourceMode === "pdf") return "blue";
       return "gold";
     }
 
@@ -1540,11 +1616,12 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
 
     function openMeasurementModal() {
       const c = activeClient();
-      pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+      pendingMeasurementPdf = initialMeasurementPdf();
       $("#measurementClientName").textContent = `${c.name} · pomiar Tanita`;
       $("#measurementForm").reset();
       $("#measurementForm").date.value = today();
       setMeasurementPdfStatus("Brak załączonego PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+      updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER);
       $("#measurementModal").classList.add("open");
       $("#measurementModal").setAttribute("aria-hidden", "false");
     }
@@ -1625,58 +1702,74 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
         rawText = "";
       }
       const parsed = parseTanitaPdfText(rawText);
-      const hasParsed = Object.values(parsed).some(value => value !== null && value !== "" && value !== undefined);
+      const parsedFields = parsedFieldNames(parsed);
+      const keyCount = parsedFields.filter(field => TANITA_KEY_FIELDS.includes(field)).length;
+      const parseStatus = keyCount >= 5 ? "success" : (parsedFields.length ? "partial" : "failed");
+      const inputMethod = parsedFields.length ? "pdf-autofill" : "pdf";
       return {
         name,
         dataUrl,
         rawText,
         parsed,
-        autoFilled: hasParsed,
-        sourceMode: hasParsed ? "pdf-autofill" : "pdf"
+        autoFilled: parsedFields.length > 0,
+        sourceMode: inputMethod,
+        inputMethod,
+        parseStatus,
+        parsedFields
       };
     }
 
     function parseTanitaPdfText(rawText) {
-      const text = normalizePdfText(rawText);
-      const parsed = {
+      const raw = String(rawText || "");
+      const text = normalizePdfText(raw);
+      const labeled = sanitizeTanitaParsed({
         date: extractDate(text),
-        weightKg: extractLabeledNumber(text, ["Weight", "Body Weight", "Waga"]),
-        fatPercent: extractLabeledNumber(text, ["Fat %", "Body Fat %", "Body Fat", "Tłuszcz %"]),
-        fatMassKg: extractLabeledNumber(text, ["Fat Mass", "Masa tłuszczu"]),
-        fatFreeMassKg: extractLabeledNumber(text, ["Fat Free Mass", "FFM", "Masa beztłuszczowa"]),
-        muscleMassKg: extractLabeledNumber(text, ["Muscle Mass", "Masa mięśniowa"]),
-        bodyWaterPercent: extractBodyWaterPercent(text) ?? extractLabeledNumber(text, ["Total Body Water %", "Body Water %", "TBW %", "Woda %"]),
-        bodyWaterKg: extractBodyWaterKg(text) ?? extractLabeledNumber(text, ["Woda kg", "Body Water kg", "TBW kg"], { preferKg: true }),
-        visceralFatRating: extractLabeledNumber(text, ["Visceral Fat Rating", "Visceral Fat", "VFR"]),
-        bmrKcal: extractLabeledNumber(text, ["BMR", "Basal Metabolic Rate"]),
-        metabolicAge: extractLabeledNumber(text, ["Metabolic Age", "Wiek metaboliczny"]),
-        bmi: extractLabeledNumber(text, ["BMI"]),
-        boneMassKg: extractLabeledNumber(text, ["Bone Mass", "Masa kości"]),
-        proteinKg: extractLabeledNumber(text, ["Protein", "Protein kg", "Białko"])
-      };
+        weightKg: extractLabeledNumber(text, ["Body Weight", "Weight", "Waga"], "weightKg", { unit: "kg" }),
+        fatPercent: extractLabeledNumber(text, ["Body Fat %", "Fat %", "Body Fat", "Tłuszcz %"], "fatPercent", { unit: "%" }),
+        fatMassKg: extractLabeledNumber(text, ["Fat Mass", "Masa tłuszczu"], "fatMassKg", { unit: "kg" }),
+        fatFreeMassKg: extractLabeledNumber(text, ["Fat Free Mass", "FFM", "Masa beztłuszczowa"], "fatFreeMassKg", { unit: "kg" }),
+        muscleMassKg: extractLabeledNumber(text, ["Muscle Mass", "Masa mięśniowa"], "muscleMassKg", { unit: "kg" }),
+        bodyWaterPercent: extractBodyWaterPercent(text) ?? extractLabeledNumber(text, ["Total Body Water %", "Body Water %", "TBW %", "Woda %"], "bodyWaterPercent", { unit: "%" }),
+        bodyWaterKg: extractBodyWaterKg(text) ?? extractLabeledNumber(text, ["Total Body Water", "Body Water kg", "TBW kg", "Woda kg"], "bodyWaterKg", { unit: "kg" }),
+        visceralFatRating: extractLabeledNumber(text, ["Visceral Fat Rating", "Visceral Fat", "VFR"], "visceralFatRating"),
+        bmrKcal: extractBmrKcal(text) ?? extractLabeledNumber(text, ["Basal Metabolic Rate", "BMR"], "bmrKcal", { unit: "kcal" }),
+        metabolicAge: extractLabeledNumber(text, ["Metabolic Age", "Wiek metaboliczny"], "metabolicAge"),
+        bmi: extractLabeledNumber(text, ["BMI"], "bmi"),
+        boneMassKg: extractLabeledNumber(text, ["Bone Mass", "Masa kości"], "boneMassKg", { unit: "kg" }),
+        proteinKg: extractLabeledNumber(text, ["Protein kg", "Protein", "Białko"], "proteinKg", { unit: "kg" })
+      });
 
-      if (Object.values(parsed).filter(value => value !== null && value !== "").length < 4) {
-        const fallback = parseTanitaNumberSequence(text);
-        Object.keys(parsed).forEach(key => {
-          if ((parsed[key] === null || parsed[key] === "") && fallback[key] !== undefined) parsed[key] = fallback[key];
+      if (parsedFieldNames(labeled).filter(field => TANITA_KEY_FIELDS.includes(field)).length < 5) {
+        const fallback = parseTanitaSequenceFallback(raw, text);
+        TANITA_FIELD_ORDER.forEach(field => {
+          if ((labeled[field] === null || labeled[field] === "" || labeled[field] === undefined) && fallback[field] !== undefined) {
+            labeled[field] = fallback[field];
+          }
         });
       }
-      return parsed;
+      return sanitizeTanitaParsed(labeled);
     }
 
     function applyTanitaParsedData(parsed) {
       const form = $("#measurementForm");
-      if (!form || !parsed) return false;
-      const fields = ["date", "weightKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "muscleMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
-      let filled = false;
-      fields.forEach(name => {
-        const value = parsed[name];
-        if (value === null || value === undefined || value === "") return;
-        if (!form.elements[name]) return;
-        form.elements[name].value = value;
-        filled = true;
+      if (!form || !parsed) return { applied: false, appliedFields: [], missingFields: TANITA_FIELD_ORDER, parseStatus: "failed", inputMethod: "pdf", message: "" };
+      clearAutofilledMeasurementFields(form);
+      const appliedFields = [];
+      TANITA_FIELD_ORDER.forEach(name => {
+        if (applyParsedValueIfValid(form, name, parsed[name])) appliedFields.push(name);
       });
-      return filled;
+      const missingFields = TANITA_FIELD_ORDER.filter(field => !appliedFields.includes(field));
+      const keyCount = appliedFields.filter(field => TANITA_KEY_FIELDS.includes(field)).length;
+      const parseStatus = keyCount >= 5 ? "success" : (appliedFields.length ? "partial" : "failed");
+      const inputMethod = appliedFields.length ? "pdf-autofill" : "pdf";
+      const recognizedText = appliedFields.map(field => TANITA_FIELD_LABELS[field]).join(", ");
+      const message = parseStatus === "success"
+        ? `Dane z PDF zostały wstępnie uzupełnione: ${recognizedText}. Sprawdź je przed zapisem.`
+        : (parseStatus === "partial"
+          ? "PDF został załączony. Część danych odczytano automatycznie, pozostałe uzupełnij ręcznie."
+          : "PDF został załączony, ale danych nie udało się automatycznie odczytać. Uzupełnij pola ręcznie.");
+      updateTanitaReadout(message, appliedFields, missingFields);
+      return { applied: appliedFields.length > 0, appliedFields, missingFields, parseStatus, inputMethod, message };
     }
 
     function normalizePdfText(rawText = "") {
@@ -1691,76 +1784,388 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
     function extractDate(text) {
       const labeled = text.match(/(?:Date|Data)\D{0,30}(\d{4}[-/.]\d{1,2}[-/.]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4})/i);
       const any = labeled || text.match(/(\d{4}[-/.]\d{1,2}[-/.]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4})/);
-      return any ? normalizeDateValue(any[1]) : "";
+      return any ? normalizeTanitaDate(any[1]) : "";
     }
 
-    function normalizeDateValue(value) {
-      const parts = String(value).replace(/[/.]/g, "-").split("-").map(part => part.padStart(2, "0"));
+    function normalizeTanitaDate(value) {
+      if (!value) return "";
+      const normalized = String(value).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return normalized;
+      const parts = normalized.replace(/[/.]/g, "-").split("-").map(part => part.padStart(2, "0"));
       if (parts.length !== 3) return value;
       if (parts[0].length === 4) return `${parts[0]}-${parts[1]}-${parts[2]}`;
       const year = parts[2].length === 2 ? `20${parts[2]}` : parts[2];
       return `${year}-${parts[1]}-${parts[0]}`;
     }
 
-    function extractLabeledNumber(text, labels, options = {}) {
+    function normalizeDateValue(value) {
+      return normalizeTanitaDate(value);
+    }
+
+    function cleanNumber(value) {
+      if (value === "" || value === null || value === undefined) return null;
+      const raw = String(value).trim();
+      if (!raw || /^[-–—]+$/.test(raw)) return null;
+      const match = raw.replace(",", ".").match(/-?\d+(?:\.\d+)?/);
+      if (!match) return null;
+      const n = Number(match[0]);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function isValidTanitaValue(field, value) {
+      if (field === "date") return Boolean(normalizeTanitaDate(value));
+      const n = cleanNumber(value);
+      const range = TANITA_RANGES[field];
+      if (!range) return n !== null;
+      return Number.isFinite(n) && n >= range[0] && n <= range[1];
+    }
+
+    function applyParsedValueIfValid(form, fieldName, value) {
+      const input = form?.elements?.[fieldName];
+      if (!input || value === null || value === undefined || value === "") return false;
+      if (fieldName === "date") {
+        const date = normalizeTanitaDate(value);
+        if (!isValidTanitaValue(fieldName, date)) return false;
+        input.value = date;
+        input.dataset.autofilled = "true";
+        return true;
+      }
+      const n = cleanNumber(value);
+      if (!isValidTanitaValue(fieldName, n)) return false;
+      input.value = Number.isInteger(n) ? String(n) : String(n);
+      input.dataset.autofilled = "true";
+      return true;
+    }
+
+    function clearAutofilledMeasurementFields(form) {
+      TANITA_FIELD_ORDER.forEach(field => {
+        const input = form.elements[field];
+        if (!input) return;
+        if (input.dataset.autofilled === "true" || (input.value && field !== "date" && !isValidTanitaValue(field, input.value))) {
+          input.value = "";
+          delete input.dataset.autofilled;
+        }
+      });
+    }
+
+    function extractLabeledNumber(text, labels, field, options = {}) {
       for (const label of labels) {
         const pattern = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
-        const regex = new RegExp(`${pattern}[\\s:=/-]{0,20}(-?\\d{1,4}(?:[\\.,]\\d{1,3})?)`, "i");
-        const match = text.match(regex);
-        if (match) return normalizeNumber(match[1]);
-
-        const wideRegex = new RegExp(`${pattern}[\\s\\S]{0,80}?(-?\\d{1,4}(?:[\\.,]\\d{1,3})?)\\s*(?:${options.preferKg ? "kg|KG" : "%|kg|KG|kcal|Kcal|years|yrs"})?`, "i");
-        const wideMatch = text.match(wideRegex);
-        if (wideMatch) return normalizeNumber(wideMatch[1]);
+        const labelRegex = new RegExp(pattern, "ig");
+        let labelMatch;
+        while ((labelMatch = labelRegex.exec(text)) !== null) {
+          const windowText = text.slice(labelMatch.index + labelMatch[0].length, labelMatch.index + labelMatch[0].length + 140);
+          const candidates = [...windowText.matchAll(/-?\d{1,4}(?:[\.,]\d{1,3})?\s*(kg|%|kcal|Kcal|years|yrs)?/g)];
+          for (const candidate of candidates) {
+            const unit = candidate[1] || "";
+            if (options.unit && unit && unit.toLowerCase() !== options.unit.toLowerCase()) continue;
+            const value = cleanNumber(candidate[0]);
+            if (isValidTanitaValue(field, value)) return value;
+          }
+        }
       }
       return null;
     }
 
     function extractBodyWaterKg(text) {
       const match = text.match(/(?:Total\s+Body\s+Water|Body\s+Water|TBW|Woda)[\s\S]{0,90}?(-?\d{1,4}(?:[\.,]\d{1,3})?)\s*%[\s\S]{0,40}?(-?\d{1,4}(?:[\.,]\d{1,3})?)\s*(?:kg|KG)/i);
-      return match ? normalizeNumber(match[2]) : null;
+      return match && isValidTanitaValue("bodyWaterKg", match[2]) ? cleanNumber(match[2]) : null;
     }
 
     function extractBodyWaterPercent(text) {
       const match = text.match(/(?:Total\s+Body\s+Water|Body\s+Water|TBW|Woda)[\s\S]{0,90}?(-?\d{1,4}(?:[\.,]\d{1,3})?)\s*%/i);
-      return match ? normalizeNumber(match[1]) : null;
+      return match && isValidTanitaValue("bodyWaterPercent", match[1]) ? cleanNumber(match[1]) : null;
     }
 
-    function parseTanitaNumberSequence(text) {
-      const numbers = [...text.matchAll(/-?\d{1,4}(?:[\\.,]\d{1,3})?/g)]
-        .map(match => normalizeNumber(match[0]))
-        .filter(value => value !== null);
-      const keys = ["weightKg", "muscleMassKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
-      let best = { score: 0, values: {} };
+    function extractBmrKcal(text) {
+      const match = text.match(/(?:BMR|Basal\s+Metabolic\s+Rate)[\s\S]{0,100}?(\d{3,4})\s*kcal/i) || text.match(/(\d{3,4})\s*kcal/i);
+      return match && isValidTanitaValue("bmrKcal", match[1]) ? cleanNumber(match[1]) : null;
+    }
 
-      for (let i = 0; i <= numbers.length - keys.length; i++) {
-        const slice = numbers.slice(i, i + keys.length);
-        const candidate = Object.fromEntries(keys.map((key, index) => [key, slice[index]]));
-        const score = scoreTanitaSequence(candidate);
-        if (score > best.score) best = { score, values: candidate };
+    function parseTanitaSequenceFallback(rawText, text) {
+      const lines = tanitaLines(rawText);
+      const entries = collectTanitaEntries(lines);
+      const kgEntries = entries.filter(entry => entry.unit === "kg" && !entry.isRange);
+      const percentEntries = entries.filter(entry => entry.unit === "%" && !entry.isRange);
+      const plainEntries = entries.filter(entry => !entry.unit && !entry.isRange && !entry.hasDate);
+      const parsed = {};
+      const used = [];
+
+      const history = extractTanitaHistoryLine(lines);
+      if (history) {
+        parsed.date = history.date;
+        parsed.weightKg = history.weightKg;
+        parsed.muscleMassKg = history.muscleMassKg;
+        parsed.fatPercent = history.fatPercent;
+        used.push(history.weightKg, history.muscleMassKg);
+      } else {
+        parsed.date = extractDate(text);
+        const firstWeight = kgEntries.find(entry => isValidTanitaValue("weightKg", entry.value) && !/cm/i.test(entry.line));
+        if (firstWeight) {
+          parsed.weightKg = firstWeight.value;
+          used.push(firstWeight.value);
+        }
       }
 
-      return best.score >= 9 ? best.values : {};
+      if (!parsed.fatPercent) {
+        const waterPercent = percentEntries.find(entry => isValidTanitaValue("bodyWaterPercent", entry.value));
+        const fatPercent = percentEntries.find(entry => isValidTanitaValue("fatPercent", entry.value) && entry !== waterPercent);
+        if (fatPercent) parsed.fatPercent = fatPercent.value;
+      }
+
+      if (parsed.weightKg && parsed.fatPercent) {
+        const expectedFatMass = parsed.weightKg * parsed.fatPercent / 100;
+        const fatMass = closestEntry(kgEntries, expectedFatMass, "fatMassKg", used, 1.6);
+        if (fatMass) {
+          parsed.fatMassKg = fatMass.value;
+          used.push(fatMass.value);
+        }
+      }
+
+      if (parsed.weightKg && parsed.fatMassKg) {
+        const expectedFatFree = parsed.weightKg - parsed.fatMassKg;
+        const fatFree = closestEntry(kgEntries, expectedFatFree, "fatFreeMassKg", used, 1.8);
+        if (fatFree) {
+          parsed.fatFreeMassKg = fatFree.value;
+          used.push(fatFree.value);
+        }
+      }
+
+      const bodyWaterPercent = percentEntries.find(entry => isValidTanitaValue("bodyWaterPercent", entry.value));
+      if (bodyWaterPercent) parsed.bodyWaterPercent = bodyWaterPercent.value;
+
+      if (parsed.weightKg && parsed.bodyWaterPercent) {
+        const expectedWater = parsed.weightKg * parsed.bodyWaterPercent / 100;
+        const waterKg = closestEntry(kgEntries, expectedWater, "bodyWaterKg", used, 1.8);
+        if (waterKg) {
+          parsed.bodyWaterKg = waterKg.value;
+          used.push(waterKg.value);
+        }
+      }
+
+      const bone = bodyWaterPercent
+        ? [...kgEntries].reverse().find(entry => entry.lineIndex < bodyWaterPercent.lineIndex && isValidTanitaValue("boneMassKg", entry.value))
+        : null;
+      if (bone) {
+        parsed.boneMassKg = bone.value;
+        used.push(bone.value);
+      }
+
+      const fatFreeEntry = parsed.fatFreeMassKg ? closestEntry(kgEntries, parsed.fatFreeMassKg, "fatFreeMassKg", [], 0.08) : null;
+      const protein = fatFreeEntry
+        ? [...kgEntries].reverse().find(entry => entry.lineIndex < fatFreeEntry.lineIndex && isValidTanitaValue("proteinKg", entry.value) && entry.value > 8 && !isUsed(entry.value, used))
+        : null;
+      if (protein) parsed.proteinKg = protein.value;
+
+      const energyIndex = lines.findIndex(line => /\bkJ\b|\bkcal\b/i.test(line));
+      if (energyIndex >= 0) {
+        const beforeEnergy = plainEntries.filter(entry => entry.lineIndex < energyIndex && isValidTanitaValue("bmi", entry.value)).slice(-2);
+        if (beforeEnergy.length >= 2) {
+          parsed.bmi = beforeEnergy[0].value;
+          parsed.metabolicAge = beforeEnergy[1].value;
+        } else if (beforeEnergy.length === 1) {
+          parsed.bmi = beforeEnergy[0].value;
+        }
+      }
+
+      const bmrMatch = text.match(/(\d{3,4})\s*kcal/i);
+      if (bmrMatch && isValidTanitaValue("bmrKcal", bmrMatch[1])) parsed.bmrKcal = cleanNumber(bmrMatch[1]);
+
+      const kcalLine = lines.findIndex(line => /\bkcal\b/i.test(line));
+      if (kcalLine >= 0) {
+        const visceral = plainEntries.find(entry => entry.lineIndex > kcalLine && isValidTanitaValue("visceralFatRating", entry.value));
+        if (visceral) parsed.visceralFatRating = visceral.value;
+      }
+
+      return sanitizeTanitaParsed(parsed);
     }
 
-    function scoreTanitaSequence(m) {
-      let score = 0;
-      if (inRange(m.weightKg, 30, 250)) score++;
-      if (inRange(m.muscleMassKg, 15, 150)) score++;
-      if (inRange(m.fatPercent, 3, 60)) score++;
-      if (inRange(m.fatMassKg, 2, 120)) score++;
-      if (inRange(m.fatFreeMassKg, 20, 220)) score++;
-      if (inRange(m.bodyWaterPercent, 30, 80)) score++;
-      if (inRange(m.bodyWaterKg, 15, 140)) score++;
-      if (inRange(m.visceralFatRating, 1, 30)) score++;
-      if (inRange(m.bmrKcal, 800, 4500)) score++;
-      if (inRange(m.metabolicAge, 12, 90)) score++;
-      if (inRange(m.bmi, 10, 60)) score++;
-      if (inRange(m.boneMassKg, 1, 8)) score++;
-      if (inRange(m.proteinKg, 2, 35)) score++;
-      if (Math.abs(m.weightKg - (m.fatMassKg + m.fatFreeMassKg)) <= 2) score += 2;
-      if (Math.abs(m.bodyWaterKg - (m.weightKg * m.bodyWaterPercent / 100)) <= 3) score += 2;
-      return score;
+    function tanitaLines(rawText = "") {
+      return String(rawText)
+        .replace(/\0/g, "\n")
+        .split(/\r?\n|\\r|\\n/)
+        .map(line => line.replace(/\s+/g, " ").trim())
+        .filter(Boolean);
+    }
+
+    function collectTanitaEntries(lines) {
+      const entries = [];
+      lines.forEach((line, lineIndex) => {
+        const hasDate = /\d{1,2}[./-]\d{1,2}[./-]\d{2,4}/.test(line);
+        const isRange = /\d+\s*[-–]\s*\d/.test(line);
+        const unit = /kcal/i.test(line) ? "kcal" : (/kJ/i.test(line) ? "kJ" : (/%/.test(line) ? "%" : (/kg/i.test(line) ? "kg" : "")));
+        if (/cm/i.test(line) || /^Initial\b/i.test(line)) return;
+        [...line.replace(",", ".").matchAll(/-?\d+(?:\.\d+)?/g)].forEach((match, numberIndex) => {
+          const value = cleanNumber(match[0]);
+          if (value === null) return;
+          entries.push({ value, line, lineIndex, numberIndex, unit, isRange, hasDate });
+        });
+      });
+      return entries;
+    }
+
+    function extractTanitaHistoryLine(lines) {
+      for (let i = lines.length - 1; i >= 0; i--) {
+        const match = lines[i].match(/(\d{1,2}[./-]\d{1,2}[./-]\d{2,4})\s+(\d{2,3}(?:[\.,]\d{1,2})?)\s+(\d{2,3}(?:[\.,]\d{1,2})?)\s+(\d{1,2}(?:[\.,]\d{1,2})?)/);
+        if (!match) continue;
+        const candidate = {
+          date: normalizeTanitaDate(match[1]),
+          weightKg: cleanNumber(match[2]),
+          muscleMassKg: cleanNumber(match[3]),
+          fatPercent: cleanNumber(match[4])
+        };
+        if (isValidTanitaValue("date", candidate.date) && isValidTanitaValue("weightKg", candidate.weightKg) && isValidTanitaValue("muscleMassKg", candidate.muscleMassKg) && isValidTanitaValue("fatPercent", candidate.fatPercent)) {
+          return candidate;
+        }
+      }
+      return null;
+    }
+
+    function closestEntry(entries, expected, field, used = [], tolerance = 1.5) {
+      if (!Number.isFinite(expected)) return null;
+      const candidates = entries
+        .filter(entry => isValidTanitaValue(field, entry.value) && !isUsed(entry.value, used))
+        .map(entry => ({ ...entry, diff: Math.abs(entry.value - expected) }))
+        .filter(entry => entry.diff <= tolerance)
+        .sort((a, b) => a.diff - b.diff || b.lineIndex - a.lineIndex);
+      return candidates[0] || null;
+    }
+
+    function isUsed(value, used) {
+      return used.some(item => Math.abs(item - value) < 0.06);
+    }
+
+    function sanitizeTanitaParsed(parsed = {}) {
+      const clean = {};
+      TANITA_FIELD_ORDER.forEach(field => {
+        if (parsed[field] === null || parsed[field] === undefined || parsed[field] === "") return;
+        if (field === "date") {
+          const date = normalizeTanitaDate(parsed[field]);
+          if (isValidTanitaValue(field, date)) clean[field] = date;
+          return;
+        }
+        const value = cleanNumber(parsed[field]);
+        if (isValidTanitaValue(field, value)) clean[field] = value;
+      });
+      return clean;
+    }
+
+    function parsedFieldNames(parsed = {}) {
+      return TANITA_FIELD_ORDER.filter(field => parsed[field] !== null && parsed[field] !== undefined && parsed[field] !== "");
+    }
+
+    function updateTanitaReadout(statusText, recognizedFields = [], missingFields = []) {
+      const status = $("#tanitaReadoutStatus");
+      const recognized = $("#tanitaReadoutRecognized");
+      const missing = $("#tanitaReadoutMissing");
+      if (!status || !recognized || !missing) return;
+      status.textContent = statusText || "PDF nie został jeszcze załączony.";
+      recognized.textContent = recognizedFields.length ? recognizedFields.map(field => TANITA_FIELD_LABELS[field]).join(", ") : "–";
+      missing.textContent = missingFields.length ? missingFields.map(field => TANITA_FIELD_LABELS[field]).join(", ") : "–";
+    }
+
+    function validateMeasurementBeforeSave(fd) {
+      const rules = [
+        ["weightKg", "Waga kg"],
+        ["fatPercent", "Tłuszcz %"],
+        ["muscleMassKg", "Masa mięśniowa kg"]
+      ];
+      for (const [field, label] of rules) {
+        const raw = fd.get(field);
+        if (raw === "" || raw === null || raw === undefined) continue;
+        const value = cleanNumber(raw);
+        if (!isValidTanitaValue(field, value)) {
+          const range = TANITA_RANGES[field];
+          return `${label} musi być w zakresie ${range[0]}–${range[1]}.`;
+        }
+      }
+      return "";
+    }
+
+    function testTanitaParser() {
+      const sample = `18/7/2025 08:23
+43289701
+Damian 181 cm
+36
+61-82 kg
+11-21%
+18.5-25
+84.1 kg
+84.1 kg
+66.30 kg
+66.30 kg
+35.9 kg
+4.2 kg
+11 kg
+4.1 kg
+11.3 kg
+-2
+-2 -2
+-2 -2
+17.10 %
+-
+-
+18.9 %
+10 % 9.9 %
+17.1 % 15.9 %
+14.38 kg
+14.38 kg
+-3
+-3
+-2
+-3
+-3
+3.50 kg
+62.70%
+52.73 kg
+52.73 kg
+-
+-
+-
+-
+-
+13.57 kg
+69.72 kg
+69.72 kg
+25.70
+25.00
+8494 kJ
+2030 kcal
+5.5
+-
+-
+-
+-
+-
+-
+-
+Initial 83.45 64.95 18.10
+18.07.2025 84.1 66.30 17.10`;
+      const expected = {
+        date: "2025-07-18",
+        weightKg: 84.1,
+        fatPercent: 17.10,
+        fatMassKg: 14.38,
+        fatFreeMassKg: 69.72,
+        muscleMassKg: 66.30,
+        bodyWaterPercent: 62.70,
+        bodyWaterKg: 52.73,
+        visceralFatRating: 5.5,
+        bmrKcal: 2030,
+        metabolicAge: 25,
+        bmi: 25.70,
+        boneMassKg: 3.50,
+        proteinKg: 13.57
+      };
+      const parsed = parseTanitaPdfText(sample);
+      const failures = Object.entries(expected).filter(([field, value]) => {
+        if (field === "date") return parsed[field] !== value;
+        return Math.abs((parsed[field] ?? NaN) - value) > 0.08;
+      });
+      const result = { ok: failures.length === 0, parsed, failures: failures.map(([field, value]) => ({ field, expected: value, actual: parsed[field] })) };
+      if (result.ok) console.info("testTanitaParser OK", result);
+      else console.warn("testTanitaParser failed", result);
+      return result;
     }
 
     function inRange(value, min, max) {
@@ -1799,34 +2204,42 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
     $("#measurementForm").tanitaPdf.addEventListener("change", async e => {
       const file = e.target.files?.[0];
       if (!file) {
-        pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+        pendingMeasurementPdf = initialMeasurementPdf();
         setMeasurementPdfStatus("Brak załączonego PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+        updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER);
         return;
       }
       if (file.type !== "application/pdf") {
         e.target.value = "";
-        pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+        pendingMeasurementPdf = initialMeasurementPdf();
         setMeasurementPdfStatus("Wybierz plik PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+        updateTanitaReadout("Załącznik nie jest plikiem PDF.", [], TANITA_FIELD_ORDER);
         return toast("Załącznik musi być plikiem PDF");
       }
       setMeasurementPdfStatus(`Załączono: ${file.name}`, "PDF załączony", "blue", "Próbuję wstępnie odczytać dane z PDF.");
+      updateTanitaReadout("Trwa próba odczytu danych z PDF.", [], TANITA_FIELD_ORDER);
       try {
         pendingMeasurementPdf = await readTanitaPdfFile(file);
         const applied = applyTanitaParsedData(pendingMeasurementPdf.parsed);
-        if (applied) {
-          pendingMeasurementPdf.autoFilled = true;
-          pendingMeasurementPdf.sourceMode = "pdf-autofill";
-          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Dane odczytane automatycznie", "green", "Dane z PDF zostały wstępnie uzupełnione. Sprawdź je przed zapisem.");
+        pendingMeasurementPdf.parsedFields = applied.appliedFields;
+        pendingMeasurementPdf.parseStatus = applied.parseStatus;
+        pendingMeasurementPdf.inputMethod = applied.inputMethod;
+        pendingMeasurementPdf.sourceMode = applied.inputMethod;
+        pendingMeasurementPdf.autoFilled = applied.applied;
+        if (applied.parseStatus === "success") {
+          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Dane odczytane automatycznie", "green", applied.message);
           toast("Dane z PDF zostały wstępnie uzupełnione. Sprawdź je przed zapisem.");
+        } else if (applied.parseStatus === "partial") {
+          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Dane częściowo odczytane", "gold", applied.message);
+          toast("Część danych z PDF odczytano automatycznie.");
         } else {
-          pendingMeasurementPdf.autoFilled = false;
-          pendingMeasurementPdf.sourceMode = "pdf";
-          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Wymaga ręcznego uzupełnienia", "gold", "PDF został załączony, ale danych nie udało się automatycznie odczytać. Uzupełnij pola ręcznie.");
+          setMeasurementPdfStatus(`Załączono: ${file.name}`, "Wymaga ręcznego uzupełnienia", "gold", applied.message);
           toast("PDF został załączony, ale danych nie udało się automatycznie odczytać. Uzupełnij pola ręcznie.");
         }
       } catch (error) {
-        pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+        pendingMeasurementPdf = initialMeasurementPdf();
         setMeasurementPdfStatus("Nie udało się odczytać PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+        updateTanitaReadout("PDF został załączony, ale danych nie udało się automatycznie odczytać. Uzupełnij pola ręcznie.", [], TANITA_FIELD_ORDER);
         toast("Nie udało się odczytać PDF");
       }
     });
@@ -1875,6 +2288,8 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       e.preventDefault();
       const c = activeClient();
       const fd = new FormData(e.currentTarget);
+      const validationError = validateMeasurementBeforeSave(fd);
+      if (validationError) return toast(validationError);
       const file = e.currentTarget.tanitaPdf.files?.[0];
       let pdf = pendingMeasurementPdf;
       if (file && !pdf.dataUrl) {
@@ -1903,7 +2318,10 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
         proteinKg: fd.get("proteinKg"),
         pdfName: pdf.name,
         pdfDataUrl: pdf.dataUrl,
-        sourceMode: pdf.sourceMode || (pdf.dataUrl ? "pdf" : "manual"),
+        inputMethod: pdf.inputMethod || pdf.sourceMode || (pdf.dataUrl ? "pdf" : "manual"),
+        parseStatus: pdf.parseStatus || (pdf.dataUrl ? "failed" : "not_attempted"),
+        parsedFields: Array.isArray(pdf.parsedFields) ? pdf.parsedFields : [],
+        sourceMode: pdf.sourceMode || pdf.inputMethod || (pdf.dataUrl ? "pdf" : "manual"),
         pdfAutoFilled: Boolean(pdf.autoFilled),
         trainerInterpretation: fd.get("trainerInterpretation").trim(),
         clientSummary: fd.get("clientSummary").trim()
@@ -1911,8 +2329,9 @@ Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje sp
       c.measurements.push(measurement);
       save();
       e.currentTarget.reset();
-      pendingMeasurementPdf = { name: "", dataUrl: "", rawText: "", parsed: {}, autoFilled: false, sourceMode: "manual" };
+      pendingMeasurementPdf = initialMeasurementPdf();
       setMeasurementPdfStatus("Brak załączonego PDF.", "Wymaga ręcznego uzupełnienia", "gold", "");
+      updateTanitaReadout("PDF nie został jeszcze załączony.", [], TANITA_FIELD_ORDER);
       closeModal("measurementModal");
       viewName = "measurements";
       renderShell();

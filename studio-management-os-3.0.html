@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 5.0 | Polar Load Response</title>
+  <title>Studio Las OS 6.0 | Decision & Report Engine</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -338,7 +338,7 @@
     @media (max-width: 980px) {
       .app { grid-template-columns: 1fr; }
       .side { position: static; height: auto; }
-      .nav { grid-template-columns: repeat(9, 1fr); }
+      .nav { grid-template-columns: repeat(10, 1fr); }
       .nav button,
       .nav .client-panel-link { justify-content: center; padding: 10px 8px; }
       .nav span { display: none; }
@@ -368,7 +368,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 5.0</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 6.0</span></div>
       </div>
 
       <div class="client-switcher">
@@ -384,6 +384,7 @@
         <button data-view="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Zadania</span></button>
         <button data-view="measurements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 3-3 3 2 5-7"/><path d="M18 7h2v2"/></svg><span>Pomiary</span></button>
         <button data-view="polar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/><path d="M3 12h4l2-4 4 8 2-4h6"/></svg><span>Polar</span></button>
+        <button data-view="decision"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-5"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg><span>Decyzja</span></button>
         <button data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>Raport</span></button>
         <button data-view="clientPortal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></button>
       </nav>
@@ -401,7 +402,7 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 5.0</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 6.0</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
@@ -551,7 +552,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "5.0";
+    const APP_VERSION = "6.0";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
     const TANITA_FIELD_ORDER = ["date", "weightKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "muscleMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
@@ -604,6 +605,12 @@
       maintain: "Utrzymaj",
       regress: "Cofnij",
       consult: "Konsultacja"
+    };
+    const REPORT_TYPES = {
+      startMap: "Mapa Startowa Ciała",
+      fourWeeks: "Raport 4 tygodnie",
+      twelveWeeks: "Raport 12 tygodni",
+      continuation: "Plan Kontynuacji"
     };
 
     const steps = [
@@ -815,6 +822,16 @@
       };
     }
 
+    function migrateReport(report = {}) {
+      return {
+        ...report,
+        id: report.id || `r${report.date || Date.now()}`,
+        date: report.date || today(),
+        type: report.type || "fourWeeks",
+        content: report.content || ""
+      };
+    }
+
     function migrateClient(client = {}) {
       const plan = client.homePlan && typeof client.homePlan === "object" ? client.homePlan : defaultHomePlan();
       const exercises = Array.isArray(plan.exercises)
@@ -851,6 +868,7 @@
         documents: Array.isArray(client.documents) ? client.documents : [],
         measurements: Array.isArray(client.measurements) ? client.measurements.map(migrateMeasurement) : [],
         polarSessions: Array.isArray(client.polarSessions) ? client.polarSessions.map(migratePolarSession) : [],
+        reports: Array.isArray(client.reports) ? client.reports.map(migrateReport) : [],
         homePlan: {
           title: plan.title || "",
           frequency: plan.frequency || "",
@@ -992,6 +1010,7 @@
         tasks: ["Zadania", "Aktywne rzeczy do dopięcia dla wybranego klienta."],
         measurements: ["Pomiary", "Warstwa Tanita: metryki, PDF i interpretacja w kontekście procesu."],
         polar: ["Polar Load Response", "Tolerancja obciążenia z Polar Verity Sense wpisywana po sesji."],
+        decision: ["Decyzja tygodniowa", "Silnik rekomendacji na podstawie procesu, sesji, Polar, Tanita i zadań."],
         report: ["Raport dobrostanu", "Gotowy język dla klienta bez ręcznego składania notatek."],
         clientPortal: ["Panel klienta", "Prosty widok procesu dla aktualnie wybranego klienta."]
       };
@@ -1013,6 +1032,7 @@
       if (viewName === "tasks") renderTasks();
       if (viewName === "measurements") renderMeasurements();
       if (viewName === "polar") renderPolar();
+      if (viewName === "decision") renderDecision();
       if (viewName === "report") renderReport();
       if (viewName === "clientPortal") renderClientPortal();
     }
@@ -1022,6 +1042,7 @@
       const stable = state.clients.filter(c => risk(c).level === "green").length;
       const active = activeClient();
       const m = metrics(active);
+      const decision = generateWeeklyDecision(active);
       const milestones = state.clients.flatMap(c => c.sessions.filter(s => s.milestone).map(s => ({ client: c.name, date: s.date, text: s.milestone }))).sort((a,b) => b.date.localeCompare(a.date)).slice(0, 5);
       view.innerHTML = `
         <div class="grid cols-4">
@@ -1042,6 +1063,15 @@
             ${priorityBlock(active)}
           </section>
         </div>
+        <section class="panel">
+          <div class="panel-head"><div><h2>Decyzja na kolejny tydzień</h2><p>${escapeHtml(active.name)} · automatyczny szkic decyzji trenerskiej.</p></div>${pill(decision.label, decisionTone(decision.recommendation))}</div>
+          <div class="grid cols-3">
+            <div class="portal-info"><div class="label">Rekomendacja</div><p>${escapeHtml(decisionLabel(decision.recommendation))}</p></div>
+            <div class="portal-info"><div class="label">Powody</div><p>${escapeHtml(decision.reasons.slice(0, 2).join(" "))}</p></div>
+            <div class="portal-info"><div class="label">Największe ryzyko</div><p>${escapeHtml(decision.risks[0] || "Brak dużego sygnału ryzyka.")}</p></div>
+          </div>
+          <div style="margin-top:12px"><button class="btn primary" id="commandDecisionBtn">Przejdź do decyzji</button></div>
+        </section>
         <div class="grid cols-2">
           <section class="panel">
             <div class="panel-head"><h2>Kamienie milowe</h2>${pill("dowody postępu", "green")}</div>
@@ -1054,10 +1084,78 @@
         </div>
       `;
       bindClientCards();
+      $("#commandDecisionBtn")?.addEventListener("click", () => {
+        viewName = "decision";
+        renderShell();
+      });
     }
 
     function kpi(label, value, trend, tone) {
       return `<section class="panel kpi"><span class="label">${label}</span><div class="value ${tone || ""}">${value}</div><div class="trend">${escapeHtml(trend)}</div></section>`;
+    }
+
+    function renderDecision() {
+      const c = activeClient();
+      const decision = generateWeeklyDecision(c);
+      const lastSession = latest(c);
+      const lastPolar = latestPolarSession(c);
+      const lastTanita = latestMeasurement(c);
+      const tasks = c.tasks || [];
+      const doneTasks = tasks.filter(task => task.done).length;
+      view.innerHTML = `
+        <section class="panel portal-focus">
+          <div class="panel-head">
+            <div><h2>Główna rekomendacja</h2><p>${escapeHtml(c.name)} · decyzja na kolejny tydzień.</p></div>
+            ${pill(decision.label, decisionTone(decision.recommendation))}
+          </div>
+          <div class="grid cols-3">
+            <div class="portal-metric"><div class="label">Recommendation</div><strong>${escapeHtml(decisionLabel(decision.recommendation))}</strong></div>
+            <div class="portal-metric"><div class="label">Confidence</div><strong>${escapeHtml(decision.confidence)}</strong></div>
+            <div class="portal-metric"><div class="label">Etap</div><strong>Krok ${escapeHtml(c.stage)}</strong></div>
+          </div>
+        </section>
+        <div class="grid cols-2">
+          <section class="panel">
+            <div class="panel-head"><h2>Dlaczego</h2>${pill("reasons", "blue")}</div>
+            ${renderTextList(decision.reasons)}
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Ryzyka</h2>${pill("uważność", decision.recommendation === "consult" ? "red" : "gold")}</div>
+            ${renderTextList(decision.risks)}
+          </section>
+        </div>
+        <div class="grid cols-2">
+          <section class="panel">
+            <div class="panel-head"><h2>Co robi trener</h2>${pill("akcja", "green")}</div>
+            <p>${escapeHtml(decision.trainerAction)}</p>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Komunikat dla klienta</h2>${pill("język klienta", "blue")}</div>
+            <p>${escapeHtml(decision.clientMessage)}</p>
+          </section>
+        </div>
+        <section class="panel">
+          <div class="panel-head"><h2>Czego nie robić</h2>${pill("granice", "gold")}</div>
+          ${renderTextList(decision.doNotDo)}
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Dane użyte do decyzji</h2>${pill("źródła", "blue")}</div>
+          <div class="grid cols-3">
+            <div class="portal-info"><div class="label">Ostatnia sesja</div><p>${lastSession?.date ? escapeHtml(formatDate(lastSession.date)) : "Brak danych"}</p></div>
+            <div class="portal-info"><div class="label">Ostatni Polar</div><p>${lastPolar?.date ? escapeHtml(formatDate(lastPolar.date)) : "Brak danych"}</p></div>
+            <div class="portal-info"><div class="label">Zadania</div><p>${doneTasks}/${tasks.length} wykonane</p></div>
+            <div class="portal-info"><div class="label">Etap procesu</div><p>Krok ${escapeHtml(c.stage)} · ${escapeHtml(steps[c.stage - 1]?.[0] || "proces indywidualny")}</p></div>
+            <div class="portal-info"><div class="label">Ostatni pomiar Tanita</div><p>${lastTanita?.date ? escapeHtml(formatDate(lastTanita.date)) : "Brak danych"}</p></div>
+            <div class="portal-info"><div class="label">Logika decyzyjna</div><p>${escapeHtml(c.decisionLogic || "Brak dodatkowej logiki.")}</p></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderTextList(items = []) {
+      const list = items.filter(Boolean);
+      if (!list.length) return `<p>Brak danych.</p>`;
+      return `<div class="grid">${list.map(item => `<div class="task-row"><div class="meta">${escapeHtml(item)}</div></div>`).join("")}</div>`;
     }
 
     function clientCard(c) {
@@ -1467,6 +1565,11 @@
         </section>
 
         <section class="panel">
+          <div class="panel-head"><h2>Co dalej?</h2>${pill("tempo pracy", "green")}</div>
+          ${renderPortalDecision(c)}
+        </section>
+
+        <section class="panel">
           <div class="panel-head"><h2>Plan domowy</h2>${pill("do wykonania między sesjami", "green")}</div>
           ${renderHomePlan(c)}
         </section>
@@ -1514,6 +1617,17 @@
         </div>
         <div class="portal-info" style="margin-top:12px"><div class="label">Podsumowanie</div><p>${escapeHtml(m.clientSummary || "Najważniejszy jest trend w czasie, nie pojedynczy wynik.")}</p></div>
         ${m.pdfDataUrl ? `<div style="margin-top:12px"><button class="btn" data-open-pdf="${escapeHtml(m.id)}">Otwórz PDF Tanita</button></div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderPortalDecision(c) {
+      const decision = generateWeeklyDecision(c);
+      return `
+        <div class="measurement-card measurement-main">
+          <div class="portal-info"><div class="label">Najbliższy kierunek</div><p>${escapeHtml(decision.clientMessage)}</p></div>
+          <div class="portal-info" style="margin-top:12px"><div class="label">Czego teraz nie przyspieszamy</div><p>${escapeHtml(decision.doNotDo[0] || "Nie przyspieszamy kilku parametrów jednocześnie.")}</p></div>
+          <p>To nie jest ocena formy. To decyzja o tempie pracy na podstawie reakcji organizmu i przebiegu procesu.</p>
         </div>
       `;
     }
@@ -1780,6 +1894,108 @@
       return "blue";
     }
 
+    function generateWeeklyDecision(client = activeClient()) {
+      const lastSession = latest(client);
+      const lastPolar = latestPolarSession(client);
+      const lastTanita = latestMeasurement(client);
+      const polarTolerance = lastPolar ? assessLoadTolerance(lastPolar) : null;
+      const tasks = Array.isArray(client.tasks) ? client.tasks : [];
+      const doneTasks = tasks.filter(task => task.done).length;
+      const taskRatio = tasks.length ? doneTasks / tasks.length : null;
+      const reasons = [];
+      const risks = [];
+      const doNotDo = [];
+      let recommendation = "maintain";
+      let label = "Utrzymaj kierunek";
+
+      const vasBefore = normalizeNumber(lastSession?.vasBefore);
+      const vasAfter = normalizeNumber(lastSession?.vasAfter);
+      const readiness = normalizeNumber(lastSession?.readiness);
+      const sleepQuality = lastSession?.sleepQuality || lastPolar?.sleepQuality || "";
+      const hasEnoughData = Boolean(lastSession || lastPolar || lastTanita || tasks.length || client.decisionLogic);
+      const vasIncrease = vasBefore !== null && vasAfter !== null ? vasAfter - vasBefore : null;
+      const redFlagsPresent = Boolean(String(client.redFlags || "").trim());
+      const worseningSignal = (vasIncrease !== null && vasIncrease >= 2) || polarTolerance?.level === "red" || lastPolar?.loadDecision === "regress";
+
+      if (lastSession) reasons.push(`Ostatnia sesja: ${formatDate(lastSession.date)} · VAS ${formatMetric(vasBefore, "")}→${formatMetric(vasAfter, "")}.`);
+      if (lastPolar) reasons.push(`Ostatni Polar: ${formatDate(lastPolar.date)} · ${polarTolerance.label.toLowerCase()}.`);
+      if (lastTanita) reasons.push(`Ostatni pomiar Tanita: ${formatDate(lastTanita.date)} jako punkt odniesienia trendu.`);
+      if (client.decisionLogic) reasons.push(`Logika procesu: ${client.decisionLogic.split("\n")[0]}`);
+      if (tasks.length) reasons.push(`Zadania domowe: ${doneTasks}/${tasks.length} wykonane.`);
+
+      if (!hasEnoughData) {
+        reasons.push("Brak wystarczających danych do pewnej decyzji tygodniowej.");
+        risks.push("Decyzja powinna pozostać konserwatywna do czasu kolejnej sesji lub odczytu.");
+        doNotDo.push("Nie przyspieszaj progresji bez obserwacji reakcji organizmu.");
+      } else if ((vasAfter !== null && vasAfter >= 7) || (vasIncrease !== null && vasIncrease >= 3) || lastPolar?.loadDecision === "consult" || (redFlagsPresent && worseningSignal)) {
+        recommendation = "consult";
+        label = "Konsultacja / stop-klatka";
+        risks.push("Sygnał bólowy lub czerwone flagi wymagają zatrzymania automatycznej progresji.");
+        doNotDo.push("Nie dokładamy intensywności ani zakresu do czasu wyjaśnienia reakcji.");
+      } else if ((vasIncrease !== null && vasIncrease >= 2) || (readiness !== null && readiness <= 3) || sleepQuality === "Bardzo słaby" || polarTolerance?.level === "red") {
+        recommendation = "regress";
+        label = "Cofnij bodziec";
+        risks.push("Organizm pokazuje niższą tolerancję na aktualne obciążenie.");
+        doNotDo.push("Nie utrzymuj bodźca tylko dlatego, że był zaplanowany.");
+      } else if (!hasEnoughData || (vasIncrease !== null && vasIncrease <= 1 && readiness !== null && readiness <= 5) || (taskRatio !== null && taskRatio < 0.5) || Number(client.stage || 1) <= 1) {
+        recommendation = "maintain";
+        label = "Utrzymaj i obserwuj";
+        if (readiness !== null && readiness <= 5) risks.push("Gotowość jest za niska na pewną progresję.");
+        if (taskRatio !== null && taskRatio < 0.5) risks.push("Zadania domowe nie są jeszcze stabilnie wykonywane.");
+        if (Number(client.stage || 1) <= 1) risks.push("Pierwszy etap procesu wymaga spokojnego zbierania danych.");
+        doNotDo.push("Nie zwiększaj jednocześnie objętości, tempa i trudności.");
+      } else if ((vasIncrease === null || vasIncrease <= 0) && readiness !== null && readiness >= 6 && !["Słaby", "Bardzo słaby"].includes(sleepQuality) && polarTolerance?.level === "green" && (taskRatio === null || taskRatio >= 0.5) && (client.sessions || []).length >= 2) {
+        recommendation = "progress";
+        label = "Mała progresja";
+        reasons.push("Ból po sesji nie rośnie, gotowość jest stabilna, a Polar nie pokazuje ostrzegawczego bodźca.");
+        doNotDo.push("Nie progresuj skokowo. Zmieniamy jeden parametr naraz.");
+      }
+
+      if (!risks.length) risks.push("Brak dużych czerwonych sygnałów w danych, ale decyzję nadal trzeba zestawić z obserwacją ruchu.");
+      if (!doNotDo.length) doNotDo.push("Nie interpretuj pojedynczego pomiaru jako pełnej diagnozy.");
+
+      const confidence = ((client.sessions || []).length >= 2 && lastPolar && tasks.length) ? "high" : ((lastSession || lastPolar) ? "medium" : "low");
+      const trainerAction = {
+        progress: "Wybierz jedną małą progresję i zapisz kryterium cofnięcia, jeśli reakcja po sesji będzie gorsza.",
+        maintain: "Utrzymaj aktualny bodziec, domknij zadania i zbierz jeszcze jeden punkt danych.",
+        regress: "Cofnij obciążenie do wariantu lepiej tolerowanego i sprawdź reakcję po 24 godzinach.",
+        consult: "Zatrzymaj progresję i rozważ konsultację lub dodatkową weryfikację przed kolejnym bodźcem."
+      }[recommendation];
+      const clientMessage = {
+        progress: "Możemy zrobić spokojny krok do przodu, ale bez skoku intensywności. Najważniejsza jest przewidywalna reakcja organizmu.",
+        maintain: "Na ten tydzień najlepiej utrzymać kierunek i zebrać więcej spokojnych danych. To nie jest zastój, tylko kontrola tempa.",
+        regress: "Najbliżej trochę cofamy bodziec, żeby organizm mógł zareagować spokojniej. To decyzja o tempie pracy, nie ocena formy.",
+        consult: "Na razie zatrzymujemy progresję i wyjaśniamy reakcję organizmu. Bezpieczeństwo procesu jest ważniejsze niż szybkie dokładanie."
+      }[recommendation];
+
+      return {
+        recommendation,
+        label,
+        confidence,
+        reasons,
+        risks,
+        trainerAction,
+        clientMessage,
+        doNotDo
+      };
+    }
+
+    function decisionTone(value) {
+      if (value === "progress") return "green";
+      if (value === "regress") return "gold";
+      if (value === "consult") return "red";
+      return "blue";
+    }
+
+    function decisionLabel(value) {
+      return {
+        progress: "Progres",
+        maintain: "Utrzymaj",
+        regress: "Cofnij",
+        consult: "Konsultacja"
+      }[value] || "Utrzymaj";
+    }
+
     function openMeasurementPdf(id) {
       const m = (activeClient().measurements || []).find(item => item.id === id);
       if (!m?.pdfDataUrl) return toast("Brak PDF dla tego pomiaru");
@@ -1825,54 +2041,149 @@
 
     function renderReport() {
       const c = activeClient();
+      const currentType = "fourWeeks";
       view.innerHTML = `
         <section class="panel">
-          <div class="panel-head"><div><h2>Raport dla klienta</h2><p>Język spokojny, konkretny i premium. Bez medycznego zadęcia.</p></div><button class="btn primary" id="copyReportBtn">Kopiuj raport</button></div>
-          <div class="report" id="reportText">${escapeHtml(buildReport(c))}</div>
+          <div class="panel-head">
+            <div><h2>Raport premium</h2><p>Język spokojny, konkretny i oparty o realne dane procesu.</p></div>
+            ${pill("Decision & Report Engine", "blue")}
+          </div>
+          <div class="task-form" style="margin-bottom:12px">
+            <select id="reportTypeSelect" aria-label="Typ raportu">
+              ${Object.entries(REPORT_TYPES).map(([value, label]) => `<option value="${value}" ${value === currentType ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}
+            </select>
+            <button class="btn primary" id="copyReportBtn">Kopiuj raport</button>
+          </div>
+          <div class="actions" style="justify-content:flex-start; margin-bottom:12px">
+            <button class="btn" id="printReportBtn">Drukuj / zapisz jako PDF</button>
+            <button class="btn warning" id="saveReportBtn">Zapisz raport w historii klienta</button>
+          </div>
+          <div class="report" id="reportText">${escapeHtml(generatePremiumReport(c, currentType))}</div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Historia raportów</h2>${pill(`${(c.reports || []).length} zapisanych`, (c.reports || []).length ? "green" : "gold")}</div>
+          ${renderReportHistory(c)}
         </section>
       `;
+      const updateReport = () => {
+        $("#reportText").textContent = generatePremiumReport(c, $("#reportTypeSelect").value);
+      };
+      $("#reportTypeSelect").addEventListener("change", updateReport);
       $("#copyReportBtn").addEventListener("click", async () => {
-        await navigator.clipboard.writeText($("#reportText").innerText);
+        await copyReportText($("#reportText").innerText);
         toast("Raport skopiowany");
+      });
+      $("#printReportBtn").addEventListener("click", () => window.print());
+      $("#saveReportBtn").addEventListener("click", () => {
+        c.reports = Array.isArray(c.reports) ? c.reports : [];
+        c.reports.push(migrateReport({
+          id: `r${Date.now()}`,
+          date: today(),
+          type: $("#reportTypeSelect").value,
+          content: $("#reportText").innerText
+        }));
+        save();
+        renderReport();
+        toast("Raport zapisany w historii klienta");
       });
     }
 
     function buildReport(c) {
+      return generatePremiumReport(c, "fourWeeks");
+    }
+
+    function generatePremiumReport(c, reportType = "fourWeeks") {
       const m = metrics(c);
       const l = latest(c);
       const milestones = c.sessions.filter(s => s.milestone).map(s => `- ${s.milestone} (${s.date})`).join("\n") || "- jeszcze bez formalnego kamienia milowego";
-      return `Raport procesu Studio Las
+      const decision = generateWeeklyDecision(c);
+      const sessionNotes = c.sessions.length
+        ? c.sessions.slice(-4).map(s => `- ${s.date}: ${s.notes || s.decision || "Brak szczegółowej obserwacji."}`).join("\n")
+        : "Brak wystarczających danych do oceny trendu.";
+      const start = first(c);
+      const reportTitle = REPORT_TYPES[reportType] || REPORT_TYPES.fourWeeks;
+      return `${reportTitle}
+Studio Las OS ${APP_VERSION}
 
 Klient: ${c.name}
 Pakiet: ${c.package}
 Aktualny etap: Krok ${c.stage} - ${steps[c.stage - 1]?.[0] || "proces indywidualny"}
 
-Cel pracy:
+1. Cel procesu
 ${c.goal || "Do doprecyzowania po diagnostyce."}
 
-Co widzimy w danych:
-- VAS aktualnie: ${m.vasNow ?? "brak danych"}
-- Zmiana bólu od startu: ${m.vasDelta !== null ? "-" + m.vasDelta + " pkt" : "brak danych"}
-- Mobilność aktualnie: ${m.mobility !== null ? m.mobility + "%" : "brak danych"}
-- Zmiana mobilności od startu: ${m.mobilityDelta !== null ? "+" + m.mobilityDelta + "%" : "brak danych"}
+2. Punkt startowy
+${start ? `Pierwsza sesja: ${start.date}. VAS przed: ${start.vasBefore ?? "brak danych"}, VAS po: ${start.vasAfter ?? "brak danych"}, mobilność: ${start.mobilityIndex ?? "brak danych"}%.` : "Brak wystarczających danych do oceny trendu."}
 
-Ostatnia obserwacja:
-${l?.notes || "Brak ostatniej obserwacji."}
+3. Co monitorowaliśmy
+- Ból / VAS: ${m.vasNow ?? "brak danych"}
+- Mobilność: ${m.mobility !== null ? m.mobility + "%" : "brak danych"}
+- Gotowość i sen: ${l ? `${l.readiness ?? "brak danych"} / ${l.sleepQuality || "brak danych"}` : "Brak wystarczających danych do oceny trendu."}
+- Zadania domowe: ${(c.tasks || []).filter(t => t.done).length}/${(c.tasks || []).length}
+- Dane Tanita i Polar: ${latestMeasurement(c) || latestPolarSession(c) ? "monitorowane w systemie" : "Brak wystarczających danych do oceny trendu."}
 
-Decyzja na kolejny krok:
-${l?.decision || c.decisionLogic || "Do ustalenia po kolejnej sesji."}
+4. Najważniejsze obserwacje z sesji
+${sessionNotes}
 
-Kamienie milowe:
-${milestones}
-
-Dane Tanita:
+5. Dane Tanita
 ${buildTanitaReportSection(c)}
 
-Tolerancja obciążenia — Polar:
+6. Dane Polar
 ${buildPolarReportSection(c)}
 
-Komentarz:
-Proces idzie wtedy dobrze, gdy ciało nie tylko wykonuje więcej, ale reaguje spokojniej. Dlatego patrzymy jednocześnie na ból, mobilność, sen, gotowość i jakość ruchu.`;
+7. Kamienie milowe
+${milestones}
+
+8. Aktualna decyzja
+${decision.label} (${decisionLabel(decision.recommendation)}). ${decision.trainerAction}
+
+9. Rekomendacja dalszej pracy
+${decision.clientMessage}
+
+10. Plan na kolejne 4 tygodnie
+${buildNextFourWeeksPlan(c, decision)}
+
+Uwaga:
+To jest raport procesu treningowego i wsparcie decyzji. Nie udaje diagnozy medycznej i nie zastępuje konsultacji, jeśli pojawiają się czerwone flagi.`;
+    }
+
+    function buildNextFourWeeksPlan(c, decision) {
+      if (!decision) return "Brak wystarczających danych do oceny trendu.";
+      const base = {
+        progress: "Kontynuować obecny kierunek i dodać jedną małą progresję naraz. Po każdej zmianie sprawdzić VAS, gotowość, sen i reakcję po 24 godzinach.",
+        maintain: "Utrzymać obecny bodziec, dopracować regularność zadań domowych i zebrać kolejny punkt danych przed większą progresją.",
+        regress: "Cofnąć bodziec do lepiej tolerowanego wariantu, skrócić ekspozycję lub zmniejszyć trudność, a potem wrócić do progresji po uspokojeniu reakcji.",
+        consult: "Zatrzymać progresję i najpierw wyjaśnić reakcję organizmu. Kolejne 4 tygodnie planować dopiero po dodatkowej weryfikacji."
+      }[decision.recommendation];
+      return `${base}\nPriorytet procesu: ${c.nextMilestone || c.goal || steps[c.stage - 1]?.[0] || "ustalić najbliższy mierzalny krok"}.`;
+    }
+
+    function renderReportHistory(c) {
+      const reports = [...(c.reports || [])].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+      if (!reports.length) return `<p>Historia raportów pojawi się po zapisaniu pierwszego snapshotu.</p>`;
+      return `<div class="grid">${reports.map(report => `
+        <div class="task-row">
+          <div class="name">${escapeHtml(REPORT_TYPES[report.type] || report.type || "Raport")}</div>
+          <div class="meta">${escapeHtml(formatDate(report.date))} · ${escapeHtml((report.content || "").slice(0, 140))}${(report.content || "").length > 140 ? "..." : ""}</div>
+        </div>`).join("")}</div>`;
+    }
+
+    async function copyReportText(text) {
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+      } catch (error) {}
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.left = "-9999px";
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      document.body.removeChild(area);
     }
 
     function buildTanitaReportSection(c) {
@@ -2695,6 +3006,7 @@ Initial 83.45 64.95 18.10
         documents: [],
         measurements: [],
         polarSessions: [],
+        reports: [],
         tasks: [],
         sessions: []
       };

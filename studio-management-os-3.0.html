@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 6.0 | Decision & Report Engine</title>
+  <title>Studio Las OS 6.1 | Workflow Hardening</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -338,7 +338,7 @@
     @media (max-width: 980px) {
       .app { grid-template-columns: 1fr; }
       .side { position: static; height: auto; }
-      .nav { grid-template-columns: repeat(10, 1fr); }
+      .nav { grid-template-columns: repeat(11, 1fr); }
       .nav button,
       .nav .client-panel-link { justify-content: center; padding: 10px 8px; }
       .nav span { display: none; }
@@ -368,7 +368,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 6.0</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 6.1</span></div>
       </div>
 
       <div class="client-switcher">
@@ -378,6 +378,7 @@
 
       <nav class="nav" aria-label="Główna nawigacja">
         <button data-view="command" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/></svg><span>Centrum</span></button>
+        <button data-view="todaySession"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 15 2 2 4-5"/></svg><span>Sesja dzisiaj</span></button>
         <button data-view="client"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Klient</span></button>
         <button data-view="process"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Proces</span></button>
         <button data-view="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4a2 2 0 0 1 2-2h11l3 3v14.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg><span>Sesje</span></button>
@@ -402,7 +403,7 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 6.0</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 6.1</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
@@ -552,7 +553,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "6.0";
+    const APP_VERSION = "6.1";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
     const TANITA_FIELD_ORDER = ["date", "weightKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "muscleMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
@@ -832,6 +833,34 @@
       };
     }
 
+    function migratePreSessionCheck(check = {}) {
+      return {
+        ...check,
+        id: check.id || `pre${check.date || Date.now()}`,
+        date: check.date || today(),
+        painIncreased: Boolean(check.painIncreased),
+        poorSleep: Boolean(check.poorSleep),
+        homePlanDone: Boolean(check.homePlanDone),
+        newSymptoms: Boolean(check.newSymptoms),
+        redFlagConcern: Boolean(check.redFlagConcern),
+        plannedDecision: LOAD_DECISIONS[check.plannedDecision] ? check.plannedDecision : "maintain",
+        note: check.note || ""
+      };
+    }
+
+    function migratePostSessionNote(note = {}) {
+      return {
+        ...note,
+        id: note.id || `post${note.date || Date.now()}`,
+        date: note.date || today(),
+        whatWeDid: note.whatWeDid || "",
+        clientResponse: note.clientResponse || "",
+        decision: LOAD_DECISIONS[note.decision] ? note.decision : "maintain",
+        homeTask: note.homeTask || "",
+        clientMessage: note.clientMessage || ""
+      };
+    }
+
     function migrateClient(client = {}) {
       const plan = client.homePlan && typeof client.homePlan === "object" ? client.homePlan : defaultHomePlan();
       const exercises = Array.isArray(plan.exercises)
@@ -869,6 +898,8 @@
         measurements: Array.isArray(client.measurements) ? client.measurements.map(migrateMeasurement) : [],
         polarSessions: Array.isArray(client.polarSessions) ? client.polarSessions.map(migratePolarSession) : [],
         reports: Array.isArray(client.reports) ? client.reports.map(migrateReport) : [],
+        preSessionChecks: Array.isArray(client.preSessionChecks) ? client.preSessionChecks.map(migratePreSessionCheck) : [],
+        postSessionNotes: Array.isArray(client.postSessionNotes) ? client.postSessionNotes.map(migratePostSessionNote) : [],
         homePlan: {
           title: plan.title || "",
           frequency: plan.frequency || "",
@@ -1004,6 +1035,7 @@
       const c = activeClient();
       const titles = {
         command: ["Evidence-Based Command Center", "Dzisiejsze decyzje, ryzyka, priorytety i dane procesu."],
+        todaySession: ["Sesja dzisiaj", "Szybkie centrum pracy przed i po sesji z aktywnym klientem."],
         client: ["Profil klienta", "Jedno miejsce na hipotezę, cel, komunikację i czerwone flagi."],
         process: ["Proces 12 tygodni", "Nie etap dla ozdoby, tylko logika przejścia do kolejnego standardu."],
         sessions: ["Sesje i trend", "Historia obserwacji, bólu, gotowości i decyzji."],
@@ -1026,6 +1058,7 @@
         if (el) el.hidden = clientMode;
       });
       if (viewName === "command") renderCommand();
+      if (viewName === "todaySession") renderTodaySession();
       if (viewName === "client") renderClient();
       if (viewName === "process") renderProcess();
       if (viewName === "sessions") renderSessions();
@@ -1072,6 +1105,15 @@
           </div>
           <div style="margin-top:12px"><button class="btn primary" id="commandDecisionBtn">Przejdź do decyzji</button></div>
         </section>
+        <section class="panel">
+          <div class="panel-head"><div><h2>Sesja dzisiaj</h2><p>${escapeHtml(active.name)} · szybki brief przed wejściem na salę.</p></div>${pill(decisionLabel(decision.recommendation), decisionTone(decision.recommendation))}</div>
+          <div class="grid cols-3">
+            <div class="portal-info"><div class="label">Aktywny klient</div><p>${escapeHtml(active.name)}</p></div>
+            <div class="portal-info"><div class="label">Rekomendacja na dziś</div><p>${escapeHtml(decision.label)}</p></div>
+            <div class="portal-info"><div class="label">Największe ryzyko</div><p>${escapeHtml(decision.risks[0] || "Brak dużego sygnału ryzyka.")}</p></div>
+          </div>
+          <div style="margin-top:12px"><button class="btn primary" id="commandTodaySessionBtn">Przejdź do Sesja dzisiaj</button></div>
+        </section>
         <div class="grid cols-2">
           <section class="panel">
             <div class="panel-head"><h2>Kamienie milowe</h2>${pill("dowody postępu", "green")}</div>
@@ -1088,6 +1130,151 @@
         viewName = "decision";
         renderShell();
       });
+      $("#commandTodaySessionBtn")?.addEventListener("click", () => {
+        viewName = "todaySession";
+        renderShell();
+      });
+    }
+
+    function renderTodaySession() {
+      const c = activeClient();
+      const decision = generateWeeklyDecision(c);
+      const lastSession = latest(c);
+      const lastPolar = latestPolarSession(c);
+      const lastTanita = latestMeasurement(c);
+      const tasks = c.tasks || [];
+      const doneTasks = tasks.filter(task => task.done).length;
+      const stageName = steps[c.stage - 1]?.[0] || "Proces indywidualny";
+      const milestone = lastMilestone(c);
+      const redFlags = String(c.redFlags || "").trim();
+      const biggestRisk = decision.risks[0] || "Brak dużego sygnału ryzyka w aktualnych danych.";
+      view.innerHTML = `
+        <section class="panel portal-focus">
+          <div class="panel-head">
+            <div><h2>${escapeHtml(c.name)}</h2><p>${escapeHtml(c.package)} · ${escapeHtml(stageName)}</p></div>
+            ${pill(decision.label, decisionTone(decision.recommendation))}
+          </div>
+          <div class="grid cols-4">
+            <div class="portal-info"><div class="label">Ostatnia decyzja</div><p>${escapeHtml(decisionLabel(decision.recommendation))}</p></div>
+            <div class="portal-info"><div class="label">Najbliższy termin</div><p>${c.nextSessionDate ? escapeHtml(formatDate(c.nextSessionDate)) : "Brak terminu"}</p></div>
+            <div class="portal-info"><div class="label">Etap</div><p>Krok ${escapeHtml(c.stage)} · ${escapeHtml(stageName)}</p></div>
+            <div class="portal-info"><div class="label">Ostatni milestone</div><p>${escapeHtml(milestone || "Brak zapisanego milestone.")}</p></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Co muszę wiedzieć przed sesją</h2>${pill("brief", "blue")}</div>
+          <div class="grid cols-3">
+            <div class="portal-info"><div class="label">Ostatnia sesja</div><p>${lastSession ? `${escapeHtml(formatDate(lastSession.date))} · VAS ${formatMetric(lastSession.vasBefore, "")}→${formatMetric(lastSession.vasAfter, "")} · ${escapeHtml(lastSession.decision || "brak decyzji")}` : "Brak sesji"}</p></div>
+            <div class="portal-info"><div class="label">Ostatni Polar</div><p>${lastPolar ? `${escapeHtml(formatDate(lastPolar.date))} · RPE ${formatMetric(lastPolar.rpe, "")} · VAS po ${formatMetric(lastPolar.vasAfter, "")} · gotowość ${formatMetric(lastPolar.readiness, "")} · ${escapeHtml(loadDecisionLabel(lastPolar.loadDecision))}` : "Brak odczytu Polar"}</p></div>
+            <div class="portal-info"><div class="label">Ostatni Tanita</div><p>${lastTanita ? `${escapeHtml(formatDate(lastTanita.date))} · ${formatMetric(lastTanita.weightKg, "kg")} · fat ${formatMetric(lastTanita.fatPercent, "%")} · mięśnie ${formatMetric(lastTanita.muscleMassKg, "kg")}` : "Brak pomiaru Tanita"}</p></div>
+            <div class="portal-info"><div class="label">Zadania</div><p>${doneTasks}/${tasks.length} wykonane</p></div>
+            <div class="portal-info span-2"><div class="label">Czerwone flagi</div><p>${escapeHtml(redFlags || "Brak wpisanych czerwonych flag.")}</p></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Rekomendacja na dziś</h2>${pill(decision.label, decisionTone(decision.recommendation))}</div>
+          <div class="grid cols-2">
+            ${fieldBlock("Rekomendacja", decisionLabel(decision.recommendation))}
+            ${fieldBlock("Co robi trener", decision.trainerAction)}
+            <div class="panel soft"><div class="label">Czego nie robić</div>${renderTextList(decision.doNotDo)}</div>
+            ${fieldBlock("Największe ryzyko", biggestRisk)}
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Szybkie akcje</h2>${pill("operacyjnie", "green")}</div>
+          <div class="actions" style="justify-content:flex-start">
+            <button class="btn primary" id="todayNewSessionBtn">Nowa sesja</button>
+            <button class="btn primary" id="todayNewPolarBtn">Nowy odczyt Polar</button>
+            <button class="btn primary" id="todayNewMeasurementBtn">Nowy pomiar</button>
+            <button class="btn" id="todayReportBtn">Przejdź do Raportu</button>
+          </div>
+        </section>
+
+        <div class="grid cols-2">
+          <section class="panel">
+            <div class="panel-head"><h2>Check przed sesją</h2>${pill("2 min", "gold")}</div>
+            <form id="preSessionCheckForm" class="form-grid">
+              <div class="form-field full"><label><input type="checkbox" name="painIncreased"> Czy ból wzrósł od ostatniej sesji?</label></div>
+              <div class="form-field full"><label><input type="checkbox" name="poorSleep"> Czy sen/regeneracja były słabe?</label></div>
+              <div class="form-field full"><label><input type="checkbox" name="homePlanDone"> Czy plan domowy wykonany?</label></div>
+              <div class="form-field full"><label><input type="checkbox" name="newSymptoms"> Czy są nowe objawy?</label></div>
+              <div class="form-field full"><label><input type="checkbox" name="redFlagConcern"> Czy jest obawa o czerwoną flagę?</label></div>
+              <div class="form-field full"><label class="label">Planowana decyzja</label><select name="plannedDecision"><option value="progress">Progres</option><option value="maintain" selected>Utrzymaj</option><option value="regress">Cofnij</option><option value="consult">Konsultacja</option></select></div>
+              <div class="form-field full"><label class="label">Notatka</label><textarea name="note" placeholder="Co warto mieć z tyłu głowy przed wejściem na salę?"></textarea></div>
+              <button class="btn primary full" type="submit">Zapisz check</button>
+            </form>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Notatka po sesji</h2>${pill("domknij proces", "green")}</div>
+            <form id="postSessionNoteForm" class="form-grid">
+              <div class="form-field full"><label class="label">Co zrobiliśmy?</label><textarea name="whatWeDid"></textarea></div>
+              <div class="form-field full"><label class="label">Jak klient zareagował?</label><textarea name="clientResponse"></textarea></div>
+              <div class="form-field full"><label class="label">Decyzja po sesji</label><select name="decision"><option value="progress">Progres</option><option value="maintain" selected>Utrzymaj</option><option value="regress">Cofnij</option><option value="consult">Konsultacja</option></select></div>
+              <div class="form-field full"><label class="label">Zadanie domowe do następnego razu</label><textarea name="homeTask"></textarea></div>
+              <div class="form-field full"><label class="label">Komunikat dla klienta</label><textarea name="clientMessage"></textarea></div>
+              <button class="btn primary full" type="submit">Zapisz notatkę</button>
+            </form>
+          </section>
+        </div>
+      `;
+      $("#todayNewSessionBtn")?.addEventListener("click", openSessionModal);
+      $("#todayNewPolarBtn")?.addEventListener("click", openPolarModal);
+      $("#todayNewMeasurementBtn")?.addEventListener("click", openMeasurementModal);
+      $("#todayReportBtn")?.addEventListener("click", () => {
+        viewName = "report";
+        renderShell();
+      });
+      $("#preSessionCheckForm")?.addEventListener("submit", savePreSessionCheck);
+      $("#postSessionNoteForm")?.addEventListener("submit", savePostSessionNote);
+    }
+
+    function savePreSessionCheck(e) {
+      e.preventDefault();
+      const c = activeClient();
+      const fd = new FormData(e.currentTarget);
+      c.preSessionChecks = Array.isArray(c.preSessionChecks) ? c.preSessionChecks : [];
+      c.preSessionChecks.push(migratePreSessionCheck({
+        id: `pre${Date.now()}`,
+        date: today(),
+        painIncreased: fd.has("painIncreased"),
+        poorSleep: fd.has("poorSleep"),
+        homePlanDone: fd.has("homePlanDone"),
+        newSymptoms: fd.has("newSymptoms"),
+        redFlagConcern: fd.has("redFlagConcern"),
+        plannedDecision: fd.get("plannedDecision"),
+        note: String(fd.get("note") || "").trim()
+      }));
+      save();
+      toast("Check przed sesją zapisany");
+      renderTodaySession();
+    }
+
+    function savePostSessionNote(e) {
+      e.preventDefault();
+      const c = activeClient();
+      const fd = new FormData(e.currentTarget);
+      const homeTask = String(fd.get("homeTask") || "").trim();
+      c.postSessionNotes = Array.isArray(c.postSessionNotes) ? c.postSessionNotes : [];
+      c.postSessionNotes.push(migratePostSessionNote({
+        id: `post${Date.now()}`,
+        date: today(),
+        whatWeDid: String(fd.get("whatWeDid") || "").trim(),
+        clientResponse: String(fd.get("clientResponse") || "").trim(),
+        decision: fd.get("decision"),
+        homeTask,
+        clientMessage: String(fd.get("clientMessage") || "").trim()
+      }));
+      if (homeTask) {
+        c.tasks = Array.isArray(c.tasks) ? c.tasks : [];
+        c.tasks.push({ text: homeTask, done: false, createdAt: today(), source: "postSessionNote" });
+      }
+      save();
+      toast(homeTask ? "Notatka zapisana i dodano zadanie domowe" : "Notatka po sesji zapisana");
+      renderTodaySession();
     }
 
     function kpi(label, value, trend, tone) {
@@ -1570,6 +1757,11 @@
         </section>
 
         <section class="panel">
+          <div class="panel-head"><h2>Ustalenie po ostatniej sesji</h2>${pill("dla klienta", "blue")}</div>
+          ${renderPortalPostSessionNote(c)}
+        </section>
+
+        <section class="panel">
           <div class="panel-head"><h2>Plan domowy</h2>${pill("do wykonania między sesjami", "green")}</div>
           ${renderHomePlan(c)}
         </section>
@@ -1628,6 +1820,27 @@
           <div class="portal-info"><div class="label">Najbliższy kierunek</div><p>${escapeHtml(decision.clientMessage)}</p></div>
           <div class="portal-info" style="margin-top:12px"><div class="label">Czego teraz nie przyspieszamy</div><p>${escapeHtml(decision.doNotDo[0] || "Nie przyspieszamy kilku parametrów jednocześnie.")}</p></div>
           <p>To nie jest ocena formy. To decyzja o tempie pracy na podstawie reakcji organizmu i przebiegu procesu.</p>
+        </div>
+      `;
+    }
+
+    function renderPortalPostSessionNote(c) {
+      const note = latestPostSessionNote(c);
+      if (!note) return `<p>Ustalenie po ostatniej sesji pojawi się tutaj po zapisaniu notatki po sesji.</p>`;
+      const simpleDecision = {
+        progress: "Robimy spokojny krok do przodu.",
+        maintain: "Utrzymujemy obecny kierunek.",
+        regress: "Na chwilę cofamy bodziec i uspokajamy reakcję.",
+        consult: "Najpierw wyjaśniamy reakcję organizmu, potem planujemy dalej."
+      }[note.decision] || "Utrzymujemy obecny kierunek.";
+      return `
+        <div class="measurement-card measurement-main">
+          <div class="grid cols-3">
+            <div class="portal-info"><div class="label">Data</div><p>${escapeHtml(formatDate(note.date))}</p></div>
+            <div class="portal-info"><div class="label">Decyzja</div><p>${escapeHtml(simpleDecision)}</p></div>
+            <div class="portal-info"><div class="label">Zadanie domowe</div><p>${escapeHtml(note.homeTask || "Brak nowego zadania domowego.")}</p></div>
+          </div>
+          <div class="portal-info" style="margin-top:12px"><div class="label">Komunikat</div><p>${escapeHtml(note.clientMessage || "Ustalenie zostało zapisane po sesji.")}</p></div>
         </div>
       `;
     }
@@ -1777,6 +1990,22 @@
 
     function lastMilestone(c) {
       return [...c.sessions].reverse().find(s => s.milestone)?.milestone || "";
+    }
+
+    function sortedPreSessionChecks(c = activeClient()) {
+      return [...(c?.preSessionChecks || [])].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) || String(b.id || "").localeCompare(String(a.id || "")));
+    }
+
+    function latestPreSessionCheck(c = activeClient()) {
+      return sortedPreSessionChecks(c)[0] || null;
+    }
+
+    function sortedPostSessionNotes(c = activeClient()) {
+      return [...(c?.postSessionNotes || [])].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) || String(b.id || "").localeCompare(String(a.id || "")));
+    }
+
+    function latestPostSessionNote(c = activeClient()) {
+      return sortedPostSessionNotes(c)[0] || null;
     }
 
     function sortedMeasurements(c = activeClient()) {
@@ -2070,8 +2299,8 @@
       };
       $("#reportTypeSelect").addEventListener("change", updateReport);
       $("#copyReportBtn").addEventListener("click", async () => {
-        await copyReportText($("#reportText").innerText);
-        toast("Raport skopiowany");
+        const copied = await copyReportText($("#reportText").innerText);
+        toast(copied ? "Raport skopiowany" : "Nie udało się skopiować raportu");
       });
       $("#printReportBtn").addEventListener("click", () => window.print());
       $("#saveReportBtn").addEventListener("click", () => {
@@ -2140,11 +2369,40 @@ ${decision.label} (${decisionLabel(decision.recommendation)}). ${decision.traine
 9. Rekomendacja dalszej pracy
 ${decision.clientMessage}
 
-10. Plan na kolejne 4 tygodnie
+10. Ustalenia z procesu
+${buildProcessAgreementsSection(c)}
+
+11. Plan na kolejne 4 tygodnie
 ${buildNextFourWeeksPlan(c, decision)}
 
 Uwaga:
 To jest raport procesu treningowego i wsparcie decyzji. Nie udaje diagnozy medycznej i nie zastępuje konsultacji, jeśli pojawiają się czerwone flagi.`;
+    }
+
+    function buildProcessAgreementsSection(c) {
+      const pre = latestPreSessionCheck(c);
+      const post = latestPostSessionNote(c);
+      if (!pre && !post) return "Brak zapisanych ustaleń z procesu.";
+      const parts = [];
+      if (pre) {
+        const context = [];
+        if (pre.painIncreased) context.push("ból był wyższy od ostatniej sesji");
+        if (pre.poorSleep) context.push("regeneracja była słabsza");
+        if (pre.homePlanDone) context.push("plan domowy został wykonany");
+        if (pre.newSymptoms) context.push("pojawiły się nowe objawy");
+        if (pre.redFlagConcern) context.push("potrzebna była dodatkowa ostrożność");
+        parts.push(`Przed ostatnią sesją (${pre.date}) kontekst był następujący: ${context.length ? context.join(", ") : "bez dodatkowych sygnałów ograniczających"}. Planowany kierunek: ${decisionLabel(pre.plannedDecision)}.${pre.note ? ` Notatka: ${pre.note}` : ""}`);
+      }
+      if (post) {
+        const details = [
+          post.whatWeDid ? `zrobiliśmy: ${post.whatWeDid}` : "",
+          post.clientResponse ? `reakcja klienta: ${post.clientResponse}` : "",
+          post.clientMessage ? `komunikat dla klienta: ${post.clientMessage}` : "",
+          post.homeTask ? `zadanie domowe: ${post.homeTask}` : ""
+        ].filter(Boolean).join("; ");
+        parts.push(`Po ostatniej sesji (${post.date}) ustalono: ${decisionLabel(post.decision)}.${details ? ` ${details}.` : ""}`);
+      }
+      return parts.join("\n");
     }
 
     function buildNextFourWeeksPlan(c, decision) {
@@ -2172,7 +2430,7 @@ To jest raport procesu treningowego i wsparcie decyzji. Nie udaje diagnozy medyc
       try {
         if (navigator.clipboard?.writeText) {
           await navigator.clipboard.writeText(text);
-          return;
+          return true;
         }
       } catch (error) {}
       const area = document.createElement("textarea");
@@ -2182,8 +2440,14 @@ To jest raport procesu treningowego i wsparcie decyzji. Nie udaje diagnozy medyc
       area.style.left = "-9999px";
       document.body.appendChild(area);
       area.select();
-      document.execCommand("copy");
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch (error) {
+        copied = false;
+      }
       document.body.removeChild(area);
+      return copied;
     }
 
     function buildTanitaReportSection(c) {
@@ -3007,6 +3271,8 @@ Initial 83.45 64.95 18.10
         measurements: [],
         polarSessions: [],
         reports: [],
+        preSessionChecks: [],
+        postSessionNotes: [],
         tasks: [],
         sessions: []
       };

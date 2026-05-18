@@ -321,7 +321,9 @@
     .print-highlight-card,
     .print-priority,
     .print-success-list li,
-    .print-report-note {
+    .print-report-note,
+    .print-evidence-note,
+    .print-evidence-item {
       background: #fffefb;
       border: 1px solid #ddd5c5;
       border-radius: 10px;
@@ -339,6 +341,12 @@
     }
     .print-report-section { display: grid; gap: 10px; }
     .print-report-section h2 { margin: 0; color: #203524; font-size: 17px; letter-spacing: 0; }
+    .print-evidence-note { border-left: 4px solid #8aa176; padding: 14px; gap: 10px; break-inside: avoid; }
+    .print-evidence-note p { margin: 0; color: #30362d; line-height: 1.52; }
+    .print-evidence-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .print-evidence-item { padding: 9px; color: #30362d; font-size: 13px; line-height: 1.35; }
+    .print-evidence-item strong { display: block; color: #6b735f; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
+    .print-report-subtle { color: #6b735f !important; font-size: 13px; line-height: 1.45; }
     .print-highlight-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .print-highlight-card { padding: 13px; display: grid; gap: 5px; min-height: 92px; }
     .print-highlight-card strong { color: #1f241e; font-size: 18px; line-height: 1.2; }
@@ -543,6 +551,11 @@
         gap: 3mm 8mm;
       }
 
+      body.printing-report .print-evidence-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 2.5mm;
+      }
+
       body.printing-report .print-priority-list {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 3mm;
@@ -552,11 +565,17 @@
       body.printing-report .print-highlight-card,
       body.printing-report .print-priority,
       body.printing-report .print-success-list li,
-      body.printing-report .print-report-note {
+      body.printing-report .print-report-note,
+      body.printing-report .print-evidence-note,
+      body.printing-report .print-evidence-item {
         border: 1px solid #d9d3ca !important;
         box-shadow: none !important;
         break-inside: avoid;
         padding: 3mm !important;
+      }
+
+      body.printing-report .print-evidence-note {
+        border-left: 1.4mm solid #8aa176 !important;
       }
 
       body.printing-report .print-report-section {
@@ -3072,6 +3091,7 @@
             ${renderReportMetaItem("Data wygenerowania", formatDate(today()))}
             ${c.package ? renderReportMetaItem("Pakiet", c.package) : ""}
           </section>
+          ${renderReportEvidenceSection(c, reportType, audience)}
           <section class="print-report-section">
             <h2>Najważniejsze w 60 sekund</h2>
             <div class="print-highlight-grid">
@@ -3121,6 +3141,135 @@
         <strong>${escapeHtml(reportPresentationText(priority.title, audience))}</strong>
         <p>${escapeHtml(reportPresentationText(priority.description, audience))}</p>
       </div>`;
+    }
+
+    function renderReportEvidenceSection(c, reportType = "fourWeeks", audience = "client") {
+      const items = reportEvidenceItems(c, reportType);
+      return `<section class="print-report-section print-evidence-note">
+        <h2>Na czym opieramy ten raport</h2>
+        <p>${escapeHtml(reportPresentationText(generateReportEvidenceSummary(c, reportType, audience), audience))}</p>
+        <div class="print-evidence-grid">
+          ${items.map(item => `<div class="print-evidence-item"><strong>${escapeHtml(item.label)}</strong>${escapeHtml(reportPresentationText(item.value, audience))}</div>`).join("")}
+        </div>
+        <p class="print-report-subtle">${escapeHtml(reportPresentationText(reportEvidenceMaturityText(c, reportType, audience), audience))}</p>
+      </section>`;
+    }
+
+    function generateReportEvidenceSummary(c, reportType = "fourWeeks", audience = "client") {
+      const sources = reportEvidenceItems(c, reportType)
+        .map(item => item.phrase)
+        .filter(Boolean);
+      const typeLabel = REPORT_TYPES[reportType] || "raport procesu";
+      const sourceText = sources.length
+        ? `Ten raport powstał na podstawie: ${joinPolishList(sources)}.`
+        : "Ten raport porządkuje aktualny kierunek pracy na podstawie informacji uzupełnionych w profilu klienta.";
+      const audienceNote = audience === "trainer"
+        ? "Dane traktujemy jako materiał do decyzji treningowej i rozmowy z klientem."
+        : "Dane traktujemy jako punkty odniesienia do rozmowy i kolejnych decyzji.";
+      return `${sourceText} Rodzaj raportu: ${typeLabel}. ${audienceNote}`;
+    }
+
+    function reportEvidenceItems(c, reportType = "fourWeeks") {
+      const counts = reportEvidenceCounts(c);
+      return [
+        {
+          label: "Rodzaj",
+          value: REPORT_TYPES[reportType] || "raport procesu",
+          phrase: ""
+        },
+        {
+          label: "Ankieta",
+          value: counts.hasIntake ? "tak" : "do uzupełnienia",
+          phrase: counts.hasIntake ? "ankiety startowej" : ""
+        },
+        {
+          label: "Sesje",
+          value: counts.sessions ? String(counts.sessions) : "jeszcze nie rozpoczęte",
+          phrase: counts.sessions ? `${counts.sessions} ${pluralizePl(counts.sessions, "zapisanej sesji", "zapisanych sesji", "zapisanych sesji")}` : ""
+        },
+        {
+          label: "Notatki po sesji",
+          value: counts.postNotes ? String(counts.postNotes) : "po kolejnych sesjach",
+          phrase: counts.postNotes ? `${counts.postNotes} ${pluralizePl(counts.postNotes, "zapisanej notatki po sesji", "zapisanych notatek po sesji", "zapisanych notatek po sesji")}` : ""
+        },
+        {
+          label: "Tanita",
+          value: counts.tanita ? String(counts.tanita) : "po pierwszym pomiarze",
+          phrase: counts.tanita ? `${counts.tanita} ${pluralizePl(counts.tanita, "pomiaru Tanita", "pomiarów Tanita", "pomiarów Tanita")}` : ""
+        },
+        {
+          label: "Polar",
+          value: counts.polar ? String(counts.polar) : "po pierwszym odczycie",
+          phrase: counts.polar ? `${counts.polar} ${pluralizePl(counts.polar, "odczytu Polar", "odczytów Polar", "odczytów Polar")}` : ""
+        },
+        {
+          label: "Plan domowy",
+          value: counts.homePlan ? String(counts.homePlan) : "do uzupełnienia",
+          phrase: counts.homePlan ? `${counts.homePlan} ${pluralizePl(counts.homePlan, "aktywnego zadania domowego", "aktywnych zadań domowych", "aktywnych zadań domowych")}` : ""
+        },
+        {
+          label: "Testy diagnostyczne",
+          value: counts.tests ? String(counts.tests) : "po ocenie ruchowej",
+          phrase: counts.tests ? `${counts.tests} ${pluralizePl(counts.tests, "zapisanego testu diagnostycznego", "zapisanych testów diagnostycznych", "zapisanych testów diagnostycznych")}` : ""
+        }
+      ];
+    }
+
+    function reportEvidenceMaturityText(c, reportType = "fourWeeks", audience = "client") {
+      const counts = reportEvidenceCounts(c);
+      const processPoints = Math.max(counts.sessions, counts.postNotes);
+      const enoughForTrend = (reportType === "fourWeeks" && processPoints >= 3)
+        || (reportType === "twelveWeeks" && processPoints >= 8)
+        || (reportType === "continuation" && counts.homePlan > 0 && (Number(c.stage || 1) >= 4 || processPoints >= 8));
+
+      if (reportType === "startMap") {
+        return "Na tym etapie traktujemy raport jako mapę kierunku pracy, a nie końcową ocenę efektów.";
+      }
+      if (reportType === "fourWeeks" && processPoints < 3) {
+        return "Na tym etapie traktujemy raport jako uporządkowanie kierunku pracy, a nie końcową ocenę efektów.";
+      }
+      if (reportType === "twelveWeeks" && processPoints < 8) {
+        return "Na tym etapie traktujemy raport jako uporządkowanie kierunku pracy, a nie końcową ocenę efektów.";
+      }
+      if (reportType === "continuation" && counts.homePlan === 0) {
+        return "Plan kontynuacji wymaga doprecyzowania zadań domowych przed samodzielną pracą.";
+      }
+      if (enoughForTrend) {
+        return "Zakres danych pozwala już ostrożnie oceniać trend procesu, ale pojedyncze pomiary nadal traktujemy jako punkty odniesienia, nie wyrok.";
+      }
+      return audience === "trainer"
+        ? "Zakres danych wspiera decyzję treningową, ale wnioski warto nadal potwierdzać kolejnymi obserwacjami."
+        : "Na tym etapie najważniejsze jest spokojne łączenie danych z tym, jak organizm reaguje między sesjami.";
+    }
+
+    function reportEvidenceCounts(c) {
+      const activeTasks = (c.tasks || []).filter(task => !task.done).length;
+      const activeExercises = activeHomePlanExercises(c).length;
+      return {
+        hasIntake: hasImportedIntake(c),
+        sessions: (c.sessions || []).length,
+        postNotes: (c.postSessionNotes || []).length,
+        tanita: (c.measurements || []).length,
+        polar: (c.polarSessions || []).length,
+        homePlan: activeExercises + activeTasks,
+        tests: Array.isArray(c.testResults) ? c.testResults.length : 0
+      };
+    }
+
+    function pluralizePl(n, one, few, many) {
+      const value = Math.abs(Number(n) || 0);
+      const last = value % 10;
+      const lastTwo = value % 100;
+      if (value === 1) return one;
+      if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14)) return few;
+      return many;
+    }
+
+    function joinPolishList(items = []) {
+      const clean = items.map(item => String(item || "").trim()).filter(Boolean);
+      if (clean.length <= 1) return clean.join("");
+      if (clean.length === 2) return `${clean[0]} oraz ${clean[1]}`;
+      return `${clean.slice(0, -1).join(", ")} oraz ${clean[clean.length - 1]}`;
     }
 
     function reportPresentationText(text = "", audience = "client") {

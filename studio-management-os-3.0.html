@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 6.1 | Workflow Hardening</title>
+  <title>Studio Las OS 6.2 | Intake Import & Start Map</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -338,7 +338,7 @@
     @media (max-width: 980px) {
       .app { grid-template-columns: 1fr; }
       .side { position: static; height: auto; }
-      .nav { grid-template-columns: repeat(11, 1fr); }
+      .nav { grid-template-columns: repeat(12, 1fr); }
       .nav button,
       .nav .client-panel-link { justify-content: center; padding: 10px 8px; }
       .nav span { display: none; }
@@ -368,7 +368,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 6.1</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 6.2</span></div>
       </div>
 
       <div class="client-switcher">
@@ -379,6 +379,7 @@
       <nav class="nav" aria-label="Główna nawigacja">
         <button data-view="command" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/></svg><span>Centrum</span></button>
         <button data-view="todaySession"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 15 2 2 4-5"/></svg><span>Sesja dzisiaj</span></button>
+        <button data-view="intake"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg><span>Ankieta</span></button>
         <button data-view="client"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Klient</span></button>
         <button data-view="process"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Proces</span></button>
         <button data-view="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4a2 2 0 0 1 2-2h11l3 3v14.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg><span>Sesje</span></button>
@@ -403,7 +404,7 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 6.1</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 6.2</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
@@ -553,7 +554,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "6.1";
+    const APP_VERSION = "6.2";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
     const TANITA_FIELD_ORDER = ["date", "weightKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "muscleMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
@@ -612,6 +613,77 @@
       fourWeeks: "Raport 4 tygodnie",
       twelveWeeks: "Raport 12 tygodni",
       continuation: "Plan Kontynuacji"
+    };
+    const INTAKE_FIELD_ALIASES = {
+      submittedAt: ["Data wypełnienia", "Sygnatura czasowa", "Timestamp", "Czas przesłania"],
+      name: ["Imię i nazwisko", "Imie i nazwisko", "Nazwa użytkownika"],
+      email: ["Email", "E-mail", "Adres e-mail", "Nazwa użytkownika"],
+      age: ["Wiek"],
+      heightCm: ["Wzrost (cm)", "Wzrost"],
+      weightKg: ["Masa ciała (kg)", "Masa ciala (kg)", "Waga"],
+      occupation: ["Zawód", "Zawod"],
+      workType: ["Charakter wykonywanej pracy"],
+      sittingHours: ["Ile godzin dziennie spędzasz w pozycji siedzącej?", "Ile godzin dziennie spedzasz w pozycji siedzacej?"],
+      goal: ["Jaki jest Twój główny cel treningowy?", "Jaki jest Twoj glowny cel treningowy?"],
+      mainGoal: ["Z tych celów, który jest NAJWAŻNIEJSZY", "Z tych celow, ktory jest NAJWAZNIEJSZY", "Najważniejszy cel"],
+      motivation: ["Dlaczego zdecydowałeś/aś się", "Dlaczego zdecydowales/as sie"],
+      expectations: ["Jakie są Twoje oczekiwania wobec trenera?", "Jakie sa Twoje oczekiwania wobec trenera?"],
+      readiness: ["Czy jesteś gotowy/a poświęcić 3-5 godzin", "Czy jestes gotowy/a poswiecic 3-5 godzin"],
+      painAreas: ["Czy aktualnie doświadczasz bólu lub dyskomfortu?", "Czy aktualnie doswiadczasz bolu lub dyskomfortu?"],
+      surgeries: ["Czy przeszedłeś/aś jakieś operacje", "Czy przeszedles/as jakies operacje"],
+      injuries: ["Czy miałeś/aś jakieś poważne kontuzje", "Czy miales/as jakies powazne kontuzje"],
+      meds: ["Czy przyjmujesz obecnie jakieś leki", "Czy przyjmujesz obecnie jakies leki"],
+      supplements: ["Czy przyjmujesz suplementy diety?"],
+      contraindications: ["Czy lekarz wydał Ci kiedykolwiek przeciwwskazania", "Czy lekarz wydal Ci kiedykolwiek przeciwwskazania"],
+      bloodwork: ["Czy wykonywałeś/aś badania krwi", "Czy wykonywales/as badania krwi"],
+      pregnancy: ["Czy jesteś obecnie w ciąży?", "Czy jestes obecnie w ciazy?"],
+      postpartum: ["Czy urodziłaś dziecko", "Czy urodzilas dziecko"],
+      gynConsent: ["Czy masz zgodę lekarza ginekologa", "Czy masz zgode lekarza ginekologa"],
+      trainingExperience: ["Jaki jest Twój całkowity staż treningowy?", "Jaki jest Twoj calkowity staz treningowy?"],
+      trainingInjury: ["Czy doznałeś/aś kontuzji podczas treningu", "Czy doznales/as kontuzji podczas treningu"],
+      activities: ["Jakie formy aktywności fizycznej", "Jakie formy aktywnosci fizycznej"],
+      last6Months: ["Jak często ćwiczyłeś/aś", "Jak czesto cwiczyles/as"],
+      workedWithTrainer: ["Czy pracowałeś/aś wcześniej z trenerem personalnym?", "Czy pracowales/as wczesniej z trenerem personalnym?"],
+      bodyweightSkill: ["bodyweightSkill", "masa własnego ciała", "masa wlasnego ciala"],
+      barbellSkill: ["barbellSkill", "sztanga"],
+      dumbbellSkill: ["dumbbellSkill", "hantle", "dumbbell"],
+      preferredTrainingType: ["preferredTrainingType", "preferowany typ treningu", "jaki trening preferujesz"],
+      trainingMotivators: ["trainingMotivators", "co motywuje Cię do treningu", "co motywuje Cie do treningu"],
+      reactionToProgramChanges: ["reactionToProgramChanges", "zmiany w programie"],
+      stressReaction: ["stressReaction", "reakcja na stres"],
+      idealSessionLength: ["idealSessionLength", "idealna długość sesji", "idealna dlugosc sesji"],
+      preferredRest: ["preferredRest", "preferowana przerwa", "odpoczynek"],
+      realisticFrequency: ["realisticFrequency", "realna częstotliwość", "realna czestotliwosc"],
+      preferredPlace: ["preferredPlace", "preferowane miejsce"],
+      preferredTime: ["preferredTime", "preferowana pora"],
+      selfDescription: ["selfDescription", "jak siebie opisujesz"],
+      discomfortReaction: ["discomfortReaction", "reakcja na dyskomfort"],
+      pastTrainingExperience: ["pastTrainingExperience", "dotychczasowe doświadczenia treningowe", "dotychczasowe doswiadczenia treningowe"],
+      sleepNeed: ["sleepNeed", "ile snu potrzebujesz", "potrzeba snu"],
+      sleepQuality: ["sleepQuality", "jakość snu", "jakosc snu"],
+      water: ["water", "ile wody", "nawodnienie"],
+      stressLevel: ["stressLevel", "poziom stresu"],
+      alcohol: ["alcohol", "alkohol"],
+      smoking: ["smoking", "palenie", "papierosy"],
+      meals: ["meals", "posiłki", "posilki"],
+      dietRestrictions: ["dietRestrictions", "ograniczenia żywieniowe", "ograniczenia zywieniowe"],
+      currentActivityLevel: ["currentActivityLevel", "aktualny poziom aktywności", "aktualny poziom aktywnosci"],
+      stairsUp: ["stairsUp", "wchodzenie po schodach"],
+      stairsDown: ["stairsDown", "schodzenie po schodach"],
+      liftingFromFloor: ["liftingFromFloor", "podnoszenie z podłogi", "podnoszenie z podlogi"],
+      armsOverhead: ["armsOverhead", "ręce nad głową", "rece nad glowa"],
+      longSitting: ["longSitting", "długie siedzenie", "dlugie siedzenie"],
+      longStanding: ["longStanding", "długie stanie", "dlugie stanie"],
+      torsoRotation: ["torsoRotation", "rotacja tułowia", "rotacja tulowia"],
+      balanceProblems: ["balanceProblems", "problemy z równowagą", "problemy z rownowaga"],
+      dizziness: ["dizziness", "zawroty głowy", "zawroty glowy"],
+      jointLimitations: ["jointLimitations", "ograniczenia stawowe", "ograniczenia ruchowe"],
+      fitnessSelfRating: ["fitnessSelfRating", "ocena sprawności", "ocena sprawnosci"],
+      truthDeclaration: ["truthDeclaration", "oświadczam, że podane informacje są prawdziwe", "oswiadczam, ze podane informacje sa prawdziwe"],
+      updateObligation: ["updateObligation", "zobowiązuję się informować", "zobowiazuje sie informowac"],
+      trainerNotDoctor: ["trainerNotDoctor", "trener nie jest lekarzem"],
+      hiddenHealthRisk: ["hiddenHealthRisk", "zatajenie informacji zdrowotnych"],
+      dataProcessingConsent: ["dataProcessingConsent", "zgoda na przetwarzanie danych"]
     };
 
     const steps = [
@@ -734,6 +806,59 @@
 
     function defaultHomePlan() {
       return { title: "", frequency: "", duration: "", instructions: "", exercises: [] };
+    }
+
+    function defaultIntake() {
+      return {
+        importedAt: "",
+        source: "CSV",
+        raw: {},
+        summary: "",
+        goals: [],
+        mainGoal: "",
+        motivation: "",
+        expectations: "",
+        readiness: "",
+        painAreas: "",
+        medicalFlags: [],
+        movementLimitations: [],
+        lifestyleFlags: [],
+        trainingPreferences: [],
+        flags: [],
+        communicationStyle: "",
+        complianceForecast: "",
+        firstSessionFocus: "",
+        riskLevel: "low",
+        trainerNotes: ""
+      };
+    }
+
+    function migrateIntake(intake = {}) {
+      const base = defaultIntake();
+      const merged = intake && typeof intake === "object" ? { ...base, ...intake } : base;
+      return {
+        ...merged,
+        importedAt: merged.importedAt || "",
+        source: merged.source || "CSV",
+        raw: merged.raw && typeof merged.raw === "object" ? merged.raw : {},
+        summary: merged.summary || "",
+        goals: Array.isArray(merged.goals) ? merged.goals : splitList(merged.goals),
+        mainGoal: merged.mainGoal || "",
+        motivation: merged.motivation || "",
+        expectations: merged.expectations || "",
+        readiness: merged.readiness || "",
+        painAreas: merged.painAreas || "",
+        medicalFlags: Array.isArray(merged.medicalFlags) ? merged.medicalFlags : splitList(merged.medicalFlags),
+        movementLimitations: Array.isArray(merged.movementLimitations) ? merged.movementLimitations : splitList(merged.movementLimitations),
+        lifestyleFlags: Array.isArray(merged.lifestyleFlags) ? merged.lifestyleFlags : splitList(merged.lifestyleFlags),
+        trainingPreferences: Array.isArray(merged.trainingPreferences) ? merged.trainingPreferences : splitList(merged.trainingPreferences),
+        flags: Array.isArray(merged.flags) ? merged.flags : splitList(merged.flags),
+        communicationStyle: merged.communicationStyle || "",
+        complianceForecast: merged.complianceForecast || "",
+        firstSessionFocus: merged.firstSessionFocus || "",
+        riskLevel: ["low", "medium", "high"].includes(merged.riskLevel) ? merged.riskLevel : "low",
+        trainerNotes: merged.trainerNotes || ""
+      };
     }
 
     function normalizeNumber(value) {
@@ -900,6 +1025,7 @@
         reports: Array.isArray(client.reports) ? client.reports.map(migrateReport) : [],
         preSessionChecks: Array.isArray(client.preSessionChecks) ? client.preSessionChecks.map(migratePreSessionCheck) : [],
         postSessionNotes: Array.isArray(client.postSessionNotes) ? client.postSessionNotes.map(migratePostSessionNote) : [],
+        intake: migrateIntake(client.intake),
         homePlan: {
           title: plan.title || "",
           frequency: plan.frequency || "",
@@ -954,6 +1080,7 @@
     let state = load();
     let viewName = "command";
     let pendingMeasurementPdf = initialMeasurementPdf();
+    let pendingIntakeRows = [];
 
     const $ = (sel) => document.querySelector(sel);
     const view = $("#view");
@@ -1036,6 +1163,7 @@
       const titles = {
         command: ["Evidence-Based Command Center", "Dzisiejsze decyzje, ryzyka, priorytety i dane procesu."],
         todaySession: ["Sesja dzisiaj", "Szybkie centrum pracy przed i po sesji z aktywnym klientem."],
+        intake: ["Ankieta", "Import CSV, mapa startowa i triage procesu przed pierwszą sesją."],
         client: ["Profil klienta", "Jedno miejsce na hipotezę, cel, komunikację i czerwone flagi."],
         process: ["Proces 12 tygodni", "Nie etap dla ozdoby, tylko logika przejścia do kolejnego standardu."],
         sessions: ["Sesje i trend", "Historia obserwacji, bólu, gotowości i decyzji."],
@@ -1059,6 +1187,7 @@
       });
       if (viewName === "command") renderCommand();
       if (viewName === "todaySession") renderTodaySession();
+      if (viewName === "intake") renderIntake();
       if (viewName === "client") renderClient();
       if (viewName === "process") renderProcess();
       if (viewName === "sessions") renderSessions();
@@ -1147,6 +1276,8 @@
       const stageName = steps[c.stage - 1]?.[0] || "Proces indywidualny";
       const milestone = lastMilestone(c);
       const redFlags = String(c.redFlags || "").trim();
+      const intake = c.intake || defaultIntake();
+      const intakeFlags = intakeAllFlags(intake);
       const biggestRisk = decision.risks[0] || "Brak dużego sygnału ryzyka w aktualnych danych.";
       view.innerHTML = `
         <section class="panel portal-focus">
@@ -1170,6 +1301,10 @@
             <div class="portal-info"><div class="label">Ostatni Tanita</div><p>${lastTanita ? `${escapeHtml(formatDate(lastTanita.date))} · ${formatMetric(lastTanita.weightKg, "kg")} · fat ${formatMetric(lastTanita.fatPercent, "%")} · mięśnie ${formatMetric(lastTanita.muscleMassKg, "kg")}` : "Brak pomiaru Tanita"}</p></div>
             <div class="portal-info"><div class="label">Zadania</div><p>${doneTasks}/${tasks.length} wykonane</p></div>
             <div class="portal-info span-2"><div class="label">Czerwone flagi</div><p>${escapeHtml(redFlags || "Brak wpisanych czerwonych flag.")}</p></div>
+            <div class="portal-info"><div class="label">Ankieta: ryzyko</div><p>${hasImportedIntake(c) ? escapeHtml(intakeRiskLabel(intake.riskLevel)) : "Brak ankiety"}</p></div>
+            <div class="portal-info"><div class="label">Top 3 flags</div><p>${escapeHtml(intakeFlags.slice(0, 3).join("; ") || "Brak flag z ankiety.")}</p></div>
+            <div class="portal-info"><div class="label">Pierwszy fokus</div><p>${escapeHtml(intake.firstSessionFocus || "Potwierdzić baseline ruchu.")}</p></div>
+            <div class="portal-info"><div class="label">Czego nie przyspieszać</div><p>${escapeHtml(hasImportedIntake(c) ? intakeDoNotAccelerate(intake) : "Nie przyspieszamy kilku parametrów naraz.")}</p></div>
           </div>
         </section>
 
@@ -1275,6 +1410,68 @@
       save();
       toast(homeTask ? "Notatka zapisana i dodano zadanie domowe" : "Notatka po sesji zapisana");
       renderTodaySession();
+    }
+
+    function renderIntake() {
+      const active = activeClient();
+      view.innerHTML = `
+        <section class="panel">
+          <div class="panel-head">
+            <div><h2>Import CSV z ankiety</h2><p>Wczytaj odpowiedzi z formularza i zdecyduj, czy tworzą nowego klienta, czy uzupełniają aktywnego.</p></div>
+            ${pill(`${pendingIntakeRows.length} wierszy`, pendingIntakeRows.length ? "green" : "gold")}
+          </div>
+          <div class="task-form" style="margin-bottom:12px">
+            <input type="file" id="intakeCsvInput" accept=".csv,text/csv" />
+            <button class="btn primary" id="loadIntakeCsvBtn">Wczytaj CSV</button>
+          </div>
+          <p class="meta">Obsługiwane są przecinki, średniki, cudzysłowy, pola wieloliniowe i UTF-8 z BOM. Dane zostają lokalnie w przeglądarce.</p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><div><h2>Respondenci</h2><p>Aktywny klient do połączenia: ${escapeHtml(active.name)}.</p></div>${pill("start map", "blue")}</div>
+          ${renderIntakeRows()}
+        </section>
+      `;
+      $("#loadIntakeCsvBtn")?.addEventListener("click", loadIntakeCsvFromInput);
+      document.querySelectorAll("[data-intake-create]").forEach(btn => btn.addEventListener("click", () => createClientFromIntakeRow(Number(btn.dataset.intakeCreate))));
+      document.querySelectorAll("[data-intake-link]").forEach(btn => btn.addEventListener("click", () => linkIntakeRowToActiveClient(Number(btn.dataset.intakeLink))));
+    }
+
+    function renderIntakeRows() {
+      if (!pendingIntakeRows.length) return `<p>Wczytaj CSV, żeby zobaczyć listę respondentów.</p>`;
+      return `<div class="grid">${pendingIntakeRows.map((row, index) => {
+        const preview = intakeRowPreview(row);
+        return `
+          <div class="task-row">
+            <div>
+              <div class="name">${escapeHtml(preview.name)}</div>
+              <div class="meta">${escapeHtml(preview.date || "brak daty")} · ${escapeHtml(preview.email || "brak emaila")} · wiek: ${escapeHtml(preview.age || "–")}</div>
+              <div class="meta">Cel: ${escapeHtml(preview.goal || "brak")} · Ból/dyskomfort: ${escapeHtml(preview.pain || "brak")}</div>
+            </div>
+            <div class="actions" style="justify-content:flex-end">
+              ${pill(preview.status, preview.status === "już w systemie" ? "green" : "gold")}
+              <button class="btn primary" data-intake-create="${index}">Utwórz klienta z ankiety</button>
+              <button class="btn" data-intake-link="${index}">Połącz z aktywnym klientem</button>
+            </div>
+          </div>
+        `;
+      }).join("")}</div>`;
+    }
+
+    async function loadIntakeCsvFromInput() {
+      const input = $("#intakeCsvInput");
+      const file = input?.files?.[0];
+      if (!file) return toast("Wybierz plik CSV");
+      try {
+        const text = await readFileAsText(file);
+        pendingIntakeRows = parseCsvText(text);
+        renderIntake();
+        toast(`Wczytano ${pendingIntakeRows.length} wierszy z CSV`);
+      } catch (error) {
+        pendingIntakeRows = [];
+        renderIntake();
+        toast("Nie udało się wczytać CSV");
+      }
     }
 
     function kpi(label, value, trend, tone) {
@@ -1396,6 +1593,26 @@
             <div class="panel soft span-2"><div class="label">Logika decyzyjna</div><p>${escapeHtml(c.decisionLogic || "Brak. I tu trzeba być brutalnie uczciwym: bez hipotezy roboczej zbierasz dane, ale nie prowadzisz procesu.")}</p></div>
           </div>
         </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Mapa startowa z ankiety</h2>${pill(hasImportedIntake(c) ? `ryzyko: ${intakeRiskLabel(c.intake.riskLevel)}` : "brak ankiety", hasImportedIntake(c) ? intakeRiskTone(c.intake.riskLevel) : "gold")}</div>
+          ${renderClientIntake(c)}
+        </section>
+      `;
+    }
+
+    function renderClientIntake(c) {
+      const intake = c.intake || defaultIntake();
+      if (!hasImportedIntake(c)) return `<p>Brak zaimportowanej ankiety. Wczytaj CSV w widoku Ankieta i utwórz albo połącz klienta.</p>`;
+      const flags = intakeAllFlags(intake);
+      return `
+        <div class="grid cols-2">
+          ${fieldBlock("Najważniejsze flagi", flags.length ? flags.slice(0, 5).join("; ") : "Brak istotnych flag.")}
+          ${fieldBlock("Główny cel", intake.mainGoal)}
+          ${fieldBlock("Oczekiwania", intake.expectations)}
+          ${fieldBlock("Styl prowadzenia", intake.communicationStyle)}
+          ${fieldBlock("Pierwszy fokus", intake.firstSessionFocus)}
+          <div class="panel soft span-2"><div class="label">Podsumowanie</div><p>${escapeHtml(intake.summary || "Brak podsumowania ankiety.")}</p></div>
+        </div>
       `;
     }
 
@@ -1741,6 +1958,11 @@
           </div>
         </section>
 
+        <section class="panel">
+          <div class="panel-head"><h2>Twój punkt startowy</h2>${pill("ankieta", "green")}</div>
+          ${renderPortalIntake(c)}
+        </section>
+
         <section class="panel portal-focus">
           <div class="panel-head"><div><h2>Co robimy teraz</h2><p>Najważniejszy kierunek na ten moment.</p></div>${pill("priorytet", "gold")}</div>
           <div class="grid cols-3">
@@ -1809,6 +2031,20 @@
         </div>
         <div class="portal-info" style="margin-top:12px"><div class="label">Podsumowanie</div><p>${escapeHtml(m.clientSummary || "Najważniejszy jest trend w czasie, nie pojedynczy wynik.")}</p></div>
         ${m.pdfDataUrl ? `<div style="margin-top:12px"><button class="btn" data-open-pdf="${escapeHtml(m.id)}">Otwórz PDF Tanita</button></div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderPortalIntake(c) {
+      const intake = c.intake || defaultIntake();
+      if (!hasImportedIntake(c)) return `<p>Na pierwszym etapie potwierdzamy dane z ankiety, sprawdzamy ruch i ustalamy bezpieczny punkt startowy.</p>`;
+      return `
+        <div class="measurement-card measurement-main">
+          <div class="grid cols-2">
+            <div class="portal-info"><div class="label">Główny cel</div><p>${escapeHtml(intake.mainGoal || c.goal || "Doprecyzujemy cel na pierwszej sesji.")}</p></div>
+            <div class="portal-info"><div class="label">Pierwszy fokus pracy</div><p>${escapeHtml(intake.firstSessionFocus || "Sprawdzamy ruch i ustalamy punkt startowy.")}</p></div>
+          </div>
+          <p>Na pierwszym etapie potwierdzamy dane z ankiety, sprawdzamy ruch i ustalamy bezpieczny punkt startowy.</p>
         </div>
       `;
     }
@@ -2341,38 +2577,41 @@ Aktualny etap: Krok ${c.stage} - ${steps[c.stage - 1]?.[0] || "proces indywidual
 1. Cel procesu
 ${c.goal || "Do doprecyzowania po diagnostyce."}
 
-2. Punkt startowy
+2. Mapa startowa z ankiety
+${buildIntakeReportSection(c)}
+
+3. Punkt startowy
 ${start ? `Pierwsza sesja: ${start.date}. VAS przed: ${start.vasBefore ?? "brak danych"}, VAS po: ${start.vasAfter ?? "brak danych"}, mobilność: ${start.mobilityIndex ?? "brak danych"}%.` : "Brak wystarczających danych do oceny trendu."}
 
-3. Co monitorowaliśmy
+4. Co monitorowaliśmy
 - Ból / VAS: ${m.vasNow ?? "brak danych"}
 - Mobilność: ${m.mobility !== null ? m.mobility + "%" : "brak danych"}
 - Gotowość i sen: ${l ? `${l.readiness ?? "brak danych"} / ${l.sleepQuality || "brak danych"}` : "Brak wystarczających danych do oceny trendu."}
 - Zadania domowe: ${(c.tasks || []).filter(t => t.done).length}/${(c.tasks || []).length}
 - Dane Tanita i Polar: ${latestMeasurement(c) || latestPolarSession(c) ? "monitorowane w systemie" : "Brak wystarczających danych do oceny trendu."}
 
-4. Najważniejsze obserwacje z sesji
+5. Najważniejsze obserwacje z sesji
 ${sessionNotes}
 
-5. Dane Tanita
+6. Dane Tanita
 ${buildTanitaReportSection(c)}
 
-6. Dane Polar
+7. Dane Polar
 ${buildPolarReportSection(c)}
 
-7. Kamienie milowe
+8. Kamienie milowe
 ${milestones}
 
-8. Aktualna decyzja
+9. Aktualna decyzja
 ${decision.label} (${decisionLabel(decision.recommendation)}). ${decision.trainerAction}
 
-9. Rekomendacja dalszej pracy
+10. Rekomendacja dalszej pracy
 ${decision.clientMessage}
 
-10. Ustalenia z procesu
+11. Ustalenia z procesu
 ${buildProcessAgreementsSection(c)}
 
-11. Plan na kolejne 4 tygodnie
+12. Plan na kolejne 4 tygodnie
 ${buildNextFourWeeksPlan(c, decision)}
 
 Uwaga:
@@ -2403,6 +2642,16 @@ To jest raport procesu treningowego i wsparcie decyzji. Nie udaje diagnozy medyc
         parts.push(`Po ostatniej sesji (${post.date}) ustalono: ${decisionLabel(post.decision)}.${details ? ` ${details}.` : ""}`);
       }
       return parts.join("\n");
+    }
+
+    function buildIntakeReportSection(c) {
+      const intake = c.intake || defaultIntake();
+      if (!hasImportedIntake(c)) return "Brak zaimportowanej ankiety.";
+      const limitations = intakeAllFlags(intake).slice(0, 5);
+      return `- Główny cel: ${intake.mainGoal || c.goal || "Brak jednoznacznego celu."}
+- Najważniejsze ograniczenia: ${limitations.length ? limitations.join("; ") : "Brak istotnych flag w ankiecie."}
+- Pierwszy fokus diagnostyczny: ${intake.firstSessionFocus || "Potwierdzić dane z ankiety i baseline ruchu."}
+- Styl prowadzenia: ${intake.communicationStyle || "Jasne kryteria, spokojne tempo i prosty język."}`;
     }
 
     function buildNextFourWeeksPlan(c, decision) {
@@ -2626,6 +2875,509 @@ To jest raport procesu treningowego i wsparcie decyzji. Nie udaje diagnozy medyc
       } catch (e) {
         toast("Import nieudany");
       }
+    }
+
+    function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve("");
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(file, "UTF-8");
+      });
+    }
+
+    function parseCsvText(text = "") {
+      const clean = String(text || "").replace(/^\uFEFF/, "");
+      const delimiter = detectCsvDelimiter(clean);
+      const rows = parseCsvRows(clean, delimiter);
+      if (!rows.length) return [];
+      const headers = rows.shift().map(normalizeHeader);
+      return rows
+        .filter(row => row.some(cell => String(cell || "").trim()))
+        .map(row => headers.reduce((obj, header, index) => {
+          if (header) obj[header] = String(row[index] ?? "").trim();
+          return obj;
+        }, {}));
+    }
+
+    function detectCsvDelimiter(text = "") {
+      let comma = 0;
+      let semicolon = 0;
+      let inQuotes = false;
+      const sample = String(text || "").slice(0, 4000);
+      for (let i = 0; i < sample.length; i += 1) {
+        const char = sample[i];
+        if (char === '"') {
+          if (inQuotes && sample[i + 1] === '"') i += 1;
+          else inQuotes = !inQuotes;
+        } else if (!inQuotes && char === ",") comma += 1;
+        else if (!inQuotes && char === ";") semicolon += 1;
+      }
+      return semicolon > comma ? ";" : ",";
+    }
+
+    function parseCsvRows(text = "", delimiter = ",") {
+      const rows = [];
+      let row = [];
+      let field = "";
+      let inQuotes = false;
+      const source = String(text || "");
+      for (let i = 0; i < source.length; i += 1) {
+        const char = source[i];
+        if (char === '"') {
+          if (inQuotes && source[i + 1] === '"') {
+            field += '"';
+            i += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (!inQuotes && char === delimiter) {
+          row.push(field);
+          field = "";
+        } else if (!inQuotes && (char === "\n" || char === "\r")) {
+          row.push(field);
+          rows.push(row);
+          row = [];
+          field = "";
+          if (char === "\r" && source[i + 1] === "\n") i += 1;
+        } else {
+          field += char;
+        }
+      }
+      if (field || row.length) {
+        row.push(field);
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function normalizeHeader(header) {
+      return String(header ?? "")
+        .replace(/^\uFEFF/, "")
+        .replace(/[\r\n]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function compareHeader(value) {
+      return normalizeHeader(value)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function splitList(value) {
+      if (Array.isArray(value)) return value.map(item => String(item || "").trim()).filter(Boolean);
+      return String(value || "")
+        .split(/\s*(?:;|\||\n|,\s(?=[A-ZĄĆĘŁŃÓŚŹŻa-ząćęłńóśźż]))\s*/)
+        .map(item => item.trim())
+        .filter(Boolean);
+    }
+
+    function uniqueList(values = []) {
+      const seen = new Set();
+      return values.map(value => String(value || "").trim()).filter(value => {
+        if (!value) return false;
+        const key = compareHeader(value);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function getIntakeField(row = {}, field) {
+      return pickIntakeValue(row, INTAKE_FIELD_ALIASES[field] || [field]);
+    }
+
+    function pickIntakeValue(row = {}, aliases = []) {
+      const entries = Object.entries(row || {}).map(([key, value]) => ({
+        key,
+        normalized: compareHeader(key),
+        value: String(value ?? "").trim()
+      }));
+      const candidates = aliases.map(compareHeader).filter(Boolean);
+      for (const candidate of candidates) {
+        const exact = entries.find(entry => entry.normalized === candidate);
+        if (exact?.value) return exact.value;
+      }
+      for (const candidate of candidates) {
+        const fuzzy = entries.find(entry => entry.value && (entry.normalized.includes(candidate) || candidate.includes(entry.normalized)));
+        if (fuzzy?.value) return fuzzy.value;
+      }
+      return "";
+    }
+
+    function mapIntakeFields(row = {}) {
+      return Object.keys(INTAKE_FIELD_ALIASES).reduce((acc, field) => {
+        acc[field] = getIntakeField(row, field);
+        return acc;
+      }, {});
+    }
+
+    function extractEmail(value = "") {
+      const match = String(value || "").match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+      return match ? match[0] : "";
+    }
+
+    function intakeRowPreview(row = {}) {
+      const mapped = mapIntakeFields(row);
+      const email = extractEmail(mapped.email) || extractEmail(Object.values(row).join(" "));
+      const rawName = mapped.name && !extractEmail(mapped.name) ? mapped.name : "";
+      const name = rawName || email || "Respondent bez nazwy";
+      const goal = mapped.mainGoal || mapped.goal;
+      const status = state.clients.some(client => {
+        const clientEmail = extractEmail(client.email || client.contact || "");
+        return (email && clientEmail && compareHeader(email) === compareHeader(clientEmail)) || compareHeader(client.name) === compareHeader(name);
+      }) ? "już w systemie" : "nowy";
+      return {
+        date: mapped.submittedAt,
+        email,
+        name,
+        age: mapped.age,
+        goal,
+        pain: mapped.painAreas,
+        status
+      };
+    }
+
+    function buildIntakeFromRow(row = {}) {
+      const mapped = mapIntakeFields(row);
+      const draft = migrateIntake({
+        importedAt: today(),
+        source: "CSV",
+        raw: row,
+        goals: uniqueList([mapped.goal, mapped.mainGoal, ...splitList(mapped.activities)]),
+        mainGoal: mapped.mainGoal || mapped.goal,
+        motivation: mapped.motivation,
+        expectations: mapped.expectations,
+        readiness: mapped.readiness,
+        painAreas: mapped.painAreas,
+        medicalFlags: deriveMedicalFlags(mapped),
+        movementLimitations: deriveMovementLimitations(mapped),
+        lifestyleFlags: deriveLifestyleFlags(mapped),
+        trainingPreferences: uniqueList([mapped.preferredTrainingType, mapped.realisticFrequency, mapped.preferredPlace, mapped.preferredTime, mapped.idealSessionLength]),
+        communicationStyle: inferCommunicationStyle(mapped),
+        complianceForecast: inferComplianceForecast(mapped),
+        firstSessionFocus: inferFirstSessionFocus(mapped),
+        trainerNotes: ""
+      });
+      const risk = scoreIntakeRisk(draft);
+      draft.riskLevel = risk.level;
+      draft.flags = risk.flags;
+      draft.trainerNotes = risk.explanation;
+      draft.summary = generateIntakeSummary(draft);
+      return draft;
+    }
+
+    function mapIntakeRowToClient(row = {}) {
+      const mapped = mapIntakeFields(row);
+      const intake = buildIntakeFromRow(row);
+      const preview = intakeRowPreview(row);
+      const client = migrateClient({
+        id: `SL-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`,
+        name: preview.name,
+        contact: preview.email,
+        email: preview.email,
+        package: "Diagnostyka",
+        stage: 1,
+        age: mapped.age,
+        heightCm: mapped.heightCm,
+        weightKg: mapped.weightKg,
+        occupation: mapped.occupation,
+        workType: mapped.workType,
+        sittingHours: mapped.sittingHours,
+        goal: intake.mainGoal || mapped.goal,
+        motivation: intake.motivation,
+        expectations: intake.expectations,
+        readiness: intake.readiness,
+        painAreas: intake.painAreas,
+        surgeries: mapped.surgeries,
+        injuries: mapped.injuries,
+        meds: mapped.meds,
+        supplements: mapped.supplements,
+        contraindications: mapped.contraindications,
+        bloodwork: mapped.bloodwork,
+        pregnancy: mapped.pregnancy,
+        postpartum: mapped.postpartum,
+        gynConsent: mapped.gynConsent,
+        trainingExperience: mapped.trainingExperience,
+        trainingInjury: mapped.trainingInjury,
+        activities: mapped.activities,
+        last6Months: mapped.last6Months,
+        workedWithTrainer: mapped.workedWithTrainer,
+        bodyweightSkill: mapped.bodyweightSkill,
+        barbellSkill: mapped.barbellSkill,
+        dumbbellSkill: mapped.dumbbellSkill,
+        preferredTrainingType: mapped.preferredTrainingType,
+        trainingMotivators: mapped.trainingMotivators,
+        reactionToProgramChanges: mapped.reactionToProgramChanges,
+        stressReaction: mapped.stressReaction,
+        idealSessionLength: mapped.idealSessionLength,
+        preferredRest: mapped.preferredRest,
+        realisticFrequency: mapped.realisticFrequency,
+        preferredPlace: mapped.preferredPlace,
+        preferredTime: mapped.preferredTime,
+        selfDescription: mapped.selfDescription,
+        discomfortReaction: mapped.discomfortReaction,
+        pastTrainingExperience: mapped.pastTrainingExperience,
+        sleepNeed: mapped.sleepNeed,
+        sleepQuality: mapped.sleepQuality,
+        water: mapped.water,
+        stressLevel: mapped.stressLevel,
+        alcohol: mapped.alcohol,
+        smoking: mapped.smoking,
+        meals: mapped.meals,
+        dietRestrictions: mapped.dietRestrictions,
+        currentActivityLevel: mapped.currentActivityLevel,
+        stairsUp: mapped.stairsUp,
+        stairsDown: mapped.stairsDown,
+        liftingFromFloor: mapped.liftingFromFloor,
+        armsOverhead: mapped.armsOverhead,
+        longSitting: mapped.longSitting,
+        longStanding: mapped.longStanding,
+        torsoRotation: mapped.torsoRotation,
+        balanceProblems: mapped.balanceProblems,
+        dizziness: mapped.dizziness,
+        jointLimitations: mapped.jointLimitations,
+        fitnessSelfRating: mapped.fitnessSelfRating,
+        truthDeclaration: mapped.truthDeclaration,
+        updateObligation: mapped.updateObligation,
+        trainerNotDoctor: mapped.trainerNotDoctor,
+        hiddenHealthRisk: mapped.hiddenHealthRisk,
+        dataProcessingConsent: mapped.dataProcessingConsent,
+        healthStatus: intake.painAreas || "",
+        redFlags: intake.flags.join("; "),
+        fears: mapped.discomfortReaction || mapped.hiddenHealthRisk || "",
+        decisionLogic: "Klient utworzony z ankiety. Pierwszy etap: diagnostyka i potwierdzenie danych z formularza.",
+        intake,
+        tasks: [{ text: "Omówić ankietę i potwierdzić czerwone flagi przed pierwszą sesją", done: false, createdAt: today(), source: "intake" }],
+        sessions: []
+      });
+      return client;
+    }
+
+    function createClientFromIntakeRow(index) {
+      const row = pendingIntakeRows[index];
+      if (!row) return toast("Nie znaleziono wiersza ankiety");
+      const client = mapIntakeRowToClient(row);
+      state.clients.push(client);
+      state.activeClientId = client.id;
+      save();
+      viewName = "client";
+      renderShell();
+      toast("Utworzono klienta z ankiety");
+    }
+
+    function linkIntakeRowToActiveClient(index) {
+      const row = pendingIntakeRows[index];
+      const c = activeClient();
+      if (!row || !c) return toast("Nie znaleziono ankiety lub aktywnego klienta");
+      const mappedClient = mapIntakeRowToClient(row);
+      c.intake = mappedClient.intake;
+      if (!c.goal && mappedClient.goal) c.goal = mappedClient.goal;
+      if (!c.motivation && mappedClient.motivation) c.motivation = mappedClient.motivation;
+      if (!c.expectations && mappedClient.expectations) c.expectations = mappedClient.expectations;
+      if (!c.contraindications && mappedClient.contraindications) c.contraindications = mappedClient.contraindications;
+      if (!c.redFlags && mappedClient.redFlags) c.redFlags = mappedClient.redFlags;
+      if (!c.fears && mappedClient.fears) c.fears = mappedClient.fears;
+      if (!c.email && mappedClient.email) c.email = mappedClient.email;
+      c.tasks = Array.isArray(c.tasks) ? c.tasks : [];
+      if (!c.tasks.some(task => compareHeader(task.text) === compareHeader("Omówić ankietę i potwierdzić czerwone flagi przed pierwszą sesją"))) {
+        c.tasks.push({ text: "Omówić ankietę i potwierdzić czerwone flagi przed pierwszą sesją", done: false, createdAt: today(), source: "intake" });
+      }
+      save();
+      renderIntake();
+      toast("Ankieta połączona z aktywnym klientem");
+    }
+
+    function deriveMedicalFlags(mapped = {}) {
+      return uniqueList([
+        meaningfulYes(mapped.contraindications) ? `Przeciwwskazania: ${mapped.contraindications}` : "",
+        meaningfulYes(mapped.surgeries) ? `Operacje: ${mapped.surgeries}` : "",
+        meaningfulYes(mapped.injuries) ? `Kontuzje: ${mapped.injuries}` : "",
+        meaningfulYes(mapped.meds) ? `Leki: ${mapped.meds}` : "",
+        meaningfulYes(mapped.pregnancy) ? `Ciąża: ${mapped.pregnancy}` : "",
+        meaningfulYes(mapped.postpartum) ? `Poród: ${mapped.postpartum}` : ""
+      ]);
+    }
+
+    function deriveMovementLimitations(mapped = {}) {
+      return uniqueList(["stairsUp", "stairsDown", "liftingFromFloor", "armsOverhead", "longSitting", "longStanding", "torsoRotation", "balanceProblems", "dizziness", "jointLimitations"]
+        .map(field => meaningfulYes(mapped[field]) ? `${INTAKE_FIELD_ALIASES[field][0]}: ${mapped[field]}` : ""));
+    }
+
+    function deriveLifestyleFlags(mapped = {}) {
+      return uniqueList([
+        weakSleep(mapped.sleepQuality) ? `Sen: ${mapped.sleepQuality}` : "",
+        stressScore(mapped.stressLevel) >= 4 ? `Stres: ${mapped.stressLevel}` : "",
+        meaningfulYes(mapped.smoking) ? `Palenie: ${mapped.smoking}` : "",
+        lowActivity(mapped.currentActivityLevel) ? `Niska aktywność: ${mapped.currentActivityLevel}` : "",
+        mapped.water ? `Nawodnienie: ${mapped.water}` : ""
+      ]);
+    }
+
+    function scoreIntakeRisk(intake = defaultIntake()) {
+      const raw = intake.raw || {};
+      const mapped = mapIntakeFields(raw);
+      const flags = [];
+      const pain = hasCurrentPain(intake.painAreas || mapped.painAreas);
+      if (meaningfulYes(mapped.contraindications)) flags.push("Przeciwwskazania lekarskie do potwierdzenia.");
+      if (meaningfulYes(mapped.dizziness)) flags.push("Zawroty głowy podczas wysiłku.");
+      if ((meaningfulYes(mapped.pregnancy) || meaningfulYes(mapped.postpartum)) && !meaningfulYes(mapped.gynConsent)) flags.push("Ciąża lub poród bez potwierdzonej zgody lekarza.");
+      if (meaningfulYes(mapped.surgeries)) flags.push("Operacje w historii wymagają potwierdzenia zakresu i daty.");
+      if (meaningfulYes(mapped.injuries) && pain) flags.push("Poważna kontuzja połączona z aktualnym bólem.");
+      if (medsNeedClarification(mapped.meds)) flags.push("Stałe leki wymagają doprecyzowania.");
+      const highCount = flags.length;
+
+      const mediumFlags = [];
+      if (pain) mediumFlags.push("Aktualny ból lub dyskomfort.");
+      if (weakSleep(mapped.sleepQuality)) mediumFlags.push("Słaba jakość snu.");
+      if (stressScore(mapped.stressLevel) >= 4) mediumFlags.push("Podwyższony poziom stresu.");
+      if (meaningfulYes(mapped.smoking)) mediumFlags.push("Palenie.");
+      if (lowActivity(mapped.currentActivityLevel)) mediumFlags.push("Niski poziom aktywności.");
+      if (deriveMovementLimitations(mapped).length) mediumFlags.push("Ograniczenia ruchowe do sprawdzenia.");
+      if (meaningfulYes(mapped.balanceProblems)) mediumFlags.push("Problemy z równowagą.");
+
+      const allFlags = uniqueList([...flags, ...mediumFlags]);
+      const level = highCount ? "high" : (mediumFlags.length ? "medium" : "low");
+      const explanation = level === "high"
+        ? "Ankieta zawiera sygnały, które wymagają potwierdzenia przed progresją. To triage treningowy, nie diagnoza."
+        : (level === "medium"
+          ? "Ankieta zawiera czynniki, które mogą wpływać na tempo pracy. Warto zacząć konserwatywnie i zebrać dane."
+          : "Brak istotnych flag w ankiecie. Nadal warto potwierdzić informacje na pierwszej sesji.");
+      return { level, flags: allFlags, explanation };
+    }
+
+    function generateIntakeSummary(intake = defaultIntake()) {
+      const raw = intake.raw || {};
+      const mapped = mapIntakeFields(raw);
+      const flags = intakeAllFlags(intake).slice(0, 5);
+      return `1. Kim jest klient i z czym przychodzi
+${mapped.occupation || "Brak informacji o zawodzie."}${mapped.workType ? ` Praca: ${mapped.workType}.` : ""}${intake.painAreas ? ` Aktualny kontekst bólowy: ${intake.painAreas}.` : ""}
+
+2. Główny cel
+${intake.mainGoal || mapped.goal || "Brak jednoznacznego celu w ankiecie."}
+
+3. Najważniejsze ograniczenia / ryzyka
+${flags.length ? flags.map(flag => `- ${flag}`).join("\n") : "Brak istotnych flag w ankiecie."}
+
+4. Styl prowadzenia
+${intake.communicationStyle || "Prosty język, jasne kryteria i spokojne tempo zwiększania obciążenia."}
+
+5. Czynniki lifestyle
+${intake.lifestyleFlags.length ? intake.lifestyleFlags.map(flag => `- ${flag}`).join("\n") : "Brak istotnych czynników lifestyle w ankiecie."}
+
+6. Pierwszy fokus diagnostyczny
+${intake.firstSessionFocus || "Potwierdzić dane z ankiety i ustalić bezpieczny punkt startowy."}
+
+7. Czego nie przyspieszać na starcie
+${intakeDoNotAccelerate(intake)}`;
+    }
+
+    function intakeAllFlags(intake = defaultIntake()) {
+      return uniqueList([...(intake.flags || []), ...(intake.medicalFlags || []), ...(intake.movementLimitations || []), ...(intake.lifestyleFlags || [])]);
+    }
+
+    function intakeDoNotAccelerate(intake = defaultIntake()) {
+      if (intake.riskLevel === "high") return "Nie przyspieszać obciążeń, zakresu ani intensywności przed potwierdzeniem flag z ankiety.";
+      if (hasCurrentPain(intake.painAreas)) return "Nie przyspieszać zakresu ruchu i intensywności jednocześnie, dopóki nie znamy reakcji po pierwszej sesji.";
+      if ((intake.lifestyleFlags || []).length) return "Nie przyspieszać tempa progresji bez sprawdzenia snu, stresu i regeneracji.";
+      return "Nie przyspieszać kilku parametrów naraz. Najpierw potwierdzamy baseline ruchu i tolerancję.";
+    }
+
+    function inferCommunicationStyle(mapped = {}) {
+      const text = compareHeader([mapped.expectations, mapped.selfDescription, mapped.stressReaction, mapped.reactionToProgramChanges].join(" "));
+      if (text.includes("konkret")) return "Konkretne instrukcje, jasne kryteria i szybkie domykanie decyzji.";
+      if (text.includes("spokoj") || text.includes("stres")) return "Spokojne tempo, dużo przewidywalności i wyjaśnianie sensu ćwiczeń.";
+      if (text.includes("kontrol") || text.includes("plan")) return "Struktura, plan i czytelny feedback po każdym kroku.";
+      return "Prosty język, jasne kryteria i spokojne zwiększanie wymagań.";
+    }
+
+    function inferComplianceForecast(mapped = {}) {
+      const readiness = compareHeader(mapped.readiness);
+      if (readiness.includes("tak") || readiness.includes("gotow")) return "Dobra gotowość deklarowana, do potwierdzenia po pierwszych zadaniach domowych.";
+      if (readiness.includes("nie") || readiness.includes("trud")) return "Ostrożna gotowość. Plan domowy powinien być krótki i bardzo konkretny.";
+      return "Brak pewnej deklaracji gotowości. Warto zacząć od małej liczby zadań i obserwować wykonanie.";
+    }
+
+    function inferFirstSessionFocus(mapped = {}) {
+      if (meaningfulYes(mapped.contraindications) || meaningfulYes(mapped.dizziness) || meaningfulYes(mapped.pregnancy) || meaningfulYes(mapped.postpartum)) {
+        return "Potwierdzić informacje zdrowotne, czerwone flagi i zakres bezpiecznej diagnostyki ruchowej.";
+      }
+      if (hasCurrentPain(mapped.painAreas)) return "Potwierdzić lokalizację bólu, zachowanie objawów i tolerancję bazowych wzorców ruchu.";
+      if (deriveMovementLimitations(mapped).length) return "Sprawdzić ograniczenia ruchowe i wybrać bezpieczny baseline dla pierwszego planu.";
+      return "Ustalić baseline ruchu, tolerancję obciążenia i realny cel pierwszych 4 tygodni.";
+    }
+
+    function meaningfulYes(value) {
+      const text = compareHeader(value);
+      if (!text) return false;
+      if (isClearNo(value)) return false;
+      return true;
+    }
+
+    function yesish(value) {
+      const text = compareHeader(value);
+      return Boolean(text && /\btak\b/.test(text) && !/^nie\b/.test(text));
+    }
+
+    function isClearNo(value) {
+      const text = compareHeader(value);
+      return !text || text === "nie" || text === "no" || text.includes("nie dotyczy") || text.includes("brak") || text.includes("zadne z wymienionych") || text.includes("żadne z wymienionych");
+    }
+
+    function hasCurrentPain(value) {
+      return meaningfulYes(value);
+    }
+
+    function weakSleep(value) {
+      const text = compareHeader(value);
+      return text.includes("slaba") || text.includes("bardzo slaba") || text.includes("słaba") || text.includes("bardzo słaba");
+    }
+
+    function stressScore(value) {
+      const n = cleanNumber(value);
+      return n === null ? 0 : n;
+    }
+
+    function lowActivity(value) {
+      const text = compareHeader(value);
+      return Boolean(text && (text.includes("niski") || text.includes("brak") || text.includes("nie cwicze") || text.includes("nie ćwiczę") || text.includes("siedz")));
+    }
+
+    function medsNeedClarification(value) {
+      const text = compareHeader(value);
+      return text === "tak" || text === "tak." || text === "tak,";
+    }
+
+    function intakeRiskTone(level) {
+      if (level === "high") return "red";
+      if (level === "medium") return "gold";
+      return "green";
+    }
+
+    function intakeRiskLabel(level) {
+      return { high: "wysokie", medium: "średnie", low: "niskie" }[level] || "niskie";
+    }
+
+    function hasImportedIntake(c = activeClient()) {
+      const intake = c?.intake;
+      return Boolean(intake && (intake.importedAt || Object.keys(intake.raw || {}).length || intake.summary || intake.mainGoal));
+    }
+
+    function testCsvParser() {
+      const comma = 'Imię i nazwisko,Email,Cel\n"Jan Kowalski",jan@example.com,"Siła, bez bólu"';
+      const semicolon = 'Imię i nazwisko;Email;Cel\nAnna;anna@example.com;Zdrowie';
+      const quoted = 'Name,Note\n"Ala ""Test""","tekst z cudzysłowem"';
+      const multiline = 'Name,Note\nMarek,"linia 1\nlinia 2"';
+      const result = {
+        comma: parseCsvText(comma)[0]?.Cel === "Siła, bez bólu",
+        semicolon: parseCsvText(semicolon)[0]?.Email === "anna@example.com",
+        quoted: parseCsvText(quoted)[0]?.Note === "tekst z cudzysłowem",
+        multiline: parseCsvText(multiline)[0]?.Note === "linia 1\nlinia 2"
+      };
+      return { ok: Object.values(result).every(Boolean), result };
     }
 
     function readFileAsDataUrl(file) {
@@ -3273,6 +4025,7 @@ Initial 83.45 64.95 18.10
         reports: [],
         preSessionChecks: [],
         postSessionNotes: [],
+        intake: defaultIntake(),
         tasks: [],
         sessions: []
       };

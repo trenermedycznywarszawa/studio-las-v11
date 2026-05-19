@@ -2676,7 +2676,7 @@
       if (lastPolar) reasons.push(`Ostatni Polar: ${formatDate(lastPolar.date)} · ${polarTolerance.label.toLowerCase()}.`);
       if (lastTanita) reasons.push(`Ostatni pomiar Tanita: ${formatDate(lastTanita.date)} jako punkt odniesienia trendu.`);
       if (client.decisionLogic) reasons.push(`Logika procesu: ${client.decisionLogic.split("\n")[0]}`);
-      if (tasks.length) reasons.push(`Zadania domowe: ${doneTasks}/${tasks.length} wykonane.`);
+      if (tasks.length) reasons.push(`Zadania bieżące: ${formatCompletionRatio(doneTasks, tasks.length)}.`);
 
       if (!hasEnoughData) {
         reasons.push("Brak wystarczających danych do pewnej decyzji tygodniowej.");
@@ -2696,7 +2696,7 @@
         recommendation = "maintain";
         label = "Utrzymaj i obserwuj";
         if (readiness !== null && readiness <= 5) risks.push("Gotowość jest za niska na pewną progresję.");
-        if (taskRatio !== null && taskRatio < 0.5) risks.push("Zadania domowe nie są jeszcze stabilnie wykonywane.");
+        if (taskRatio !== null && taskRatio < 0.5) risks.push("Zadania bieżące nie są jeszcze stabilnie wykonywane.");
         if (Number(client.stage || 1) <= 1) risks.push("Pierwszy etap procesu wymaga spokojnego zbierania danych.");
         doNotDo.push("Nie zwiększaj jednocześnie objętości, tempa i trudności.");
       } else if ((vasIncrease === null || vasIncrease <= 0) && readiness !== null && readiness >= 6 && !["Słaby", "Bardzo słaby"].includes(sleepQuality) && polarTolerance?.level === "green" && (taskRatio === null || taskRatio >= 0.5) && (client.sessions || []).length >= 2) {
@@ -3062,6 +3062,40 @@
       return hasImportedIntake(c) || c.goal ? "startMap" : "fourWeeks";
     }
 
+    function getReportProcessContext(client, reportType = "fourWeeks") {
+      const c = migrateClient(client);
+      const sessionCount = (c.sessions || []).length;
+      const postNoteCount = (c.postSessionNotes || []).length;
+      const activeHomePlanCount = activeHomePlanExercises(c).length;
+      const testResultCount = Array.isArray(c.testResults) ? c.testResults.length : 0;
+      const stageText = [
+        client?.stage,
+        client?.stageName,
+        client?.stageLabel,
+        c.stage,
+        c.stageName,
+        c.stageLabel,
+        steps[c.stage - 1]?.[0],
+        steps[c.stage - 1]?.[1]
+      ].filter(Boolean).join(" ");
+      const isStageOne = Number(c.stage || 1) === 1 || /Punkt startowy/i.test(stageText);
+      const hasHomePlan = activeHomePlanCount > 0;
+      return {
+        sessionCount,
+        postNoteCount,
+        hasSessions: sessionCount > 0,
+        hasPostNotes: postNoteCount > 0,
+        hasHomePlan,
+        activeHomePlanCount,
+        hasTestResults: testResultCount > 0,
+        testResultCount,
+        isStageOne,
+        isEarlyProcess: sessionCount < 3 && postNoteCount < 2,
+        isProcessStarted: sessionCount > 0 || postNoteCount > 0,
+        isContinuationPremature: reportType === "continuation" && (isStageOne || sessionCount < 4 || !hasHomePlan)
+      };
+    }
+
     function reportDocumentSubtitle(reportType) {
       return {
         startMap: "Punkt wyjścia i bezpieczny kierunek pracy",
@@ -3156,25 +3190,39 @@
     }
 
     function generateReportEvidenceSummary(c, reportType = "fourWeeks", audience = "client") {
+      const context = getReportProcessContext(c, reportType);
       const sources = reportEvidenceItems(c, reportType)
         .map(item => item.phrase)
         .filter(Boolean);
-      const typeLabel = REPORT_TYPES[reportType] || "raport procesu";
+      const typeLabel = reportType === "fourWeeks" && !context.isProcessStarted
+        ? "wstępny szkic raportu 4-tygodniowego"
+        : (REPORT_TYPES[reportType] || "raport procesu");
       const sourceText = sources.length
         ? `Ten raport powstał na podstawie: ${joinPolishList(sources)}.`
         : "Ten raport porządkuje aktualny kierunek pracy na podstawie informacji uzupełnionych w profilu klienta.";
       const audienceNote = audience === "trainer"
         ? "Dane traktujemy jako materiał do decyzji treningowej i rozmowy z klientem."
         : "Dane traktujemy jako punkty odniesienia do rozmowy i kolejnych decyzji.";
-      return `${sourceText} Rodzaj raportu: ${typeLabel}. ${audienceNote}`;
+      let contextNote = "";
+      if (reportType === "startMap" && context.hasSessions) {
+        contextNote = "Mamy już pierwsze obserwacje z sesji, ale dokument nadal pełni funkcję mapy kierunku pracy.";
+      }
+      if (reportType === "fourWeeks" && !context.hasSessions) {
+        contextNote = "To wstępny szkic raportu 4-tygodniowego, przygotowany przed zebraniem obserwacji z sesji.";
+      }
+      if (reportType === "continuation" && context.isContinuationPremature) {
+        contextNote = "Plan kontynuacji wymaga jeszcze aktualnego planu domowego i obserwacji reakcji po sesjach.";
+      }
+      return `${sourceText} Rodzaj raportu: ${typeLabel}. ${contextNote ? `${contextNote} ` : ""}${audienceNote}`;
     }
 
     function reportEvidenceItems(c, reportType = "fourWeeks") {
       const counts = reportEvidenceCounts(c);
+      const context = getReportProcessContext(c, reportType);
       return [
         {
           label: "Rodzaj",
-          value: REPORT_TYPES[reportType] || "raport procesu",
+          value: reportType === "fourWeeks" && !context.isProcessStarted ? "wstępny szkic raportu 4-tygodniowego" : (REPORT_TYPES[reportType] || "raport procesu"),
           phrase: ""
         },
         {
@@ -3189,7 +3237,7 @@
         },
         {
           label: "Notatki po sesji",
-          value: counts.postNotes ? String(counts.postNotes) : "po kolejnych sesjach",
+          value: counts.postNotes ? String(counts.postNotes) : (counts.sessions ? "do uzupełnienia po sesji" : "po kolejnych sesjach"),
           phrase: counts.postNotes ? `${counts.postNotes} ${pluralizePl(counts.postNotes, "zapisanej notatki po sesji", "zapisanych notatek po sesji", "zapisanych notatek po sesji")}` : ""
         },
         {
@@ -3203,9 +3251,14 @@
           phrase: counts.polar ? `${counts.polar} ${pluralizePl(counts.polar, "odczytu Polar", "odczytów Polar", "odczytów Polar")}` : ""
         },
         {
-          label: "Plan domowy",
+          label: "Zadania bieżące",
+          value: counts.tasks ? formatCompletionRatio(counts.doneTasks, counts.tasks) : "do uzupełnienia",
+          phrase: counts.tasks ? `${counts.tasks} ${pluralizePl(counts.tasks, "zadania bieżącego", "zadań bieżących", "zadań bieżących")}` : ""
+        },
+        {
+          label: "Plan domowy / zadania ruchowe",
           value: counts.homePlan ? String(counts.homePlan) : "do uzupełnienia",
-          phrase: counts.homePlan ? `${counts.homePlan} ${pluralizePl(counts.homePlan, "aktywnego zadania domowego", "aktywnych zadań domowych", "aktywnych zadań domowych")}` : ""
+          phrase: counts.homePlan ? `${counts.homePlan} ${pluralizePl(counts.homePlan, "aktywnego zadania ruchowego", "aktywnych zadań ruchowych", "aktywnych zadań ruchowych")}` : ""
         },
         {
           label: "Testy diagnostyczne",
@@ -3217,22 +3270,30 @@
 
     function reportEvidenceMaturityText(c, reportType = "fourWeeks", audience = "client") {
       const counts = reportEvidenceCounts(c);
+      const context = getReportProcessContext(c, reportType);
       const processPoints = Math.max(counts.sessions, counts.postNotes);
       const enoughForTrend = (reportType === "fourWeeks" && processPoints >= 3)
         || (reportType === "twelveWeeks" && processPoints >= 8)
-        || (reportType === "continuation" && counts.homePlan > 0 && (Number(c.stage || 1) >= 4 || processPoints >= 8));
+        || (reportType === "continuation" && context.hasHomePlan && (Number(c.stage || 1) >= 4 || processPoints >= 8));
 
       if (reportType === "startMap") {
-        return "Na tym etapie traktujemy raport jako mapę kierunku pracy, a nie końcową ocenę efektów.";
+        if (context.hasSessions) return "Mamy już pierwsze obserwacje z sesji, ale dokument nadal pełni funkcję mapy kierunku pracy, nie końcowej oceny efektów.";
+        return "To dokument startowy. Nie oceniamy jeszcze efektów, tylko potwierdzamy punkt wyjścia i bezpieczny kierunek pracy.";
       }
-      if (reportType === "fourWeeks" && processPoints < 3) {
+      if (reportType === "fourWeeks" && !context.isProcessStarted) {
+        return "To jest wstępny szkic raportu 4-tygodniowego, a nie pełna ocena procesu. Na tym etapie dokument porządkuje kierunek pracy i pokazuje, co trzeba zebrać w kolejnych sesjach.";
+      }
+      if (reportType === "fourWeeks" && processPoints >= 3) {
+        return "Zakres danych pozwala ostrożnie opisać kierunek procesu, ale nadal nie traktujemy pojedynczych pomiarów jako wyroku.";
+      }
+      if (reportType === "fourWeeks") {
         return "Na tym etapie traktujemy raport jako uporządkowanie kierunku pracy, a nie końcową ocenę efektów.";
       }
       if (reportType === "twelveWeeks" && processPoints < 8) {
         return "Na tym etapie traktujemy raport jako uporządkowanie kierunku pracy, a nie końcową ocenę efektów.";
       }
-      if (reportType === "continuation" && counts.homePlan === 0) {
-        return "Plan kontynuacji wymaga doprecyzowania zadań domowych przed samodzielną pracą.";
+      if (reportType === "continuation" && context.isContinuationPremature) {
+        return "To nie jest jeszcze finalny plan samodzielnej pracy. To są ramy bezpieczeństwa i zasady, które trzeba doprecyzować po aktualizacji planu domowego i kolejnych obserwacjach.";
       }
       if (enoughForTrend) {
         return "Zakres danych pozwala już ostrożnie oceniać trend procesu, ale pojedyncze pomiary nadal traktujemy jako punkty odniesienia, nie wyrok.";
@@ -3243,7 +3304,7 @@
     }
 
     function reportEvidenceCounts(c) {
-      const activeTasks = (c.tasks || []).filter(task => !task.done).length;
+      const tasks = Array.isArray(c.tasks) ? c.tasks : [];
       const activeExercises = activeHomePlanExercises(c).length;
       return {
         hasIntake: hasImportedIntake(c),
@@ -3251,7 +3312,9 @@
         postNotes: (c.postSessionNotes || []).length,
         tanita: (c.measurements || []).length,
         polar: (c.polarSessions || []).length,
-        homePlan: activeExercises + activeTasks,
+        tasks: tasks.length,
+        doneTasks: tasks.filter(task => task.done).length,
+        homePlan: activeExercises,
         tests: Array.isArray(c.testResults) ? c.testResults.length : 0
       };
     }
@@ -3286,6 +3349,7 @@
       const homeExercises = activeHomePlanExercises(c);
       const intake = reportIntake(c);
       const tasks = c.tasks || [];
+      const context = getReportProcessContext(c, reportType);
 
       if (reportType === "startMap") {
         cards.push({
@@ -3296,7 +3360,7 @@
         cards.push({
           label: "Punkt startowy",
           value: hasImportedIntake(c) ? "Ankieta i rozmowa" : "Do potwierdzenia",
-          description: hasImportedIntake(c) ? "Dane startowe porządkują kierunek diagnostyki." : "Najpierw trzeba potwierdzić cel, kontekst i punkt wyjścia."
+          description: context.hasSessions ? "Pierwsze obserwacje z sesji pomagają doprecyzować punkt wyjścia." : (hasImportedIntake(c) ? "Dane startowe porządkują kierunek diagnostyki." : "Najpierw trzeba potwierdzić cel, kontekst i punkt wyjścia.")
         });
         cards.push({
           label: "Priorytet diagnostyczny",
@@ -3314,12 +3378,12 @@
         cards.push({
           label: "Aktualna decyzja",
           value: decision.label,
-          description: audience === "trainer" ? decision.trainerAction : decision.clientMessage
+          description: audience === "trainer" ? decision.trainerAction : "Decyzja określa tempo pracy na najbliższy etap i będzie sprawdzana po kolejnych obserwacjach."
         });
         cards.push({
-          label: "Plan domowy",
+          label: "Plan domowy / zadania ruchowe",
           value: homeExercises.length ? `${homeExercises.length} aktywne zadania ruchowe` : "Do doprecyzowania",
-          description: homeExercises.length ? "Plan domowy ma wspierać powtarzalność między sesjami." : "Plan domowy wymaga doprecyzowania po kolejnych obserwacjach."
+          description: homeExercises.length ? "Plan domowy / zadania ruchowe mają wspierać powtarzalność między sesjami." : "Plan domowy / zadania ruchowe wymagają doprecyzowania po kolejnych obserwacjach."
         });
         if (latestTanita) {
           cards.push({
@@ -3353,9 +3417,9 @@
           description: "W raporcie podsumowującym opieramy się na zapisanych zmianach, nie na wrażeniu."
         });
         cards.push({
-          label: "Regularność planu domowego",
+          label: "Zadania bieżące",
           value: tasks.length ? `${tasks.filter(t => t.done).length} z ${tasks.length}` : "Do zbudowania",
-          description: tasks.length ? "Regularność między sesjami pokazuje, czy proces jest możliwy do utrzymania." : friendlyMissingData("tasks")
+          description: tasks.length ? "Zapis realizacji pokazuje, czy rytm pracy między sesjami jest możliwy do utrzymania." : friendlyMissingData("tasks")
         });
         if (latestTanita || latestPolar) {
           cards.push({
@@ -3373,13 +3437,13 @@
 
       if (reportType === "continuation") {
         cards.push({
-          label: "Główna zasada",
-          value: "Jedna zmiana naraz",
-          description: "Obciążenie, tempo albo zakres zwiększamy pojedynczo i obserwujemy reakcję organizmu."
+          label: context.isContinuationPremature ? "Status planu" : "Główna zasada",
+          value: context.isContinuationPremature ? "Ramy bezpieczeństwa" : "Jedna zmiana naraz",
+          description: context.isContinuationPremature ? "Plan samodzielnej pracy wymaga jeszcze doprecyzowania po kolejnych obserwacjach." : "Obciążenie, tempo albo zakres zwiększamy pojedynczo i obserwujemy reakcję organizmu."
         });
         cards.push({
           label: "Co utrzymać",
-          value: homeExercises.length ? "Plan domowy" : "Rytm pracy",
+          value: homeExercises.length ? "Plan domowy / zadania ruchowe" : "Rytm pracy",
           description: homeExercises.length ? `${homeExercises.length} aktywne zadania ruchowe.` : "Utrzymać prosty zapis reakcji i regularność ruchu."
         });
         cards.push({
@@ -3398,17 +3462,24 @@
     }
 
     function generatePracticalMeaning(c, reportType = "fourWeeks", audience = "client") {
+      const context = getReportProcessContext(c, reportType);
       if (reportType === "startMap") {
+        if (context.hasSessions) return "Pierwsze obserwacje z sesji są już zapisane i pomagają doprecyzować punkt wyjścia. Nadal traktujemy ten dokument jako mapę kierunku pracy, nie końcową ocenę efektów.";
         return "Na tym etapie nie chodzi o szybkie zwiększanie obciążeń, tylko o potwierdzenie, które ruchy są bezpieczne, powtarzalne i dobrze tolerowane. Dopiero z tego punktu można budować kierunek pracy.";
       }
       if (reportType === "fourWeeks") {
         const readiness = assessReportReadiness(c, "fourWeeks");
-        if (readiness.status === "premature") return "Ten raport porządkuje pierwszy kierunek pracy, ale nie jest jeszcze oceną trendu. Najważniejsze jest zebrać kilka spokojnych obserwacji po sesjach i sprawdzić, czy plan domowy zaczyna być powtarzalny.";
+        if (!context.isProcessStarted) return "To jest wstępny szkic raportu 4-tygodniowego, a nie pełna ocena procesu. Na tym etapie dokument porządkuje kierunek pracy i pokazuje, co trzeba zebrać w kolejnych sesjach.";
+        if (context.sessionCount >= 3 || context.postNoteCount >= 2) return "Zakres danych pozwala ostrożnie opisać kierunek procesu, ale nadal nie traktujemy pojedynczych pomiarów jako wyroku.";
+        if (readiness.status === "premature") return context.hasHomePlan
+          ? "Ten raport porządkuje pierwszy kierunek pracy, ale nie jest jeszcze oceną trendu. Najważniejsze jest zebrać kilka spokojnych obserwacji po sesjach i sprawdzić, czy plan domowy / zadania ruchowe zaczynają być powtarzalne."
+          : "Ten raport porządkuje pierwszy kierunek pracy, ale nie jest jeszcze oceną trendu. Najważniejsze jest zebrać kilka spokojnych obserwacji po sesjach i doprecyzować plan ruchowy.";
         return "Najważniejsze jest teraz sprawdzenie, czy pierwsze zadania zaczynają być powtarzalne między sesjami i czy reakcja organizmu pozwala spokojnie zwiększać wymagania.";
       }
       if (reportType === "twelveWeeks") {
         return "Ten raport zestawia punkt startowy z obecną reakcją organizmu. W praktyce pomaga zdecydować, czy kontynuujemy progresję, wzmacniamy samodzielność, czy zmieniamy strategię pracy.";
       }
+      if (context.isContinuationPremature) return "To nie jest jeszcze finalny plan samodzielnej pracy. To są ramy bezpieczeństwa i zasady, które trzeba doprecyzować po aktualizacji planu domowego i kolejnych obserwacjach.";
       return "Ten plan ma pomagać w samodzielności, ale nie ma zachęcać do ignorowania sygnałów ostrzegawczych. Granice powrotu do kontroli są równie ważne jak same zadania.";
     }
 
@@ -3424,21 +3495,21 @@
         return [
           { title: "Potwierdzić punkt startowy", description: intake.firstSessionFocus || "Ustalić baseline ruchu, reakcję bólu i bezpieczny zakres pierwszej pracy." },
           { title: "Ustalić tolerancję obciążenia", description: "Sprawdzić, jak organizm reaguje po sesji i w kolejnym dniu." },
-          { title: "Zbudować rytm planu domowego", description: "Wybrać mały zestaw zadań, który da się realnie powtarzać." }
+          { title: "Doprecyzować plan domowy / zadania ruchowe", description: "Wybrać mały zestaw zadań, który da się realnie powtarzać." }
         ];
       }
 
       if (reportType === "continuation") {
         return [
-          { title: "Utrzymać sprawdzone zadania", description: homeExercises.length ? "Kontynuować aktywny plan domowy bez dokładania kilku zmian naraz." : "Najpierw doprecyzować aktualny plan domowy." },
+          { title: "Utrzymać sprawdzone zadania", description: homeExercises.length ? "Kontynuować aktywny plan domowy / zadania ruchowe bez dokładania kilku zmian naraz." : "Najpierw doprecyzować aktualny plan domowy / zadania ruchowe." },
           { title: "Zwiększać obciążenie warunkowo", description: "Progres tylko wtedy, gdy reakcja organizmu pozostaje przewidywalna." },
           { title: "Wrócić do kontroli we właściwym momencie", description: "Nie czekać, jeśli reakcja bólu, sen albo gotowość wyraźnie się pogarszają." }
         ];
       }
 
       const priorities = [
-        { title: "Wykonać decyzję tygodniową", description: audience === "trainer" ? decision.trainerAction : decision.clientMessage },
-        { title: homeExercises.length ? "Utrzymać plan domowy" : "Doprecyzować plan domowy", description: homeExercises.length ? "Sprawdzić powtarzalność zadań między sesjami." : "Dobrać zadania ruchowe po kolejnych obserwacjach." },
+        { title: "Wykonać decyzję tygodniową", description: audience === "trainer" ? decision.trainerAction : "Utrzymać bieżący kierunek i sprawdzić po kolejnych danych, czy tempo nadal pasuje." },
+        { title: homeExercises.length ? "Utrzymać plan domowy / zadania ruchowe" : "Doprecyzować plan domowy / zadania ruchowe", description: homeExercises.length ? "Sprawdzić powtarzalność zadań między sesjami." : "Dobrać zadania ruchowe po kolejnych obserwacjach." },
         { title: "Zebrać kolejny dowód postępu", description: nextProgressEvidence(c) }
       ];
       if (reportType === "twelveWeeks") {
@@ -3451,12 +3522,14 @@
     }
 
     function generateSuccessCriteria(c, reportType = "fourWeeks", audience = "client") {
+      const context = getReportProcessContext(c, reportType);
       const criteria = [
         "Reakcja bólu po aktywności nie rośnie względem punktu wyjścia.",
-        "Plan domowy jest wykonany minimum 2 razy w tygodniu albo zgodnie z ustalonym rytmem.",
+        context.hasHomePlan ? "Plan domowy / zadania ruchowe są wykonywane minimum 2 razy w tygodniu albo zgodnie z ustalonym rytmem." : "Zadania bieżące mają czytelny zapis realizacji, a plan ruchowy jest doprecyzowywany po obserwacjach.",
         "Klient potrafi nazwać, które ruchy są bezpieczne, powtarzalne i dobrze tolerowane."
       ];
-      if (latestPolarSession(c) || reportType !== "startMap") criteria.push("Odczyty Polar lub obserwacje po sesjach pokazują tolerancję obciążenia.");
+      if (latestPolarSession(c) || context.hasSessions || context.hasPostNotes) criteria.push("Odczyty Polar lub obserwacje po sesjach pokazują tolerancję obciążenia.");
+      else if (reportType !== "startMap") criteria.push("Tolerancję obciążenia potwierdzimy po kolejnych sesjach i zapisanych reakcjach.");
       if (latestMeasurement(c)) criteria.push("Kolejny pomiar Tanita służy jako porównanie, nie ocena.");
       if (Array.isArray(c.testResults) && c.testResults.length) criteria.push("Wnioski z oceny ruchowej przekładają się na dobór zadań ruchowych.");
       if (reportType === "continuation") criteria.push("Klient wie, kiedy zwiększać obciążenie, a kiedy wrócić do kontroli.");
@@ -3508,10 +3581,18 @@
 
     function cleanReportLanguage(text = "", audience = "client") {
       let clean = String(text || "")
+        .replace(/Pierwszym priorytetem jest potwierdzić informacje zdrowotne/gi, "Pierwszym priorytetem jest potwierdzenie informacji zdrowotnych")
+        .replace(/Stabilna praca w pełnym FBW bez nadmiernego zmęczenia po sesji\. oraz kolejny pomiar porównawczy Tanita/gi, "Stabilna praca w treningu całego ciała bez nadmiernego zmęczenia po sesji oraz kolejny pomiar porównawczy Tanita")
+        .replace(/po sesji\.\s+oraz/gi, "po sesji oraz")
+        .replace(/reakcja reakcja bólu/gi, "reakcja bólu")
+        .replace(/pierwsza obserwacja reakcji po sesji oraz kolejny pomiar porównawczy Tanita/gi, "pierwsza obserwacja reakcji po sesji i kolejny pomiar porównawczy Tanita")
         .replace(/fat/gi, "tkanka tłuszczowa")
         .replace(/body water/gi, "woda w organizmie")
-        .replace(/Zadania domowe:\s*do omówienia wykonane/gi, "Zadania domowe: do omówienia po pierwszych sesjach")
-        .replace(/Zadania domowe:\s*0\s*\/\s*1 wykonane/gi, "Zadania domowe: rytm pracy domowej wymaga jeszcze potwierdzenia")
+        .replace(/Zadania domowe:\s*do omówienia wykonane/gi, "Zadania bieżące: do omówienia po pierwszych sesjach")
+        .replace(/Zadania domowe:\s*0\s*\/\s*1 wykonane/gi, "Zadania bieżące: rytm pracy między sesjami wymaga jeszcze potwierdzenia")
+        .replace(/Zadania domowe:/gi, "Zadania bieżące:")
+        .replace(/Zadania bieżące:\s*do omówienia wykonane/gi, "Zadania bieżące: zapis realizacji jest uzupełniony")
+        .replace(/Zadania bieżące mają już zapis realizacji:\s*do omówienia wykonane/gi, "Zadania bieżące mają już zapis realizacji.")
         .replace(/PDF załączony\.?/gi, "")
         .replace(/monitorowane w systemie/gi, "uwzględniane jako punkty odniesienia")
         .replace(/\.\.+/g, ".")
@@ -3520,9 +3601,21 @@
         .replace(/\n[ \t]+/g, "\n");
       if (audience === "client") {
         clean = clean
+          .replace(/surowe\s+VAS/gi, "surowe odczyty reakcji bólu")
           .replace(/\bVAS\b/g, "reakcja bólu")
+          .replace(/\bFBW\b/g, "trening całego ciała")
+          .replace(/\bhomePlan\b/g, "plan domowy")
+          .replace(/\btestResults\b/g, "wyniki oceny ruchowej")
+          .replace(/\bscore\b/gi, "ocena")
+          .replace(/\breadiness\b/gi, "gotowość")
+          .replace(/\bpremature\b/gi, "przedwczesny")
+          .replace(/\blimited\b/gi, "ograniczony")
           .replace(/czerwone flagi/gi, "kontekst bezpieczeństwa")
           .replace(/brak danych/gi, "do uzupełnienia")
+          .replace(/systemowy/gi, "procesowy")
+          .replace(/systemowa/gi, "procesowa")
+          .replace(/systemowe/gi, "procesowe")
+          .replace(/systemowych/gi, "procesowych")
           .replace(/systemie/gi, "procesie")
           .replace(/\bsystem\b/gi, "proces")
           .replace(/dashboard/gi, "panel")
@@ -3531,9 +3624,24 @@
           .filter(line => !/parseStatus|inputMethod|riskLevel|PDF załączony|monitorowane w systemie/i.test(line))
           .join("\n");
       }
-      return removeRepeatedReportLines(clean)
+      return dedupeReportSentences(removeRepeatedReportLines(clean))
         .replace(/\n{3,}/g, "\n\n")
         .trim();
+    }
+
+    function dedupeReportSentences(text = "") {
+      const seen = new Set();
+      return String(text || "").replace(/([^.!?\n]+[.!?]+)([ \t\r\n]+|$)/g, (match, sentence, separator) => {
+        const key = sentence
+          .replace(/^\s*[-•]\s*/, "")
+          .replace(/\s+/g, " ")
+          .trim()
+          .toLowerCase();
+        if (key.length < 45) return match;
+        if (seen.has(key)) return separator && separator.includes("\n") ? separator : "";
+        seen.add(key);
+        return `${sentence}${separator}`;
+      }).replace(/[ \t]{2,}/g, " ");
     }
 
     function removeRepeatedReportLines(text = "") {
@@ -3600,6 +3708,7 @@
     }
 
     function generateStartMapReport(c, audience = "client") {
+      const context = getReportProcessContext(c, "startMap");
       return `Podsumowanie w 5 zdaniach
 ${generateReportExecutiveSummary(c, "startMap", audience)}
 
@@ -3628,13 +3737,14 @@ Jak będziemy monitorować proces
 ${buildMonitoringSection(c, audience)}
 
 Uwaga końcowa
-${buildReportClosingNote("startMap")}`;
+${buildReportClosingNote("startMap", context)}`;
     }
 
     function generateFourWeeksReport(c, audience = "client") {
       const decision = generateWeeklyDecision(c);
       const readiness = assessReportReadiness(c, "fourWeeks");
-      return `${buildReportReadinessIntro("fourWeeks", readiness)}
+      const context = getReportProcessContext(c, "fourWeeks");
+      return `${buildReportReadinessIntro("fourWeeks", readiness, context)}
 Podsumowanie w 5 zdaniach
 ${generateReportExecutiveSummary(c, "fourWeeks", audience)}
 
@@ -3668,7 +3778,7 @@ Plan na kolejne 4 tygodnie
 ${buildNextFourWeeksPlan(c, decision)}
 
 Uwaga końcowa
-${buildReportClosingNote("fourWeeks")}`;
+${buildReportClosingNote("fourWeeks", context)}`;
     }
 
     function generateTwelveWeeksReport(c, audience = "client") {
@@ -3694,7 +3804,7 @@ ${generateTanitaNarrative(c, "twelveWeeks", audience)}
 Dane Polar
 ${generatePolarNarrative(c, "twelveWeeks", audience)}
 
-Compliance i zadania domowe
+Zadania bieżące i plan domowy
 ${buildComplianceSection(c, audience)}
 ${buildHomePlanReportSection(c, "twelveWeeks", audience)}
 ${buildDiagnosticTestsSection(c, audience)}
@@ -3712,7 +3822,8 @@ ${buildReportClosingNote("twelveWeeks")}`;
     function generateContinuationReport(c, audience = "client") {
       const decision = generateWeeklyDecision(c);
       const readiness = assessReportReadiness(c, "continuation");
-      return `${buildReportReadinessIntro("continuation", readiness)}
+      const context = getReportProcessContext(c, "continuation");
+      return `${buildReportReadinessIntro("continuation", readiness, context)}
 Podsumowanie w 5 zdaniach
 ${generateReportExecutiveSummary(c, "continuation", audience)}
 
@@ -3741,7 +3852,7 @@ Plan na 4 tygodnie
 ${buildNextFourWeeksPlan(c, decision)}
 
 Uwaga końcowa
-${buildReportClosingNote("continuation")}`;
+${buildReportClosingNote("continuation", context)}`;
     }
 
     function generateReportExecutiveSummary(c, reportType = "fourWeeks", audience = "client") {
@@ -3752,17 +3863,18 @@ ${buildReportClosingNote("continuation")}`;
       const polar = latestPolarSession(c);
       const sessions = c.sessions || [];
       const milestone = lastMilestone(c);
+      const context = getReportProcessContext(c, reportType);
       const summaries = {
         startMap: [
-          `${c.name} rozpoczyna proces od uporządkowania punktu wyjścia i potwierdzenia informacji z ankiety.`,
+          context.hasSessions ? "Mamy już pierwsze obserwacje z sesji, ale dokument nadal pełni funkcję mapy kierunku pracy, nie końcowej oceny efektów." : `${c.name} rozpoczyna proces od uporządkowania punktu wyjścia i potwierdzenia informacji z ankiety.`,
           `Głównym celem pracy jest ${lowerFirst(goal)}.`,
           `Pierwszym priorytetem jest ${lowerFirst(focus)}.`,
-          "Na starcie nie oceniamy jeszcze efektów, tylko budujemy bezpieczny punkt odniesienia dla ruchu, obciążenia i pracy między sesjami.",
+          context.hasSessions ? "Pierwsze obserwacje z sesji są już zapisane i pomagają doprecyzować punkt wyjścia." : "To dokument startowy: nie oceniamy jeszcze efektów, tylko potwierdzamy punkt wyjścia dla ruchu, obciążenia i pracy między sesjami.",
           "Tempo progresji będzie wynikało z reakcji organizmu, a nie z pośpiechu."
         ],
         fourWeeks: [
-          `${c.name} jest na etapie, na którym najważniejsze są pierwsze wnioski z reakcji po sesjach i pracy domowej.`,
-          sessions.length ? `Mamy już ${sessions.length} zapisanych sesji, więc można ostrożnie nazwać kierunek procesu.` : friendlyMissingData("sessions"),
+          !context.isProcessStarted ? `${c.name} ma wstępny szkic raportu 4-tygodniowego, a nie pełną ocenę procesu.` : `${c.name} jest na etapie, na którym najważniejsze są pierwsze wnioski z reakcji po sesjach i pracy między sesjami.`,
+          !context.isProcessStarted ? "Dokument porządkuje kierunek pracy i pokazuje, co trzeba zebrać w kolejnych sesjach." : ((context.sessionCount >= 3 || context.postNoteCount >= 2) ? "Zakres danych pozwala ostrożnie opisać kierunek procesu, ale nadal nie traktujemy pojedynczych pomiarów jako wyroku." : (context.hasSessions ? `Mamy już ${sessions.length} zapisanych sesji, więc można ostrożnie nazwać kierunek procesu.` : `Mamy już ${context.postNoteCount} zapisanych notatek po sesji, ale kierunek procesu nadal wymaga potwierdzenia w sesjach.`)),
           `Aktualna decyzja na kolejny etap to: ${decision.label.toLowerCase()}.`,
           tanita || polar ? "Dane pomiarowe traktujemy jako wsparcie decyzji, a nie samodzielną ocenę wyniku." : "Kluczowe w kolejnym etapie będzie zebranie kolejnych punktów obserwacji.",
           "Najbliższy etap powinien utrzymać czytelne kryteria progresji i prosty rytm działań między sesjami."
@@ -3775,9 +3887,9 @@ ${buildReportClosingNote("continuation")}`;
           "Nie traktujemy pojedynczego wyniku jako oceny końcowej, tylko jako element całego procesu."
         ],
         continuation: [
-          `${c.name} dostaje plan kontynuacji, który ma wspierać samodzielność bez gubienia granic bezpieczeństwa.`,
+          context.isContinuationPremature ? `${c.name} dostaje ramy bezpieczeństwa do dalszej pracy, a nie finalny plan samodzielności.` : `${c.name} dostaje plan kontynuacji, który ma wspierać samodzielność bez gubienia granic bezpieczeństwa.`,
           `Najważniejszy kierunek to nadal ${lowerFirst(goal)}.`,
-          "Obciążenie można zwiększać wtedy, gdy reakcja po sesji i w kolejnych dniach pozostaje przewidywalna.",
+          context.isContinuationPremature ? "Zasady trzeba doprecyzować po aktualizacji planu domowego i kolejnych obserwacjach." : "Obciążenie można zwiększać wtedy, gdy reakcja po sesji i w kolejnych dniach pozostaje przewidywalna.",
           "Warto monitorować ból po aktywności, sen, gotowość i regularność zadań.",
           "Plan określa, co utrzymać, czego unikać i kiedy wrócić do kontroli."
         ]
@@ -3785,12 +3897,16 @@ ${buildReportClosingNote("continuation")}`;
       return summaries[reportType].join(" ");
     }
 
-    function buildReportReadinessIntro(reportType, readiness) {
+    function buildReportReadinessIntro(reportType, readiness, processContext = null) {
+      const context = processContext || {};
+      if (reportType === "fourWeeks" && context.sessionCount === 0 && context.postNoteCount === 0) {
+        return "To jest wstępny szkic raportu 4-tygodniowego, a nie pełna ocena procesu. Na tym etapie dokument porządkuje kierunek pracy i pokazuje, co trzeba zebrać w kolejnych sesjach.\n\n";
+      }
       if (reportType === "fourWeeks" && readiness.status === "premature") {
         return "Ten raport ma charakter wstępny, ponieważ proces nie ma jeszcze wystarczającej liczby sesji do oceny trendu.\n\n";
       }
-      if (reportType === "continuation" && readiness.status === "premature") {
-        return "To jest szkic planu kontynuacji, nie finalny plan samodzielnej pracy.\n\n";
+      if (reportType === "continuation" && context.isContinuationPremature) {
+        return "To nie jest jeszcze finalny plan samodzielnej pracy. To są ramy bezpieczeństwa i zasady, które trzeba doprecyzować po aktualizacji planu domowego i kolejnych obserwacjach.\n\n";
       }
       return "";
     }
@@ -3811,8 +3927,19 @@ ${buildReportClosingNote("continuation")}`;
       if ((c.sessions || []).length) evidence.push(lastMilestone(c) || "stabilizacja reakcji bólu i gotowości");
       if ((c.measurements || []).length) evidence.push("kolejny pomiar porównawczy Tanita");
       if ((c.polarSessions || []).length) evidence.push("kolejny odczyt tolerancji obciążenia");
-      if ((c.tasks || []).length || activeHomePlanExercises(c).length) evidence.push("powtarzalne wykonanie planu domowego przez minimum tydzień");
-      return uniqueList(evidence).slice(0, 2).join(" oraz ") || "pierwsza spokojna obserwacja reakcji organizmu";
+      if (activeHomePlanExercises(c).length) evidence.push("powtarzalne wykonanie planu domowego przez minimum tydzień");
+      else if ((c.tasks || []).length) evidence.push("realizacja zadań bieżących przez minimum tydzień");
+      return uniqueList(evidence).slice(0, 2).join(" i ") || "pierwsza spokojna obserwacja reakcji organizmu";
+    }
+
+    function formatCompletionRatio(done, total) {
+      return `${Number(done || 0)} z ${Number(total || 0)} wykonane`;
+    }
+
+    function taskCompletionText(tasks = []) {
+      const list = Array.isArray(tasks) ? tasks : [];
+      if (!list.length) return friendlyMissingData("tasks");
+      return formatCompletionRatio(list.filter(task => task.done).length, list.length);
     }
 
     function activeHomePlanExercises(c) {
@@ -3823,15 +3950,18 @@ ${buildReportClosingNote("continuation")}`;
 
     function buildHomePlanReportSection(c, reportType = "fourWeeks", audience = "client") {
       const exercises = activeHomePlanExercises(c);
+      const tasks = Array.isArray(c.tasks) ? c.tasks : [];
+      const doneTasks = tasks.filter(task => task.done).length;
       if (exercises.length) {
-        const label = audience === "trainer" ? "Plan domowy / zadania ruchowe" : "Plan domowy";
+        const label = "Plan domowy / zadania ruchowe";
         const items = exercises.slice(0, 4).map(ex => `${ex.name}${ex.dosage ? ` · ${ex.dosage}` : ""}${ex.frequency ? ` · ${ex.frequency}` : ""}`).join("; ");
         return `${label}: ${items}.`;
       }
-      if (reportType === "startMap") return "Plan domowy zostanie dobrany po potwierdzeniu punktu wyjścia.";
-      if (reportType === "fourWeeks") return "Plan domowy wymaga doprecyzowania po kolejnych obserwacjach.";
-      if (reportType === "continuation") return "Plan kontynuacji nie powinien być finalizowany bez aktualnego planu domowego.";
-      return "Plan domowy warto odświeżyć przed kolejnym etapem procesu.";
+      if (reportType === "continuation") return "Samodzielna praca powinna na tym etapie ograniczać się do zadań uzgodnionych po sesji. Finalny plan kontynuacji wymaga jeszcze aktualnego planu domowego.";
+      if (tasks.length && doneTasks) return "Zadania bieżące mają już zapis realizacji, ale plan ruchowy zostanie doprecyzowany po kolejnych obserwacjach.";
+      if (reportType === "startMap") return "Plan domowy / zadania ruchowe zostaną dobrane po potwierdzeniu punktu wyjścia.";
+      if (reportType === "fourWeeks") return "Plan domowy / zadania ruchowe wymagają doprecyzowania po kolejnych obserwacjach.";
+      return "Plan domowy / zadania ruchowe warto odświeżyć przed kolejnym etapem procesu.";
     }
 
     function buildDiagnosticTestsSection(c, audience = "client") {
@@ -3863,6 +3993,7 @@ ${buildReportClosingNote("continuation")}`;
       }
       if (start) {
         parts.push(`Pierwsza zapisana sesja: ${formatDate(start.date)}. VAS przed: ${formatMetric(start.vasBefore, "")}, VAS po: ${formatMetric(start.vasAfter, "")}, mobilność: ${formatMetric(start.mobilityIndex, "%")}.`);
+        parts.push("Pierwsze obserwacje z sesji są już zapisane i pomagają doprecyzować punkt wyjścia.");
       } else {
         parts.push("Pierwsza obserwacja ruchowa zostanie dopisana po rozpoczęciu pracy treningowej.");
       }
@@ -3896,7 +4027,7 @@ ${buildReportClosingNote("continuation")}`;
       const goal = inlineGoalText(reportGoal(c));
       return `- Potwierdzić dane z ankiety i aktualny punkt startowy.
 - Ustalić 1-2 mierzalne kryteria dla celu: ${goal}.
-- Dobrać mały plan domowy, który klient realnie wykona.
+- Dobrać mały plan domowy / zadania ruchowe, które klient realnie wykona.
 - Sprawdzić reakcję po sesji zanim zwiększymy trudność.
 - ${buildHomePlanReportSection(c, reportType, audience)}`;
     }
@@ -3915,10 +4046,12 @@ ${buildReportClosingNote("continuation")}`;
       const m = metrics(c);
       const l = latest(c);
       const tasks = c.tasks || [];
+      const homeExercises = activeHomePlanExercises(c);
       const lines = [
         `- Reakcja po sesji: VAS i gotowość${l ? ` (ostatnio VAS po ${formatMetric(l.vasAfter, "")}, gotowość ${formatMetric(l.readiness, "")})` : " - do uzupełnienia po pierwszych sesjach"}.`,
         `- Jakość ruchu i mobilność${m.mobility !== null ? ` (obecnie ${m.mobility}%)` : " - punkt odniesienia powstanie w procesie"}.`,
-        `- Zadania domowe: ${tasks.length ? `${tasks.filter(t => t.done).length}/${tasks.length} wykonane` : friendlyMissingData("tasks")}.`,
+        `- Zadania bieżące: ${taskCompletionText(tasks)}.`,
+        `- Plan domowy / zadania ruchowe: ${homeExercises.length ? `${homeExercises.length} aktywne` : "do doprecyzowania po kolejnych obserwacjach"}.`,
         `- Tanita: ${latestMeasurement(c) ? "punkt pomiarowy jest zapisany i będzie porównywany z kolejnymi." : friendlyMissingData("tanita")}`,
         `- Polar: ${latestPolarSession(c) ? "reakcja na obciążenie jest uwzględniana przy decyzji o tempie pracy." : friendlyMissingData("polar")}`,
         `- Ocena ruchowa: ${buildDiagnosticTestsSection(c, audience)}`
@@ -3936,7 +4069,7 @@ ${buildReportClosingNote("continuation")}`;
       } else {
         parts.push(friendlyMissingData("sessions"));
       }
-      parts.push(audience === "trainer" ? decision.trainerAction : decision.clientMessage);
+      parts.push(audience === "trainer" ? decision.trainerAction : "Decyzję utrzymujemy ostrożnie i weryfikujemy po kolejnych zapisanych reakcjach.");
       return parts.join("\n");
     }
 
@@ -3945,7 +4078,7 @@ ${buildReportClosingNote("continuation")}`;
       const done = tasks.filter(t => t.done).length;
       const decision = generateWeeklyDecision(c);
       const positives = [];
-      if (done) positives.push(`Regularność zadań domowych ma już punkt odniesienia: ${done}/${tasks.length} wykonane.`);
+      if (done) positives.push(`Zadania bieżące mają już zapis realizacji: ${formatCompletionRatio(done, tasks.length)}.`);
       if (decision.recommendation === "progress") positives.push("Reakcja organizmu pozwala rozważyć małą progresję jednego parametru.");
       if (latestPolarSession(c)?.clientSummary) positives.push(latestPolarSession(c).clientSummary);
       if (!positives.length) positives.push("Na tym etapie sprawdzamy dopiero, które bodźce są najlepiej tolerowane i najłatwiejsze do powtórzenia.");
@@ -3966,7 +4099,7 @@ Powody:
 ${decision.reasons.slice(0, 4).map(reason => `- ${reason}`).join("\n") || "- decyzja wymaga kolejnych danych"}
 Działanie trenera: ${decision.trainerAction}`;
       }
-      return `${decision.label}. ${decision.clientMessage}
+      return `${decision.label}. Decyzja wyznacza tempo kolejnego etapu i będzie sprawdzana po nowych obserwacjach.
 Czego teraz nie przyspieszamy:
 ${(decision.doNotDo || []).slice(0, 3).map(item => `- ${item}`).join("\n")}`;
     }
@@ -4002,8 +4135,8 @@ Zmiana VAS po: ${formatDelta(last.vasAfter, start.vasAfter, "pkt")}. Zmiana mobi
       if (!tasks.length) return friendlyMissingData("tasks");
       const done = tasks.filter(t => t.done).length;
       const latestPost = latestPostSessionNote(c);
-      return `Zadania domowe: ${done}/${tasks.length} wykonane.
-${latestPost?.homeTask ? `Ostatnie zadanie domowe: ${latestPost.homeTask}` : "Plan domowy będzie doprecyzowywany po kolejnych sesjach."}`;
+      return `Zadania bieżące: ${formatCompletionRatio(done, tasks.length)}.
+${latestPost?.homeTask ? `Ostatnie zadanie ruchowe do domu: ${latestPost.homeTask}` : buildHomePlanReportSection(c, "twelveWeeks", audience)}`;
     }
 
     function buildContinuationDecisionSection(c, decision = generateWeeklyDecision(c), audience = "client") {
@@ -4027,12 +4160,11 @@ Kryterium kontroli: reakcja po sesji, sen, gotowość i wykonywanie planu domowe
     }
 
     function buildSelfWorkSection(c) {
-      const plan = c.homePlan || {};
       const exercises = activeHomePlanExercises(c);
       if (exercises.length) {
         return exercises.map(ex => `- ${ex.name}: ${ex.dosage || "wg ustaleń"}${ex.frequency ? ` · ${ex.frequency}` : ""}${ex.clientCue ? ` (${ex.clientCue})` : ""}`).join("\n");
       }
-      return buildHomePlanReportSection(c, "continuation", "client");
+      return "Samodzielna praca powinna na tym etapie ograniczać się do zadań uzgodnionych po sesji. Finalny plan kontynuacji wymaga jeszcze aktualnego planu domowego.";
     }
 
     function buildAvoidSection(c, decision = generateWeeklyDecision(c)) {
@@ -4053,8 +4185,9 @@ Kryterium kontroli: reakcja po sesji, sen, gotowość i wykonywanie planu domowe
       return "Nie czekać, jeśli reakcja organizmu jest nietypowa, szybko się pogarsza albo pojawia się obawa o bezpieczeństwo. Wtedy najpierw wyjaśniamy sytuację, a dopiero potem wracamy do progresji.";
     }
 
-    function buildReportClosingNote(reportType = "fourWeeks") {
+    function buildReportClosingNote(reportType = "fourWeeks", processContext = null) {
       if (reportType === "startMap") return "To dokument startowy. Jego celem jest uporządkowanie kierunku pracy, a nie ocena efektów.";
+      if (reportType === "continuation" && processContext?.isContinuationPremature) return "To ramy bezpieczeństwa do dalszej pracy. Finalny plan samodzielności wymaga jeszcze aktualnego planu domowego i kolejnych obserwacji.";
       if (reportType === "continuation") return "To plan dalszego działania. Ma pomagać w samodzielności, ale zostawia jasne granice, kiedy warto wrócić do kontroli.";
       return "To jest raport procesu treningowego i wsparcie decyzji. Nie udaje diagnozy medycznej i nie zastępuje konsultacji medycznej, jeśli pojawiają się niepokojące objawy.";
     }
@@ -4105,7 +4238,7 @@ Kryterium kontroli: reakcja po sesji, sen, gotowość i wykonywanie planu domowe
       if (!decision) return "Plan kolejnych tygodni będzie bardziej precyzyjny po zebraniu pierwszych danych z procesu.";
       const base = {
         progress: "Kontynuować obecny kierunek i dodać jedną małą progresję naraz. Po każdej zmianie sprawdzić VAS, gotowość, sen i reakcję po 24 godzinach.",
-        maintain: "Utrzymać obecny bodziec, dopracować regularność zadań domowych i zebrać kolejny punkt danych przed większą progresją.",
+        maintain: "Utrzymać obecny bodziec, dopracować regularność zadań bieżących i zebrać kolejny punkt danych przed większą progresją.",
         regress: "Cofnąć bodziec do lepiej tolerowanego wariantu, skrócić ekspozycję lub zmniejszyć trudność, a potem wrócić do progresji po uspokojeniu reakcji.",
         consult: "Zatrzymać progresję i najpierw wyjaśnić reakcję organizmu. Kolejne 4 tygodnie planować dopiero po dodatkowej weryfikacji."
       }[decision.recommendation];

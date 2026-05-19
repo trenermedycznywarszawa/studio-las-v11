@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 7.0.1 | Home Plan UX Patch</title>
+  <title>Studio Las OS 7.1 | Core Exercise Library Expansion</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -231,7 +231,10 @@
     .doc-card { min-height: 118px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; }
     .exercise-list { display: grid; gap: 10px; }
     .task-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }
-    .filter-bar { display: grid; grid-template-columns: minmax(220px, 1fr) repeat(3, minmax(150px, 190px)); gap: 10px; align-items: end; }
+    .filter-bar { display: grid; grid-template-columns: minmax(220px, 1fr) repeat(5, minmax(140px, 180px)); gap: 10px; align-items: end; }
+    .quick-filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .quick-filter-row .btn { min-height: 32px; padding: 7px 10px; font-size: 12px; border-radius: 999px; }
+    .quick-filter-row .btn.active { border-color: rgba(127,176,105,.68); background: rgba(127,176,105,.18); color: var(--green-2); }
     .exercise-card { display: grid; gap: 10px; }
     .exercise-card .card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .exercise-card .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -631,7 +634,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 7.0.1</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 7.1</span></div>
       </div>
 
       <div class="client-switcher">
@@ -684,7 +687,7 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 7.0.1</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 7.1</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
@@ -842,10 +845,10 @@
       </div>
       <form id="exerciseForm" class="form-grid">
         <input type="hidden" name="id" />
-        <input type="hidden" name="linkedTests" value="[]" />
         <div class="form-field"><label class="label">Nazwa techniczna</label><input name="name" required /></div>
         <div class="form-field"><label class="label">Nazwa dla klienta</label><input name="clientName" /></div>
         <div class="form-field"><label class="label">Kategoria</label><select name="category"><option>Mobilizacja</option><option>Rolowanie / tkanki miękkie</option><option>Stabilizacja</option><option>Core</option><option>Siła</option><option>Oddech / regulacja</option><option>Rozciąganie</option><option>Kontrola ruchu</option></select></div>
+        <div class="form-field"><label class="label">Blok</label><select name="trainingBlock"><option>Przygotowanie ciała</option><option>Mobilność</option><option>Aktywacja i kontrola</option><option>Siła</option><option>Wyciszenie</option><option>Inne</option></select></div>
         <div class="form-field"><label class="label">Podkategoria</label><input name="subcategory" /></div>
         <div class="form-field"><label class="label">Region</label><select name="region"><option>stopa</option><option>łydka</option><option>udo</option><option>biodro</option><option>kręgosłup lędźwiowy</option><option>kręgosłup piersiowy</option><option>bark</option><option>nadgarstek</option><option>core</option><option>całe ciało</option></select></div>
         <div class="form-field"><label class="label">Wzorzec</label><input name="pattern" /></div>
@@ -865,6 +868,12 @@
         <div class="form-field full"><label class="label">Przeciwwskazania</label><textarea name="contraindications"></textarea></div>
         <div class="form-field"><label class="label">Video URL</label><input name="videoUrl" /></div>
         <div class="form-field"><label class="label">Tagi</label><input name="tags" placeholder="np. oddech; biodro; start" /></div>
+        <div class="form-field full"><h3>Metadane</h3></div>
+        <div class="form-field"><label><input type="checkbox" name="beginnerFriendly" checked /> Przyjazne dla początkujących</label></div>
+        <div class="form-field"><label class="label">Status jakości</label><select name="qualityStatus"><option value="reviewed">reviewed</option><option value="draft">draft</option><option value="needs-review">needs-review</option></select></div>
+        <div class="form-field"><label class="label">Źródło</label><input name="source" /></div>
+        <div class="form-field"><label class="label">Kolejność źródła</label><input type="number" step="1" min="0" name="sourceOrder" /></div>
+        <div class="form-field full"><label class="label">Powiązane testy</label><textarea name="linkedTests" placeholder="np. test-przysiad; test-biodro"></textarea></div>
         <button class="btn primary full" type="submit">Zapisz ćwiczenie</button>
       </form>
     </div>
@@ -896,7 +905,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "7.0.1";
+    const APP_VERSION = "7.1";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
     const EXERCISE_LIBRARY_KEY = "studioLasExerciseLibraryV1";
@@ -961,6 +970,16 @@
     const EXERCISE_REGIONS = ["stopa", "łydka", "udo", "biodro", "kręgosłup lędźwiowy", "kręgosłup piersiowy", "bark", "nadgarstek", "core", "całe ciało"];
     const EXERCISE_STAGES = ["1 Punkt startowy", "2 Kontrola", "3 Siła i stabilność", "4 Integracja", "5 Samodzielność"];
     const EXERCISE_LEVELS = ["łatwy", "średni", "trudny"];
+    const EXERCISE_TRAINING_BLOCKS = ["Przygotowanie ciała", "Mobilność", "Aktywacja i kontrola", "Siła", "Wyciszenie", "Inne"];
+    const EXERCISE_SORT_OPTIONS = [
+      { value: "process", label: "Kolejność procesu" },
+      { value: "name", label: "Nazwa" },
+      { value: "stage", label: "Etap" },
+      { value: "category", label: "Kategoria" }
+    ];
+    const EXERCISE_LIBRARY_SEED_VERSION_KEY = "studioLasExerciseLibrarySeedVersion";
+    const EXERCISE_LIBRARY_CORE_VERSION = "core-v2";
+    const CORE_EXERCISE_SOURCE = "Szczegółowy plan treningowy dla początkujących";
     const SEED_EXERCISES = [
       {
         id: "rolowanie-stop",
@@ -1252,6 +1271,709 @@
         linkedTests: []
       }
     ];
+
+    function getStudioLasCoreExercises() {
+      const defaultStop = "Przerwij, jeśli pojawia się ostry ból, drętwienie, promieniowanie albo utrata kontroli ruchu.";
+      const coreExercise = (exercise) => {
+        const merged = {
+          id: "",
+          name: "",
+          clientName: "",
+          category: "Kontrola ruchu",
+          subcategory: "",
+          trainingBlock: "Inne",
+          region: "całe ciało",
+          pattern: "",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "",
+          goal: "",
+          dosageDefault: "",
+          tempo: "Spokojnie, bez pośpiechu.",
+          breathing: "Oddychaj spokojnie i nie wstrzymuj oddechu.",
+          clientInstruction: "",
+          coachNotes: "",
+          commonMistakes: "",
+          stopCriteria: defaultStop,
+          regressions: "",
+          progressions: "",
+          contraindications: "",
+          videoUrl: "",
+          tags: [],
+          linkedTests: [],
+          beginnerFriendly: true,
+          source: CORE_EXERCISE_SOURCE,
+          sourceOrder: "",
+          qualityStatus: "reviewed",
+          ...exercise
+        };
+        return {
+          ...merged,
+          clientName: merged.clientName || merged.name,
+          trainingBlock: EXERCISE_TRAINING_BLOCKS.includes(merged.trainingBlock) ? merged.trainingBlock : "Inne",
+          tags: Array.isArray(merged.tags) ? merged.tags : splitList(merged.tags),
+          linkedTests: Array.isArray(merged.linkedTests) ? merged.linkedTests : [],
+          beginnerFriendly: merged.beginnerFriendly !== false,
+          source: merged.source || CORE_EXERCISE_SOURCE,
+          sourceOrder: Number.isFinite(Number(merged.sourceOrder)) ? Number(merged.sourceOrder) : "",
+          qualityStatus: merged.qualityStatus || "reviewed"
+        };
+      };
+
+      return [
+        coreExercise({
+          id: "rolowanie-stop",
+          name: "Rolowanie stóp na piłeczce",
+          clientName: "Rolowanie stopy na piłeczce",
+          category: "Rolowanie / tkanki miękkie",
+          subcategory: "Stopa",
+          trainingBlock: "Przygotowanie ciała",
+          region: "stopa",
+          pattern: "przygotowanie stopy",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "piłeczka",
+          goal: "Zmniejszyć napięcie podeszwy stopy i przygotować stopę do kontaktu z podłożem.",
+          dosageDefault: "1-2 min na stopę",
+          tempo: "Bardzo wolne przesuwanie po tkankach.",
+          breathing: "Oddychaj swobodnie, bez zaciskania palców.",
+          clientInstruction: "Stań albo usiądź stabilnie.\nPrzesuwaj stopę po piłeczce powoli.\nZatrzymaj się na wrażliwym miejscu bez wciskania na siłę.\nZmień stopę i porównaj odczucie podłoża.",
+          coachNotes: "Dobra pozycja startowa przed chodem, przysiadem i pracą łydki. Docisk ma być czytelny, ale nie obronny.",
+          commonMistakes: "Za mocny docisk, rolowanie po pięcie zamiast po podeszwie, zaciskanie palców.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból w stopie, drętwienie palców, promieniowanie albo utrata kontroli nacisku.",
+          regressions: "Wykonaj siedząc albo użyj miększej piłeczki.",
+          progressions: "Wykonaj stojąc z większym obciążeniem stopy.",
+          contraindications: "Świeży uraz stopy, aktywny stan zapalny, rana skóry, ostra neuropatia.",
+          tags: ["start", "stopa", "piłeczka", "bez sprzętu"],
+          sourceOrder: 1
+        }),
+        coreExercise({
+          id: "rolowanie-piersiowe-aniolek",
+          name: "Rolowanie odcinka piersiowego pleców",
+          clientName: "Rolowanie górnych pleców na rollerze",
+          category: "Rolowanie / tkanki miękkie",
+          subcategory: "Odcinek piersiowy",
+          trainingBlock: "Przygotowanie ciała",
+          region: "kręgosłup piersiowy",
+          pattern: "wyprost piersiowy",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "roller",
+          goal: "Przygotować górną część pleców do oddychania, pracy barków i pozycji wyprostowanych.",
+          dosageDefault: "6-8 spokojnych przejść",
+          tempo: "Powoli, z krótką pauzą na sztywniejszych miejscach.",
+          breathing: "Zrób spokojny wydech na odcinku, który jest bardziej napięty.",
+          clientInstruction: "Połóż roller pod górnymi plecami.\nPodeprzyj głowę dłońmi, bez ciągnięcia szyi.\nPrzesuwaj tułów powoli po rollerze.\nZatrzymaj się tylko tam, gdzie oddech zostaje spokojny.",
+          coachNotes: "Nie rolować agresywnie po lędźwiach. Obserwować napięcie szyi i ustawienie żeber.",
+          commonMistakes: "Ciągnięcie głowy rękami, zbyt szybkie ruchy, zapadanie lędźwi.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból pleców, zawroty głowy, drętwienie rąk albo promieniowanie.",
+          regressions: "Zmniejsz zakres, podłóż poduszkę pod głowę albo wykonaj bez docisku.",
+          progressions: "Dodaj krótkie zatrzymanie z oddechem w miejscu ograniczenia.",
+          contraindications: "Świeży uraz kręgosłupa, ostry ból piersiowy, objawy neurologiczne.",
+          tags: ["start", "roller", "piersiowy", "bark"],
+          sourceOrder: 2
+        }),
+        coreExercise({
+          id: "ex-roller-angel",
+          name: "Aniołek na rollerze",
+          clientName: "Aniołek na rollerze",
+          category: "Mobilizacja",
+          subcategory: "Barki i klatka",
+          trainingBlock: "Przygotowanie ciała",
+          region: "bark",
+          pattern: "ruch ramion nad głowę",
+          stage: "1 Punkt startowy",
+          level: "średni",
+          equipment: "roller",
+          goal: "Poprawić czucie ustawienia żeber, barków i oddechu w pozycji leżenia na rollerze.",
+          dosageDefault: "1-2 serie po 5-8 ruchów",
+          tempo: "Powolny ruch ramion w bezbolesnym zakresie.",
+          breathing: "Wydech w trakcie opuszczania żeber i rozluźniania barków.",
+          clientInstruction: "Połóż się wzdłuż rollera albo na macie.\nUtrzymaj żebra spokojnie, bez wyginania pleców.\nPrzesuwaj ręce jak do aniołka tylko w wygodnym zakresie.\nZatrzymaj ruch, jeśli bark zaczyna się bronić.",
+          coachNotes: "Wersję na rollerze stosować, gdy klient toleruje pozycję. Priorytetem jest żebro, szyja i brak bólu barku.",
+          commonMistakes: "Wyginanie lędźwi, unoszenie żeber, wciskanie rąk na siłę w podłogę.",
+          stopCriteria: "Przerwij, jeśli pojawia się kłucie w barku, drętwienie ręki, promieniowanie albo utrata kontroli żeber.",
+          regressions: "Wykonaj na macie bez rollera albo skróć zakres ruchu.",
+          progressions: "Dodaj wolniejszy wydech i dłuższą pauzę w końcowym zakresie.",
+          contraindications: "Ostry ból barku, świeży uraz obręczy barkowej, objawy neurologiczne w kończynie górnej.",
+          tags: ["start", "roller", "bark", "oddech"],
+          sourceOrder: 3
+        }),
+        coreExercise({
+          id: "rolowanie-lydek",
+          name: "Rolowanie łydek",
+          clientName: "Rolowanie łydek",
+          category: "Rolowanie / tkanki miękkie",
+          subcategory: "Łydka",
+          trainingBlock: "Przygotowanie ciała",
+          region: "łydka",
+          pattern: "przygotowanie stawu skokowego",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "roller",
+          goal: "Obniżyć napięcie łydki i przygotować staw skokowy do przysiadu, chodu i wykroku.",
+          dosageDefault: "60-90 s na stronę",
+          tempo: "Powoli, bez szukania bólu.",
+          breathing: "Oddychaj spokojnie i rozluźniaj stopę.",
+          clientInstruction: "Oprzyj łydkę na rollerze.\nPrzesuwaj nogę wolno w przód i tył.\nZmieniaj lekko ustawienie stopy.\nDocisk ma być wyraźny, ale możliwy do rozluźnienia.",
+          coachNotes: "Uważać przy dużej tkliwości, żylakach i problemach naczyniowych. Nie robić z tego testu odporności na ból.",
+          commonMistakes: "Za szybkie rolowanie, docisk mimo ostrego bólu, napinanie całej nogi.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból łydki, drętwienie stopy, promieniowanie albo skurcz nie do opanowania.",
+          regressions: "Zmniejsz docisk, oprzyj drugą nogę na podłodze albo użyj miększego rollera.",
+          progressions: "Dodaj spokojne ruchy stopą w miejscu większego napięcia.",
+          contraindications: "Podejrzenie zakrzepicy, świeży uraz łydki, aktywny stan zapalny.",
+          tags: ["start", "roller", "łydka", "skokowy"],
+          sourceOrder: 4
+        }),
+        coreExercise({
+          id: "rolowanie-ud",
+          name: "Rolowanie ud",
+          clientName: "Rolowanie uda",
+          category: "Rolowanie / tkanki miękkie",
+          subcategory: "Udo",
+          trainingBlock: "Przygotowanie ciała",
+          region: "udo",
+          pattern: "przygotowanie uda",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "roller",
+          goal: "Sprawdzić tolerancję tkanek uda i przygotować nogi do pracy w przysiadzie, wykroku i hip thrust.",
+          dosageDefault: "60-90 s na stronę",
+          tempo: "Wolne przesuwanie z kontrolą docisku.",
+          breathing: "Wydech pomaga zmniejszyć niepotrzebne napięcie.",
+          clientInstruction: "Oprzyj udo na rollerze.\nPracuj powoli i omijaj miejsca z ostrym bólem.\nZmieniaj lekko kąt ustawienia nogi.\nOddychaj i rozluźniaj udo.",
+          coachNotes: "Dobierać obszar do celu sesji: przód, bok albo tył uda. Nie dociskać bez sensu po bocznej stronie kolana.",
+          commonMistakes: "Rolowanie zbyt blisko kolana, szukanie maksymalnego bólu, zapominanie o oddechu.",
+          stopCriteria: "Przerwij, jeśli ból robi się ostry, pojawia się drętwienie, promieniowanie albo duży dyskomfort utrzymuje się po zakończeniu.",
+          regressions: "Zmniejsz docisk, oprzyj więcej ciężaru na rękach albo skróć czas.",
+          progressions: "Dodaj krótką pauzę i spokojny ruch kolana w miejscu napięcia.",
+          contraindications: "Świeży uraz uda, aktywny stan zapalny, krwiak, silna tkliwość po urazie.",
+          tags: ["start", "roller", "udo", "tkanki miękkie"],
+          sourceOrder: 5
+        }),
+        coreExercise({
+          id: "mobilizacja-nadgarstkow-w-podporze",
+          name: "Mobilizacja nadgarstków w klęku podpartym",
+          clientName: "Mobilizacja nadgarstków w podporze",
+          category: "Mobilizacja",
+          subcategory: "Nadgarstek",
+          trainingBlock: "Mobilność",
+          region: "nadgarstek",
+          pattern: "podpór",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "mata",
+          goal: "Przygotować nadgarstki do podporów, bear plank i ćwiczeń na macie.",
+          dosageDefault: "1-2 serie po 6-8 ruchów",
+          tempo: "Powoli, z małym zakresem na początku.",
+          breathing: "Oddech spokojny, bez napinania barków.",
+          clientInstruction: "Ustaw dłonie pod barkami w klęku podpartym.\nPrzenieś ciężar ciała delikatnie w przód i tył.\nZostaw łokcie miękkie.\nZakres ma być komfortowy.",
+          coachNotes: "Można zmieniać ustawienie dłoni, ale bez prowokowania drętwienia. Kontrolować barki i szyję.",
+          commonMistakes: "Zbyt duży ciężar na dłoniach, blokowanie łokci, ignorowanie drętwienia palców.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból nadgarstka, drętwienie palców, promieniowanie albo uczucie niestabilności.",
+          regressions: "Wykonaj na pięściach, przy ścianie albo z mniejszym przeniesieniem ciężaru.",
+          progressions: "Dodaj wolniejsze przeniesienie ciężaru lub delikatne krążenia.",
+          contraindications: "Świeży uraz nadgarstka, aktywny stan zapalny, objawy cieśni nasilane podporami.",
+          tags: ["mobilność", "nadgarstek", "podpór", "bez sprzętu"],
+          sourceOrder: 6
+        }),
+        coreExercise({
+          id: "ex-joint-circles-ankle-hip-wrist",
+          name: "Krążenia stawów: kostki, biodra, nadgarstki",
+          clientName: "Spokojne krążenia stawów",
+          category: "Mobilizacja",
+          subcategory: "Rozruch stawów",
+          trainingBlock: "Mobilność",
+          region: "całe ciało",
+          pattern: "kontrola zakresu",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "",
+          goal: "Obudzić zakres ruchu w najważniejszych stawach bez forsowania i bez zmęczenia.",
+          dosageDefault: "4-6 kółek w każdą stronę na staw",
+          tempo: "Wolno i płynnie.",
+          breathing: "Oddychaj naturalnie, bez usztywniania tułowia.",
+          clientInstruction: "Zacznij od małych kółek.\nPoruszaj kostką, biodrem i nadgarstkiem osobno.\nZakres ma być płynny, nie maksymalny.\nZmień kierunek i porównaj strony.",
+          coachNotes: "Traktować jako mapowanie zakresu, nie rozgrzewkę na czas. Obserwować asymetrie i miejsca zacięcia.",
+          commonMistakes: "Krążenia z rozpędu, kompensacja całym ciałem, wchodzenie w ból.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból stawu, zawroty głowy, drętwienie albo utrata kontroli ruchu.",
+          regressions: "Zmniejsz zakres i wykonaj w pozycji siedzącej.",
+          progressions: "Dodaj wolniejszą pauzę w najtrudniejszym fragmencie zakresu.",
+          contraindications: "Świeży uraz danego stawu, silny obrzęk, niestabilność po urazie.",
+          tags: ["mobilność", "start", "bez sprzętu", "kostka", "biodro", "nadgarstek"],
+          sourceOrder: 7
+        }),
+        coreExercise({
+          id: "kolana-90-90-lezenie",
+          name: "Przenoszenie kolan 90/90 na plecach",
+          clientName: "Przenoszenie kolan na plecach",
+          category: "Mobilizacja",
+          subcategory: "Biodra i lędźwia",
+          trainingBlock: "Mobilność",
+          region: "biodro",
+          pattern: "rotacja bioder",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "mata",
+          goal: "Poprawić spokojną rotację bioder i tułowia bez wymuszania zakresu lędźwi.",
+          dosageDefault: "2 serie po 6 ruchów na stronę",
+          tempo: "Powolne przeniesienie i spokojny powrót.",
+          breathing: "Wydech w trakcie przenoszenia kolan na bok.",
+          clientInstruction: "Połóż się na plecach i ugnij kolana.\nPrzenoś kolana powoli na bok.\nZatrzymaj się przed bólem albo ciągnięciem nerwowym.\nWróć do środka z oddechem.",
+          coachNotes: "Dobra pozycja do oceny tolerancji rotacji. Pilnować, czy ruch nie jest szarpany przez lędźwia.",
+          commonMistakes: "Opuszczanie kolan z rozpędu, odrywanie barków na siłę, wchodzenie w ból.",
+          stopCriteria: "Przerwij, jeśli pojawia się ból promieniujący, drętwienie, blokada ruchu albo narastający ból pleców.",
+          regressions: "Zmniejsz zakres albo włóż poduszkę między kolana.",
+          progressions: "Dodaj dłuższą pauzę w bezbolesnym końcowym zakresie.",
+          contraindications: "Ostry ból lędźwiowy, świeży uraz biodra, objawy korzeniowe nasilane rotacją.",
+          tags: ["mobilność", "90/90", "biodro", "bez sprzętu"],
+          sourceOrder: 8
+        }),
+        coreExercise({
+          id: "motylek",
+          name: "Motylek",
+          clientName: "Motylek bioder",
+          category: "Rozciąganie",
+          subcategory: "Przywodziciele",
+          trainingBlock: "Mobilność",
+          region: "biodro",
+          pattern: "odwiedzenie bioder",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "mata",
+          goal: "Poprawić komfort odwiedzenia bioder i czucie napięcia przywodzicieli.",
+          dosageDefault: "2 serie po 30-45 s",
+          tempo: "Statycznie albo z bardzo małym pulsem.",
+          breathing: "Spokojny wydech bez dociskania kolan.",
+          clientInstruction: "Usiądź stabilnie i połącz stopy.\nPozwól kolanom opaść tylko do wygodnego zakresu.\nWydłuż kręgosłup.\nOddychaj spokojnie.",
+          coachNotes: "Nie dociskać kolan. Obserwować asymetrię, pachwinę i reakcję odcinka lędźwiowego.",
+          commonMistakes: "Zaokrąglanie pleców, dociskanie kolan rękami, szukanie bólu w pachwinie.",
+          stopCriteria: "Przerwij, jeśli pojawia się ból pachwiny, kłucie w biodrze, drętwienie albo utrata kontroli pozycji.",
+          regressions: "Usiądź wyżej na poduszce albo odsuń stopy dalej od miednicy.",
+          progressions: "Dodaj delikatny skłon z długim kręgosłupem.",
+          contraindications: "Ostry ból pachwiny, świeży uraz biodra, silne objawy po rozciąganiu przywodzicieli.",
+          tags: ["mobilność", "biodro", "bez sprzętu", "rozciąganie"],
+          sourceOrder: 9
+        }),
+        coreExercise({
+          id: "motylek-kolana-do-srodka-90-90",
+          name: "Przenoszenie kolan w siadzie 90/90",
+          clientName: "Przenoszenie kolan w siadzie 90/90",
+          category: "Mobilizacja",
+          subcategory: "Rotacja bioder",
+          trainingBlock: "Mobilność",
+          region: "biodro",
+          pattern: "rotacja bioder w siadzie",
+          stage: "2 Kontrola",
+          level: "średni",
+          equipment: "mata",
+          goal: "Połączyć mobilność bioder z kontrolą rotacji i spokojnym ustawieniem tułowia.",
+          dosageDefault: "1-2 serie po 6 przejść",
+          tempo: "Powoli, bez opadania z rozpędu.",
+          breathing: "Wydech pomaga przejść przez trudniejszy fragment ruchu.",
+          clientInstruction: "Usiądź z kolanami ugiętymi przed sobą.\nPrzenieś kolana spokojnie na jedną stronę.\nNie ciągnij ruchu na siłę.\nWróć przez środek i przejdź na drugą stronę.",
+          coachNotes: "Można oprzeć dłonie z tyłu. Ważna jest jakość rotacji, nie dojście kolan do podłogi.",
+          commonMistakes: "Szarpanie kolan, zapadanie pleców, wymuszanie zakresu biodra.",
+          stopCriteria: "Przerwij, jeśli pojawia się kłucie w biodrze, ból pachwiny, drętwienie albo utrata kontroli ruchu.",
+          regressions: "Podeprzyj dłonie z tyłu albo zmniejsz zakres przeniesienia kolan.",
+          progressions: "Wykonaj bez podporu rąk, jeśli tułów zostaje spokojny.",
+          contraindications: "Ostry konflikt biodra, świeży uraz biodra lub kolana, objawy neurologiczne nasilane pozycją.",
+          tags: ["mobilność", "90/90", "biodro", "bez sprzętu"],
+          sourceOrder: 10
+        }),
+        coreExercise({
+          id: "pies-glowa-w-dole-spokojny",
+          name: "Pies z głową w dole",
+          clientName: "Pies z głową w dole",
+          category: "Mobilizacja",
+          subcategory: "Tylna taśma i barki",
+          trainingBlock: "Mobilność",
+          region: "całe ciało",
+          pattern: "podpór i zgięcie bioder",
+          stage: "2 Kontrola",
+          level: "średni",
+          equipment: "mata",
+          goal: "Połączyć tylną taśmę, barki i oddech bez ścigania maksymalnego zakresu.",
+          dosageDefault: "4-6 spokojnych wejść albo 3 oddechy w pozycji",
+          tempo: "Wejście i wyjście bez pośpiechu.",
+          breathing: "Oddychaj w żebra, nie zaciskaj szyi.",
+          clientInstruction: "Ustaw dłonie i stopy stabilnie.\nWypchnij biodra do tyłu i w górę.\nKolana mogą być ugięte.\nNie walcz o pięty na ziemi.",
+          coachNotes: "Kontrolować barki, nadgarstki, ciśnienie i reakcję szyi. Dobra pozycja, jeśli klient toleruje podpor.",
+          commonMistakes: "Przenoszenie całego ciężaru na barki, blokowanie kolan, zadzieranie głowy.",
+          stopCriteria: "Przerwij, jeśli pojawia się zawrót głowy, ból barku, drętwienie dłoni, promieniowanie albo utrata kontroli podporu.",
+          regressions: "Wykonaj z dłońmi na podwyższeniu albo skróć czas w pozycji.",
+          progressions: "Dodaj powolne naprzemienne uginanie kolan.",
+          contraindications: "Ostry ból barku lub nadgarstka, niewyjaśnione zawroty głowy, wysokie ciśnienie bez kontroli.",
+          tags: ["mobilność", "tylna taśma", "bark", "bez sprzętu"],
+          sourceOrder: 11
+        }),
+        coreExercise({
+          id: "pies-glowa-w-gorze-krzeslo",
+          name: "Pies z głową w górze ze wsparciem na krześle",
+          clientName: "Otwarcie klatki na krześle",
+          category: "Mobilizacja",
+          subcategory: "Klatka i oddech",
+          trainingBlock: "Mobilność",
+          region: "kręgosłup piersiowy",
+          pattern: "wyprost piersiowy z podporą",
+          stage: "1 Punkt startowy",
+          level: "łatwy",
+          equipment: "krzesło",
+          goal: "Uzyskać łagodne otwarcie klatki i pracę oddechu bez przeciążania lędźwi.",
+          dosageDefault: "2 serie po 5-6 oddechów",
+          tempo: "Wejście spokojne, utrzymanie na oddechach.",
+          breathing: "Wdech w żebra, wydech bez zapadania lędźwi.",
+          clientInstruction: "Oprzyj dłonie na stabilnym krześle.\nCofnij biodra i wydłuż plecy.\nOddychaj w żebra.\nNie zapadaj się w lędźwiach.",
+          coachNotes: "Dobra regresja dla pracy ramion nad głową. Kontrolować żebra i barki.",
+          commonMistakes: "Przeprost lędźwi, wciskanie barków w uszy, niestabilne krzesło.",
+          stopCriteria: "Przerwij, jeśli pojawia się ból barku, kłucie w plecach, zawroty głowy, drętwienie albo promieniowanie.",
+          regressions: "Podeprzyj dłonie wyżej, na ścianie albo blacie.",
+          progressions: "Wydłuż pauzę oddechową albo przejdź do wersji niżej.",
+          contraindications: "Ostry ból barku, objawy neurologiczne w rękach, brak stabilnego podparcia.",
+          tags: ["mobilność", "krzesło", "piersiowy", "oddech"],
+          sourceOrder: 12
+        }),
+        coreExercise({
+          id: "wykrok-klek-praca-ramion",
+          name: "Wykrok w klęku z mobilizacją biodra i pracą ramion",
+          clientName: "Wykrok w klęku z pracą ramion",
+          category: "Mobilizacja",
+          subcategory: "Biodro i ramiona",
+          trainingBlock: "Mobilność",
+          region: "biodro",
+          pattern: "wykrok w klęku",
+          stage: "2 Kontrola",
+          level: "średni",
+          equipment: "mata",
+          goal: "Połączyć otwarcie przodu biodra z kontrolą miednicy, tułowia i spokojnym ruchem ramion.",
+          dosageDefault: "2 serie po 5 ruchów na stronę",
+          tempo: "Powoli, z pauzą w stabilnej pozycji.",
+          breathing: "Wydech przy ustawianiu miednicy i opuszczaniu żeber.",
+          clientInstruction: "Ustaw jedno kolano na macie, drugą stopę z przodu.\nDelikatnie przesuń biodra do przodu.\nDodaj spokojny ruch ramion.\nNie wyginaj lędźwi.",
+          coachNotes: "Pilnować miednicy, żeber i kolana z przodu. Zakres biodra ma wynikać z kontroli, nie z przeprostu lędźwi.",
+          commonMistakes: "Zapadanie lędźwi, uciekanie kolana do środka, zbyt duży krok.",
+          stopCriteria: "Przerwij, jeśli pojawia się ból kolana, pachwiny, lędźwi, drętwienie albo utrata stabilności.",
+          regressions: "Podłóż miękkie wsparcie pod kolano albo zmniejsz przesunięcie bioder.",
+          progressions: "Dodaj rotację tułowia albo wolniejszą pracę ramion.",
+          contraindications: "Ostry ból kolana w klęku, świeży uraz biodra, niestabilność stawu.",
+          tags: ["mobilność", "biodro", "wykrok", "bez sprzętu"],
+          sourceOrder: 13
+        }),
+        coreExercise({
+          id: "siad-tylna-tasma-wykrok",
+          name: "Rozciąganie tylnej taśmy z pozycji wykroku",
+          clientName: "Tylna taśma z wykroku",
+          category: "Rozciąganie",
+          subcategory: "Tylna taśma",
+          trainingBlock: "Mobilność",
+          region: "udo",
+          pattern: "hinge w wykroku",
+          stage: "2 Kontrola",
+          level: "średni",
+          equipment: "mata",
+          goal: "Poprawić tolerancję tylnej taśmy bez szarpania i bez prowokowania objawów nerwowych.",
+          dosageDefault: "2 serie po 6 ruchów na stronę",
+          tempo: "Płynny powrót i wolne wejście w zakres.",
+          breathing: "Wydech w momencie cofania bioder.",
+          clientInstruction: "Z pozycji wykroku cofnij biodra.\nPrzednia noga może lekko się wyprostować.\nSzukaj rozciągania, nie bólu.\nWróć płynnie do wykroku.",
+          coachNotes: "Uważać na napięcie nerwowe i kompensację plecami. Zakres ma być roboczy, nie maksymalny.",
+          commonMistakes: "Zaokrąglanie pleców, blokowanie kolana, dociąganie do bólu pod kolanem.",
+          stopCriteria: "Przerwij, jeśli pojawia się drętwienie, ciągnięcie nerwowe, ostry ból pod kolanem albo utrata kontroli ruchu.",
+          regressions: "Ugnij mocniej przednie kolano albo podeprzyj dłonie wyżej.",
+          progressions: "Dodaj aktywne zgięcie i wyprost stopy w bezbolesnym zakresie.",
+          contraindications: "Ostre objawy rwy kulszowej, świeży uraz tylnej taśmy, ból promieniujący.",
+          tags: ["mobilność", "tylna taśma", "udo", "bez sprzętu"],
+          sourceOrder: 14
+        }),
+        coreExercise({
+          id: "bird-dog-prawa-reka-lewa-noga",
+          name: "Bird dog - przeciwległa ręka i noga",
+          clientName: "Bird dog",
+          category: "Stabilizacja",
+          subcategory: "Kontrola tułowia",
+          trainingBlock: "Aktywacja i kontrola",
+          region: "core",
+          pattern: "antyrotacja",
+          stage: "2 Kontrola",
+          level: "łatwy",
+          equipment: "mata",
+          goal: "Poprawić kontrolę tułowia, miednicy i łopatek bez przeciążania kręgosłupa.",
+          dosageDefault: "2 serie po 6 powtórzeń na stronę",
+          tempo: "2 s wyciągnięcie, 1 s pauza, spokojny powrót.",
+          breathing: "Wydech przy wyciąganiu kończyn, wdech przy powrocie.",
+          clientInstruction: "Ustaw dłonie pod barkami i kolana pod biodrami.\nWyciągnij przeciwną rękę i nogę.\nNie skręcaj tułowia.\nWróć spokojnie i zmień stronę.",
+          coachNotes: "Ocenić stabilność miednicy i kompensację lędźwi. Lepiej mniej zakresu i więcej kontroli.",
+          commonMistakes: "Przeprost lędźwi, rotacja miednicy, unoszenie nogi za wysoko.",
+          stopCriteria: "Przerwij, jeśli rośnie ból pleców, pojawia się drętwienie, ciągnięcie nerwowe albo tracisz kontrolę pozycji.",
+          regressions: "Pracuj samą ręką albo samą nogą.",
+          progressions: "Dodaj dłuższą pauzę albo wolniejsze tempo.",
+          contraindications: "Ostry ból nadgarstka, barku lub lędźwi nasilany podporami.",
+          tags: ["core", "kontrola", "bez sprzętu", "stabilizacja"],
+          sourceOrder: 15
+        }),
+        coreExercise({
+          id: "ex-glute-bridge",
+          name: "Unoszenie bioder - glute bridge",
+          clientName: "Most biodrowy",
+          category: "Stabilizacja",
+          subcategory: "Pośladek",
+          trainingBlock: "Aktywacja i kontrola",
+          region: "biodro",
+          pattern: "wyprost biodra",
+          stage: "2 Kontrola",
+          level: "łatwy",
+          equipment: "mata",
+          goal: "Aktywować pośladki i nauczyć wyprostu biodra bez przeprostu lędźwi.",
+          dosageDefault: "2 serie po 8-10 powtórzeń",
+          tempo: "2 s w górę, 1 s pauza, 2 s w dół.",
+          breathing: "Wydech przy unoszeniu bioder.",
+          clientInstruction: "Połóż się na plecach i ustaw stopy pod kolanami.\nUnieś biodra do wygodnej wysokości.\nNie wypychaj żeber do góry.\nOpuść biodra spokojnie.",
+          coachNotes: "Sprawdzać, czy praca idzie z pośladka, nie z lędźwi lub tyłu uda. Dobra baza przed marszem i hip thrust.",
+          commonMistakes: "Przeprost lędźwi, stopy za daleko, skurcz tyłu uda, brak kontroli zejścia.",
+          stopCriteria: "Przerwij, jeśli pojawia się ból lędźwi, skurcz tyłu uda, drętwienie albo utrata kontroli miednicy.",
+          regressions: "Zmniejsz wysokość ruchu albo wykonaj izometrię 3-5 s.",
+          progressions: "Dodaj pauzę na górze albo przejdź do wersji z naprzemiennym uniesieniem nogi.",
+          contraindications: "Ostry ból lędźwi nasilany wyprostem biodra, świeży uraz biodra.",
+          tags: ["core", "pośladek", "biodro", "bez sprzętu"],
+          sourceOrder: 16
+        }),
+        coreExercise({
+          id: "unoszenie-bioder-marsz",
+          name: "Unoszenie bioder z naprzemiennym uniesieniem nogi",
+          clientName: "Most biodrowy z marszem",
+          category: "Stabilizacja",
+          subcategory: "Pośladek i miednica",
+          trainingBlock: "Aktywacja i kontrola",
+          region: "biodro",
+          pattern: "wyprost biodra z kontrolą miednicy",
+          stage: "3 Siła i stabilność",
+          level: "średni",
+          equipment: "mata",
+          goal: "Wzmocnić pośladki i kontrolę miednicy przy naprzemiennej pracy nóg.",
+          dosageDefault: "2 serie po 8-10 kroków",
+          tempo: "Mały marsz bez kołysania bioder.",
+          breathing: "Krótki wydech przy oderwaniu stopy.",
+          clientInstruction: "Unieś biodra do wygodnej wysokości.\nUtrzymaj żebra spokojnie.\nOderwij jedną stopę jak mały marsz.\nNie pozwól biodrom uciekać na boki.",
+          coachNotes: "Dodać dopiero po opanowaniu mostu obunóż. Jeśli miednica opada, wrócić do regresji.",
+          commonMistakes: "Kołysanie miednicą, unoszenie kolana za wysoko, przeprost lędźwi.",
+          stopCriteria: "Przerwij, jeśli pojawia się ból lędźwi, skurcz tyłu uda, drętwienie albo utrata kontroli bioder.",
+          regressions: "Wróć do mostu obunóż albo zmniejsz wysokość bioder.",
+          progressions: "Dodaj dłuższą pauzę po oderwaniu stopy.",
+          contraindications: "Ostry ból lędźwi, objawy neurologiczne, brak kontroli mostu obunóż.",
+          tags: ["core", "pośladek", "biodro", "bez sprzętu"],
+          sourceOrder: 17
+        }),
+        coreExercise({
+          id: "ex-single-leg-hip-thrust",
+          name: "Hip thrust jednonóż lub z jedną nogą wyprostowaną",
+          clientName: "Hip thrust jednonóż",
+          category: "Siła",
+          subcategory: "Pośladek",
+          trainingBlock: "Aktywacja i kontrola",
+          region: "biodro",
+          pattern: "wyprost biodra jednonóż",
+          stage: "3 Siła i stabilność",
+          level: "trudny",
+          equipment: "ławka lub stabilne podparcie",
+          goal: "Rozwinąć siłę pośladka i kontrolę miednicy w trudniejszej wersji jednostronnej.",
+          dosageDefault: "2-3 serie po 6-8 powtórzeń na stronę",
+          tempo: "2 s w górę, 1 s pauza, 2 s w dół.",
+          breathing: "Wydech przy wypchnięciu bioder.",
+          clientInstruction: "Oprzyj górne plecy o stabilne podparcie.\nUstaw jedną stopę pewnie na podłodze.\nUnieś biodra bez skręcania miednicy.\nZatrzymaj ruch, zanim stracisz kontrolę.",
+          coachNotes: "Wersja dla osób, które kontrolują most i hip thrust obunóż. Pilnować ustawienia żeber i zakresu biodra.",
+          commonMistakes: "Rotacja miednicy, odpychanie się lędźwiami, zbyt wysokie ustawienie barków.",
+          stopCriteria: "Przerwij, jeśli pojawia się ból lędźwi, skurcz tyłu uda, drętwienie, promieniowanie albo utrata kontroli miednicy.",
+          regressions: "Hip thrust obunóż albo most biodrowy na macie.",
+          progressions: "Dodaj małe obciążenie dopiero po pełnej kontroli stron.",
+          contraindications: "Ostry ból lędźwi lub biodra, brak stabilnego podparcia, świeży uraz tylnej taśmy.",
+          tags: ["core", "siła", "pośladek", "biodro"],
+          sourceOrder: 18
+        }),
+        coreExercise({
+          id: "plank-klek-bear-hover",
+          name: "Bear plank z kolanami nad ziemią",
+          clientName: "Bear plank",
+          category: "Core",
+          subcategory: "Podpór",
+          trainingBlock: "Aktywacja i kontrola",
+          region: "core",
+          pattern: "antywyprost w podporze",
+          stage: "3 Siła i stabilność",
+          level: "średni",
+          equipment: "mata",
+          goal: "Budować napięcie tułowia, kontrolę barków i tolerancję podporu.",
+          dosageDefault: "3 serie po 10-20 s",
+          tempo: "Statycznie, koniec przed utratą jakości.",
+          breathing: "Krótkie spokojne oddechy bez wstrzymywania.",
+          clientInstruction: "Ustaw dłonie pod barkami i kolana pod biodrami.\nUnieś kolana kilka centymetrów nad ziemię.\nNapnij brzuch i oddychaj.\nZejdź, zanim pozycja się rozsypie.",
+          coachNotes: "Wybrać wersję z krótką dźwignią. Kontrolować nadgarstki, barki, oddech i lędźwia.",
+          commonMistakes: "Za wysoko uniesione biodra, zapadanie lędźwi, wstrzymywanie oddechu.",
+          stopCriteria: "Przerwij, jeśli pojawia się ból lędźwi, barku, nadgarstka, drętwienie albo utrata kontroli oddechu.",
+          regressions: "Plank z klęku albo samo dociążenie dłoni w klęku podpartym.",
+          progressions: "Dodaj naprzemienne lekkie oderwanie dłoni albo stopy.",
+          contraindications: "Ostry ból nadgarstka, barku lub lędźwi, nietolerancja podporu.",
+          tags: ["core", "podpór", "bez sprzętu", "kontrola"],
+          sourceOrder: 19
+        }),
+        coreExercise({
+          id: "hollow-hold-superwoman-plecy",
+          name: "Hollow crunch / superwoman na plecach",
+          clientName: "Hollow crunch na plecach",
+          category: "Core",
+          subcategory: "Przednia taśma",
+          trainingBlock: "Aktywacja i kontrola",
+          region: "core",
+          pattern: "antywyprost",
+          stage: "3 Siła i stabilność",
+          level: "trudny",
+          equipment: "mata",
+          goal: "Wzmocnić przednią taśmę i kontrolę żeber w leżeniu.",
+          dosageDefault: "3 serie po 8-15 s albo 6 krótkich powtórzeń",
+          tempo: "Powoli, bez zrywania głowy.",
+          breathing: "Krótki wydech przy ustawianiu żeber.",
+          clientInstruction: "Połóż się na plecach.\nUstaw żebra spokojnie w stronę maty.\nWyciągnij ręce i nogi tylko tak daleko, jak utrzymujesz kontrolę.\nOddychaj bez spinania szyi.",
+          coachNotes: "Regresować przez skrócenie dźwigni. Nie wymuszać pozycji kosztem lędźwi.",
+          commonMistakes: "Odrywanie lędźwi, ciągnięcie szyją, za długa dźwignia nóg.",
+          stopCriteria: "Przerwij, jeśli pojawia się ból lędźwi, napięcie szyi, drętwienie albo utrata kontroli oddechu.",
+          regressions: "Ugnij kolana, trzymaj ręce bliżej tułowia albo wykonaj dead bug hold.",
+          progressions: "Wydłuż dźwignię albo dodaj powolny ruch rąk i nóg.",
+          contraindications: "Ostry ból lędźwi, nietolerancja leżenia na plecach, objawy neurologiczne.",
+          tags: ["core", "hollow", "bez sprzętu", "kontrola"],
+          sourceOrder: 20
+        }),
+        coreExercise({
+          id: "ex-bodyweight-squat",
+          name: "Przysiad z masą własnego ciała",
+          clientName: "Przysiad bez obciążenia",
+          category: "Siła",
+          subcategory: "Przysiad",
+          trainingBlock: "Siła",
+          region: "całe ciało",
+          pattern: "squat",
+          stage: "3 Siła i stabilność",
+          level: "łatwy",
+          equipment: "masa własnego ciała",
+          goal: "Budować podstawowy wzorzec przysiadu z kontrolą stóp, kolan, bioder i tułowia.",
+          dosageDefault: "2-3 serie po 6-10 powtórzeń",
+          tempo: "3 s zejście, krótka pauza, spokojne wejście.",
+          breathing: "Wdech przed zejściem, wydech przy wstawaniu.",
+          clientInstruction: "Ustaw stopy stabilnie na podłodze.\nZejdź tylko do zakresu z kontrolą.\nKolana prowadź w stronę stóp.\nWstań bez odbijania i bez bólu.",
+          coachNotes: "Dobra baza przed wersją ze sztangą. Można użyć ławki jako punktu odniesienia głębokości.",
+          commonMistakes: "Zapadanie kolan, odrywanie pięt, utrata tułowia, zbyt szybkie zejście.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból kolana, biodra lub pleców, drętwienie, promieniowanie albo utrata kontroli ruchu.",
+          regressions: "Przysiad do ławki albo mniejszy zakres.",
+          progressions: "Goblet squat albo przysiad ze sztangą po opanowaniu wzorca.",
+          contraindications: "Ostry ból stawu przy obciążeniu, świeży uraz kolana lub biodra, brak kontroli równowagi.",
+          tags: ["siła", "bez sprzętu", "przysiad", "start"],
+          sourceOrder: 21
+        }),
+        coreExercise({
+          id: "ex-back-squat",
+          name: "Przysiad ze sztangą na karku",
+          clientName: "Przysiad ze sztangą",
+          category: "Siła",
+          subcategory: "Przysiad",
+          trainingBlock: "Siła",
+          region: "całe ciało",
+          pattern: "squat",
+          stage: "4 Integracja",
+          level: "trudny",
+          equipment: "sztanga",
+          goal: "Rozwijać siłę nóg i tułowia przy zachowaniu jakości wzorca przysiadu.",
+          dosageDefault: "3 serie po 5-8 powtórzeń technicznych",
+          tempo: "Kontrolowane zejście, stabilne wejście.",
+          breathing: "Wdech i napięcie przed zejściem, wydech po minięciu najtrudniejszego punktu.",
+          clientInstruction: "Ustaw sztangę stabilnie na górze pleców.\nZejdź tylko do zakresu, który kontrolujesz.\nProwadź kolana w stronę stóp.\nWstań bez utraty tułowia.",
+          coachNotes: "Wymaga wcześniejszej kontroli przysiadu bez obciążenia. Monitorować tor sztangi, stopy i strategię oddechu.",
+          commonMistakes: "Za duży ciężar, zapadanie kolan, podwijanie miednicy, utrata napięcia tułowia.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból pleców, kolana lub biodra, drętwienie, promieniowanie albo utrata kontroli sztangi.",
+          regressions: "Goblet squat, przysiad do ławki albo mniejszy zakres.",
+          progressions: "Stopniowo zwiększaj obciążenie tylko przy powtarzalnej technice.",
+          contraindications: "Brak kontroli przysiadu bez obciążenia, ostry ból kręgosłupa, świeży uraz kończyny dolnej.",
+          tags: ["siła", "sztanga", "przysiad"],
+          sourceOrder: 22
+        }),
+        coreExercise({
+          id: "ex-deadlift",
+          name: "Martwy ciąg",
+          clientName: "Martwy ciąg",
+          category: "Siła",
+          subcategory: "Hinge",
+          trainingBlock: "Siła",
+          region: "całe ciało",
+          pattern: "hip hinge",
+          stage: "4 Integracja",
+          level: "trudny",
+          equipment: "sztanga lub hantle",
+          goal: "Budować siłę tylnej taśmy i wzorzec podnoszenia z podłogi z kontrolą kręgosłupa.",
+          dosageDefault: "3 serie po 4-6 powtórzeń technicznych",
+          tempo: "Kontrolowane oderwanie, pełna kontrola odkładania.",
+          breathing: "Wdech i napięcie przed podniesieniem, wydech po zakończeniu powtórzenia.",
+          clientInstruction: "Ustaw stopy stabilnie i chwyć ciężar blisko ciała.\nCofnij biodra i utrzymaj długi kręgosłup.\nPodnieś ciężar blisko nóg.\nOdłóż go z taką samą kontrolą.",
+          coachNotes: "Najpierw potwierdzić hinge bez obciążenia. Nie progresować ciężaru, jeśli klient traci pozycję lub zgłasza objawy nerwowe.",
+          commonMistakes: "Oddalanie ciężaru od ciała, zaokrąglanie pleców, szarpanie z podłogi, brak kontroli zejścia.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból pleców, drętwienie, promieniowanie do nogi albo utrata kontroli pozycji.",
+          regressions: "Hip hinge z kijem, martwy ciąg z podwyższenia albo lżejsze hantle.",
+          progressions: "Stopniowo obniżaj wysokość startu lub zwiększaj obciążenie po utrzymaniu techniki.",
+          contraindications: "Ostre objawy korzeniowe, świeży uraz pleców, brak tolerancji wzorca hinge.",
+          tags: ["siła", "sztanga", "hinge", "tylna taśma"],
+          sourceOrder: 23
+        }),
+        coreExercise({
+          id: "ex-barbell-hip-thrust",
+          name: "Hip thrust ze sztangą",
+          clientName: "Hip thrust ze sztangą",
+          category: "Siła",
+          subcategory: "Pośladek",
+          trainingBlock: "Siła",
+          region: "biodro",
+          pattern: "wyprost biodra",
+          stage: "4 Integracja",
+          level: "trudny",
+          equipment: "sztanga i ławka",
+          goal: "Rozwijać siłę pośladków i wyprostu biodra przy stabilnym tułowiu.",
+          dosageDefault: "3 serie po 6-10 powtórzeń",
+          tempo: "2 s w górę, pauza, kontrolowany powrót.",
+          breathing: "Wydech przy wypchnięciu bioder, wdech przy zejściu.",
+          clientInstruction: "Oprzyj górne plecy o stabilną ławkę.\nUstaw stopy tak, żeby kolana były stabilne.\nWypchnij biodra bez wyginania pleców.\nZatrzymaj na górze i wróć spokojnie.",
+          coachNotes: "Zadbać o stabilne podparcie, ochronę bioder pod sztangą i brak kompensacji lędźwiowej.",
+          commonMistakes: "Przeprost lędźwi na górze, stopy za blisko lub za daleko, kołysanie sztangą.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból lędźwi, biodra, drętwienie, promieniowanie albo utrata kontroli sztangi.",
+          regressions: "Hip thrust bez sztangi, most biodrowy albo wersja z gumą.",
+          progressions: "Zwiększaj obciążenie małymi krokami przy stabilnej pauzie na górze.",
+          contraindications: "Ostry ból lędźwi lub biodra, brak stabilnego ustawienia ławki, świeży uraz miednicy.",
+          tags: ["siła", "sztanga", "pośladek", "biodro"],
+          sourceOrder: 24
+        }),
+        coreExercise({
+          id: "ex-overhead-press-db-barbell",
+          name: "Wyciskanie nad głowę - OHP hantlami lub sztangą",
+          clientName: "Wyciskanie nad głowę",
+          category: "Siła",
+          subcategory: "Pchanie nad głowę",
+          trainingBlock: "Siła",
+          region: "bark",
+          pattern: "overhead press",
+          stage: "4 Integracja",
+          level: "trudny",
+          equipment: "hantle lub sztanga",
+          goal: "Rozwijać siłę pchania nad głowę przy kontroli żeber, barków i odcinka lędźwiowego.",
+          dosageDefault: "2-3 serie po 5-8 powtórzeń technicznych",
+          tempo: "Kontrolowane wyciśnięcie i spokojny powrót.",
+          breathing: "Wydech przy wyciskaniu, wdech przy opuszczaniu.",
+          clientInstruction: "Ustaw ciężar blisko barków.\nNapnij brzuch i nie wypychaj żeber.\nWyciśnij ciężar nad głowę w wygodnym torze.\nOpuść go spokojnie do pozycji startowej.",
+          coachNotes: "Najpierw sprawdzić tolerancję zakresu nad głową. Hantle często są prostszą regresją niż sztanga.",
+          commonMistakes: "Przeprost lędźwi, barki w uszach, zbyt szeroki tor łokci, za duży ciężar.",
+          stopCriteria: "Przerwij, jeśli pojawia się ostry ból barku, szyi lub pleców, drętwienie ręki, promieniowanie albo utrata kontroli ciężaru.",
+          regressions: "Wyciskanie hantli siedząc, landmine press albo praca z mniejszym zakresem.",
+          progressions: "Stopniowo zwiększaj obciążenie lub przejdź z hantli na sztangę po utrzymaniu kontroli.",
+          contraindications: "Ostry ból barku, brak tolerancji pozycji nad głową, objawy neurologiczne w kończynie górnej.",
+          tags: ["siła", "bark", "hantle", "sztanga"],
+          sourceOrder: 25
+        })
+      ];
+    }
+
     const INTAKE_FIELD_ALIASES = {
       submittedAt: ["Data wypełnienia", "Sygnatura czasowa", "Timestamp", "Czas przesłania"],
       name: ["Imię i nazwisko", "Imie i nazwisko", "Nazwa użytkownika"],
@@ -1486,6 +2208,7 @@
     function migrateExercise(exercise = {}) {
       const name = String(exercise.name || exercise.clientName || "Nowe zadanie ruchowe").trim();
       const id = exercise.id || `ex-${slugify(name)}-${String(Date.now()).slice(-5)}`;
+      const sourceOrderNumber = Number(exercise.sourceOrder);
       return {
         ...exercise,
         id,
@@ -1493,6 +2216,7 @@
         clientName: exercise.clientName || name,
         category: EXERCISE_CATEGORIES.includes(exercise.category) ? exercise.category : "Kontrola ruchu",
         subcategory: exercise.subcategory || "",
+        trainingBlock: EXERCISE_TRAINING_BLOCKS.includes(exercise.trainingBlock) ? exercise.trainingBlock : "Inne",
         region: EXERCISE_REGIONS.includes(exercise.region) ? exercise.region : "całe ciało",
         pattern: exercise.pattern || "",
         stage: EXERCISE_STAGES.includes(exercise.stage) ? exercise.stage : "1 Punkt startowy",
@@ -1511,7 +2235,13 @@
         contraindications: exercise.contraindications || "",
         videoUrl: exercise.videoUrl || "",
         tags: Array.isArray(exercise.tags) ? exercise.tags : splitList(exercise.tags),
-        linkedTests: Array.isArray(exercise.linkedTests) ? exercise.linkedTests : []
+        // Future Studio Las OS 7.2/7.1: linkedTests will connect assessments with exercise context.
+        // This version stores the bridge only; it does not prescribe exercises automatically.
+        linkedTests: Array.isArray(exercise.linkedTests) ? exercise.linkedTests : [],
+        beginnerFriendly: exercise.beginnerFriendly === false ? false : true,
+        source: exercise.source || "Studio Las",
+        sourceOrder: Number.isFinite(sourceOrderNumber) ? sourceOrderNumber : "",
+        qualityStatus: exercise.qualityStatus || "reviewed"
       };
     }
 
@@ -1533,10 +2263,63 @@
       return migrated;
     }
 
-    function seedExerciseLibraryIfEmpty() {
+    function isBlankExerciseField(value) {
+      if (Array.isArray(value)) return value.length === 0;
+      if (value === null || value === undefined) return true;
+      if (typeof value === "string") return value.trim() === "";
+      return false;
+    }
+
+    function copyExerciseField(value) {
+      return Array.isArray(value) ? [...value] : value;
+    }
+
+    function shouldBackfillExerciseField(field, originalValue, currentValue) {
+      if (isBlankExerciseField(originalValue)) return true;
+      if (field === "trainingBlock" && currentValue === "Inne") return true;
+      if (field === "source" && currentValue === "Studio Las" && isBlankExerciseField(originalValue)) return true;
+      return false;
+    }
+
+    function mergeCoreExercisesIntoLibrary(existingLibrary, coreExercises) {
+      const byId = new Map();
+      (Array.isArray(existingLibrary) ? existingLibrary : []).forEach(item => {
+        const migrated = migrateExercise(item);
+        if (!byId.has(migrated.id)) byId.set(migrated.id, { original: item || {}, exercise: migrated });
+      });
+
+      const backfillFields = ["trainingBlock", "beginnerFriendly", "source", "sourceOrder", "qualityStatus", "linkedTests", "tags"];
+      (Array.isArray(coreExercises) ? coreExercises : []).map(migrateExercise).forEach(core => {
+        const entry = byId.get(core.id);
+        if (!entry) {
+          byId.set(core.id, { original: core, exercise: core });
+          return;
+        }
+
+        const merged = { ...entry.exercise };
+        backfillFields.forEach(field => {
+          if (shouldBackfillExerciseField(field, entry.original?.[field], merged[field]) && !isBlankExerciseField(core[field])) {
+            merged[field] = copyExerciseField(core[field]);
+          }
+        });
+        byId.set(core.id, { original: entry.original, exercise: migrateExercise(merged) });
+      });
+
+      return Array.from(byId.values()).map(entry => migrateExercise(entry.exercise));
+    }
+
+    function upgradeExerciseLibraryToCoreV2() {
       const existing = getExerciseLibrary();
-      if (existing.length) return saveExerciseLibrary(existing);
-      return saveExerciseLibrary(SEED_EXERCISES);
+      const seedVersion = localStorage.getItem(EXERCISE_LIBRARY_SEED_VERSION_KEY);
+      if (seedVersion === EXERCISE_LIBRARY_CORE_VERSION && existing.length) return saveExerciseLibrary(existing);
+      const coreExercises = getStudioLasCoreExercises();
+      const merged = mergeCoreExercisesIntoLibrary(existing, coreExercises);
+      localStorage.setItem(EXERCISE_LIBRARY_SEED_VERSION_KEY, EXERCISE_LIBRARY_CORE_VERSION);
+      return saveExerciseLibrary(merged);
+    }
+
+    function seedExerciseLibraryIfEmpty() {
+      return upgradeExerciseLibraryToCoreV2();
     }
 
     function migrateTestResult(result = {}) {
@@ -1738,8 +2521,8 @@
     function migrateClient(client = {}) {
       const plan = migrateHomePlan(client.homePlan);
 
-      // Future Studio Las OS 7.1:
-      // Diagnostic Test Layer.
+      // Future Studio Las OS 7.2/7.1:
+      // Diagnostic Test Layer stays separate from this core exercise library expansion.
       // Tests should not be isolated checklists.
       // Test result -> interpretation -> trainer decision -> suggested exercises.
       // Trainer must approve before exercises enter the client home plan.
@@ -1827,7 +2610,7 @@
     let pendingIntakeRows = [];
     let exerciseLibrary = [];
     exerciseLibrary = seedExerciseLibraryIfEmpty();
-    let exerciseAtlasFilters = { q: "", category: "", region: "", stage: "" };
+    let exerciseAtlasFilters = { q: "", trainingBlock: "", category: "", region: "", stage: "", sort: "process", quick: "" };
 
     const $ = (sel) => document.querySelector(sel);
     const view = $("#view");
@@ -1887,6 +2670,12 @@
 
     function escapeHtml(str = "") {
       return String(str).replace(/[&<>"']/g, s => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[s]));
+    }
+
+    function shortText(text = "", maxLength = 150) {
+      const clean = String(text || "").replace(/\s+/g, " ").trim();
+      if (clean.length <= maxLength) return clean;
+      return `${clean.slice(0, maxLength - 3).trim()}...`;
     }
 
     function pill(text, level = "") {
@@ -2508,24 +3297,31 @@
 
     function renderExerciseAtlas() {
       const library = getFilteredExerciseLibrary();
+      const totalCount = exerciseLibrary.length;
       view.innerHTML = `
         <section class="panel">
           <div class="panel-head">
             <div><h2>Atlas ruchu</h2><p>Baza zadań ruchowych dla trenera. Klient widzi tylko ćwiczenia przypisane do jego planu domowego.</p></div>
             <div class="home-plan-actions">
+              ${pill(`${totalCount} ćwiczeń`, "blue")}
               <button class="btn" id="atlasHomePlanBtn">Przejdź do planu domowego</button>
               <button class="btn primary" id="addExerciseBtn">Dodaj ćwiczenie</button>
             </div>
           </div>
           <div class="filter-bar">
             <div class="form-field"><label class="label" for="exerciseSearch">Szukaj</label><input id="exerciseSearch" value="${escapeHtml(exerciseAtlasFilters.q)}" placeholder="Nazwa, cel, tag..." /></div>
+            <div class="form-field"><label class="label" for="exerciseBlockFilter">Blok</label><select id="exerciseBlockFilter">${filterOptions(EXERCISE_TRAINING_BLOCKS, exerciseAtlasFilters.trainingBlock, "Wszystkie")}</select></div>
             <div class="form-field"><label class="label" for="exerciseCategoryFilter">Kategoria</label><select id="exerciseCategoryFilter">${filterOptions(EXERCISE_CATEGORIES, exerciseAtlasFilters.category, "Wszystkie")}</select></div>
             <div class="form-field"><label class="label" for="exerciseRegionFilter">Region</label><select id="exerciseRegionFilter">${filterOptions(EXERCISE_REGIONS, exerciseAtlasFilters.region, "Wszystkie")}</select></div>
             <div class="form-field"><label class="label" for="exerciseStageFilter">Etap</label><select id="exerciseStageFilter">${filterOptions(EXERCISE_STAGES, exerciseAtlasFilters.stage, "Wszystkie")}</select></div>
+            <div class="form-field"><label class="label" for="exerciseSort">Sortowanie</label><select id="exerciseSort">${EXERCISE_SORT_OPTIONS.map(option => `<option value="${escapeHtml(option.value)}" ${exerciseAtlasFilters.sort === option.value ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}</select></div>
+          </div>
+          <div class="quick-filter-row">
+            ${renderExerciseQuickFilters()}
           </div>
         </section>
         <section class="panel">
-          <div class="panel-head"><h2>Ćwiczenia</h2>${pill(`${library.length} z ${exerciseLibrary.length}`, library.length ? "green" : "gold")}</div>
+          <div class="panel-head"><h2>Ćwiczenia</h2>${pill(`Pokazano ${library.length} z ${totalCount}`, library.length ? "green" : "gold")}</div>
           <div class="grid cols-3">
             ${library.length ? library.map(renderExerciseAtlasCard).join("") : `<p>Brak ćwiczeń dla wybranych filtrów.</p>`}
           </div>
@@ -2540,6 +3336,10 @@
         exerciseAtlasFilters.q = e.target.value;
         renderExerciseAtlas();
       });
+      $("#exerciseBlockFilter")?.addEventListener("change", e => {
+        exerciseAtlasFilters.trainingBlock = e.target.value;
+        renderExerciseAtlas();
+      });
       $("#exerciseCategoryFilter")?.addEventListener("change", e => {
         exerciseAtlasFilters.category = e.target.value;
         renderExerciseAtlas();
@@ -2552,36 +3352,83 @@
         exerciseAtlasFilters.stage = e.target.value;
         renderExerciseAtlas();
       });
+      $("#exerciseSort")?.addEventListener("change", e => {
+        exerciseAtlasFilters.sort = e.target.value || "process";
+        renderExerciseAtlas();
+      });
+      document.querySelectorAll("[data-exercise-quick]").forEach(btn => btn.addEventListener("click", () => {
+        exerciseAtlasFilters.quick = exerciseAtlasFilters.quick === btn.dataset.exerciseQuick ? "" : btn.dataset.exerciseQuick;
+        renderExerciseAtlas();
+      }));
       document.querySelectorAll("[data-add-exercise]").forEach(btn => btn.addEventListener("click", () => addExerciseToActiveHomePlan(btn.dataset.addExercise)));
       document.querySelectorAll("[data-edit-exercise]").forEach(btn => btn.addEventListener("click", () => openExerciseModal(btn.dataset.editExercise)));
     }
 
+    function renderExerciseQuickFilters() {
+      const quickFilters = ["Start", "Mobilność", "Core", "Siła", "Bez sprzętu", "Roller", "Krzesło"];
+      return quickFilters.map(label => {
+        const active = exerciseAtlasFilters.quick === label;
+        return `<button class="btn ${active ? "active" : ""}" type="button" data-exercise-quick="${escapeHtml(label)}">${escapeHtml(label)}</button>`;
+      }).join("");
+    }
+
     function getFilteredExerciseLibrary() {
       const q = compareHeader(exerciseAtlasFilters.q || "");
-      return exerciseLibrary.filter(ex => {
-        const haystack = compareHeader([ex.name, ex.clientName, ex.category, ex.region, ex.stage, ex.goal, ...(ex.tags || [])].join(" "));
+      return sortExerciseLibrary(exerciseLibrary.filter(ex => {
+        const haystack = compareHeader([ex.name, ex.clientName, ex.trainingBlock, ex.category, ex.region, ex.stage, ex.goal, ex.equipment, ...(ex.tags || [])].join(" "));
         if (q && !haystack.includes(q)) return false;
+        if (exerciseAtlasFilters.trainingBlock && ex.trainingBlock !== exerciseAtlasFilters.trainingBlock) return false;
         if (exerciseAtlasFilters.category && ex.category !== exerciseAtlasFilters.category) return false;
         if (exerciseAtlasFilters.region && ex.region !== exerciseAtlasFilters.region) return false;
         if (exerciseAtlasFilters.stage && ex.stage !== exerciseAtlasFilters.stage) return false;
+        if (exerciseAtlasFilters.quick && !matchesExerciseQuickFilter(ex, exerciseAtlasFilters.quick)) return false;
         return true;
+      }));
+    }
+
+    function matchesExerciseQuickFilter(ex, quick) {
+      const haystack = compareHeader([ex.trainingBlock, ex.category, ex.region, ex.equipment, ...(ex.tags || [])].join(" "));
+      if (quick === "Start") return ex.stage === "1 Punkt startowy" || haystack.includes("start");
+      if (quick === "Mobilność") return ex.trainingBlock === "Mobilność" || ["Mobilizacja", "Rozciąganie"].includes(ex.category);
+      if (quick === "Core") return ex.category === "Core" || ex.region === "core" || haystack.includes("core");
+      if (quick === "Siła") return ex.trainingBlock === "Siła" || ex.category === "Siła";
+      if (quick === "Bez sprzętu") return !String(ex.equipment || "").trim() || /mata|masa własnego ciała|bez sprzętu/i.test(ex.equipment || haystack);
+      if (quick === "Roller") return haystack.includes("roller");
+      if (quick === "Krzesło") return haystack.includes("krzeslo") || haystack.includes("krzesło");
+      return true;
+    }
+
+    function exerciseSourceOrder(ex) {
+      const value = Number(ex.sourceOrder);
+      return Number.isFinite(value) && value > 0 ? value : 9999;
+    }
+
+    function sortExerciseLibrary(library) {
+      const sorted = [...library];
+      const sortMode = exerciseAtlasFilters.sort || "process";
+      return sorted.sort((a, b) => {
+        if (sortMode === "name") return String(a.clientName || a.name).localeCompare(String(b.clientName || b.name), "pl");
+        if (sortMode === "stage") return (EXERCISE_STAGES.indexOf(a.stage) - EXERCISE_STAGES.indexOf(b.stage)) || String(a.clientName || a.name).localeCompare(String(b.clientName || b.name), "pl");
+        if (sortMode === "category") return String(a.category || "").localeCompare(String(b.category || ""), "pl") || String(a.clientName || a.name).localeCompare(String(b.clientName || b.name), "pl");
+        return (exerciseSourceOrder(a) - exerciseSourceOrder(b)) || String(a.clientName || a.name).localeCompare(String(b.clientName || b.name), "pl");
       });
     }
 
     function renderExerciseAtlasCard(ex) {
       return `<div class="exercise-card">
         <div>
-          <div class="name">${escapeHtml(ex.name)}</div>
-          <div class="meta">${escapeHtml(ex.clientName || ex.name)}</div>
+          <div class="name">${escapeHtml(ex.clientName || ex.name)}</div>
+          <div class="meta">${escapeHtml(ex.name)}</div>
         </div>
         <div class="tag-row">
+          ${pill(ex.trainingBlock || "Inne", "blue")}
           ${pill(ex.category, "blue")}
           ${pill(ex.region, "green")}
           ${pill(ex.stage, "gold")}
           ${pill(ex.level, "")}
         </div>
         <div class="portal-info"><div class="label">Dawka</div><p>${escapeHtml(ex.dosageDefault || "Do ustalenia")}</p></div>
-        <div class="portal-info"><div class="label">Cel</div><p>${escapeHtml(ex.goal || "Cel zostanie doprecyzowany.")}</p></div>
+        <div class="portal-info"><div class="label">Cel</div><p>${escapeHtml(shortText(ex.goal || "Cel zostanie doprecyzowany.", 150))}</p></div>
         <div class="tag-row">${(ex.tags || []).slice(0, 5).map(tag => pill(tag, "")).join("")}</div>
         <div class="card-actions">
           <button class="btn primary" data-add-exercise="${escapeHtml(ex.id)}">Dodaj do planu klienta</button>
@@ -4714,7 +5561,8 @@ ${buildReportClosingNote("continuation", context)}`;
         const parts = [
           ex.dosage ? `dawkowanie: ${ex.dosage}` : "",
           ex.frequency ? `częstotliwość: ${ex.frequency}` : "",
-          ex.clientCue ? `wskazówka: ${ex.clientCue}` : ""
+          ex.clientCue ? `wskazówka: ${ex.clientCue}` : "",
+          ex.stopCriteria ? `kiedy przerwać: ${ex.stopCriteria}` : ""
         ].filter(Boolean).join("; ");
         return `- ${ex.name}${parts ? ` — ${parts}` : ""}`;
       }).join("\n");
@@ -4919,7 +5767,11 @@ Kryterium kontroli: reakcja po sesji, sen, gotowość i wykonywanie planu domowe
     function buildSelfWorkSection(c) {
       const exercises = activeHomePlanExercises(c);
       if (exercises.length) {
-        return exercises.map(ex => `- ${ex.name}: ${ex.dosage || "wg ustaleń"}${ex.frequency ? ` · ${ex.frequency}` : ""}${ex.clientCue ? ` (${ex.clientCue})` : ""}`).join("\n");
+        return exercises.map(ex => {
+          const cue = ex.clientCue ? ` (${ex.clientCue})` : "";
+          const stop = ex.stopCriteria ? ` Przerwij: ${ex.stopCriteria}` : "";
+          return `- ${ex.name}: ${ex.dosage || "wg ustaleń"}${ex.frequency ? ` · ${ex.frequency}` : ""}${cue}.${stop}`;
+        }).join("\n");
       }
       return "Samodzielna praca powinna na tym etapie ograniczać się do zadań uzgodnionych po sesji. Finalny plan kontynuacji wymaga jeszcze aktualnego planu domowego.";
     }
@@ -5186,18 +6038,42 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
       const exercise = id ? exerciseLibrary.find(item => item.id === id) : null;
       form.reset();
       form.elements.id.value = exercise?.id || "";
-      form.elements.linkedTests.value = JSON.stringify(exercise?.linkedTests || []);
       [
-        "name", "clientName", "category", "subcategory", "region", "pattern", "stage", "level",
+        "name", "clientName", "category", "trainingBlock", "subcategory", "region", "pattern", "stage", "level",
         "equipment", "goal", "dosageDefault", "tempo", "breathing", "clientInstruction",
         "coachNotes", "commonMistakes", "stopCriteria", "regressions", "progressions",
-        "contraindications", "videoUrl"
+        "contraindications", "videoUrl", "source", "sourceOrder", "qualityStatus"
       ].forEach(field => {
         if (form.elements[field]) form.elements[field].value = exercise?.[field] || "";
       });
+      if (!exercise) {
+        form.elements.category.value = "Kontrola ruchu";
+        form.elements.trainingBlock.value = "Inne";
+        form.elements.region.value = "całe ciało";
+        form.elements.stage.value = "1 Punkt startowy";
+        form.elements.level.value = "łatwy";
+        form.elements.source.value = "Studio Las";
+        form.elements.qualityStatus.value = "reviewed";
+      }
       form.elements.tags.value = (exercise?.tags || []).join("; ");
+      form.elements.linkedTests.value = (exercise?.linkedTests || []).join("; ");
+      form.elements.beginnerFriendly.checked = exercise?.beginnerFriendly !== false;
       $("#exerciseModal").classList.add("open");
       $("#exerciseModal").setAttribute("aria-hidden", "false");
+    }
+
+    function parseLinkedTestsInput(value) {
+      const text = String(value || "").trim();
+      if (!text) return [];
+      if (text.startsWith("[")) {
+        try {
+          const parsed = JSON.parse(text);
+          return Array.isArray(parsed) ? parsed.map(item => String(item || "").trim()).filter(Boolean) : [];
+        } catch (error) {
+          return [];
+        }
+      }
+      return splitList(text);
     }
 
     function saveExerciseFromForm(e) {
@@ -5206,12 +6082,14 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
       const fd = new FormData(form);
       const id = String(fd.get("id") || "").trim();
       const previous = id ? exerciseLibrary.find(ex => ex.id === id) : null;
+      const sourceOrderValue = String(fd.get("sourceOrder") || "").trim();
       const exercise = migrateExercise({
         ...(previous || {}),
         id: id || undefined,
         name: String(fd.get("name") || "").trim(),
         clientName: String(fd.get("clientName") || "").trim(),
         category: fd.get("category"),
+        trainingBlock: fd.get("trainingBlock"),
         subcategory: String(fd.get("subcategory") || "").trim(),
         region: fd.get("region"),
         pattern: String(fd.get("pattern") || "").trim(),
@@ -5231,7 +6109,11 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
         contraindications: String(fd.get("contraindications") || "").trim(),
         videoUrl: String(fd.get("videoUrl") || "").trim(),
         tags: splitList(fd.get("tags")),
-        linkedTests: previous?.linkedTests || []
+        linkedTests: parseLinkedTestsInput(fd.get("linkedTests")),
+        beginnerFriendly: fd.has("beginnerFriendly"),
+        source: String(fd.get("source") || "").trim(),
+        sourceOrder: sourceOrderValue ? Number(sourceOrderValue) : "",
+        qualityStatus: String(fd.get("qualityStatus") || "").trim()
       });
       const next = previous
         ? exerciseLibrary.map(item => item.id === exercise.id ? exercise : item)

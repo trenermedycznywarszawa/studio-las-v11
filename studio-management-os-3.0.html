@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 6.6 | Premium Report Presentation Layer</title>
+  <title>Studio Las OS 7.0 | Movement Prescription Foundation</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -79,7 +79,9 @@
     textarea { min-height: 94px; resize: vertical; }
     select:focus, input:focus, textarea:focus { border-color: rgba(127,176,105,.7); box-shadow: 0 0 0 3px rgba(127,176,105,.12); }
 
-    .nav { display: grid; gap: 7px; }
+    .nav { display: grid; gap: 10px; overflow-y: auto; padding-right: 2px; }
+    .nav-section { display: grid; gap: 6px; }
+    .nav-label { color: var(--faint); font-size: 10px; font-weight: 950; letter-spacing: .16em; text-transform: uppercase; padding: 0 8px; }
     .nav button,
     .nav .client-panel-link {
       width: 100%;
@@ -100,6 +102,8 @@
     .nav .client-panel-link { text-decoration: none; }
     .nav .client-panel-link:hover,
     .nav .client-panel-link:focus-visible { color: var(--ink); background: rgba(255,255,255,.04); border-color: rgba(127,176,105,.18); }
+    body.client-mode .client-switcher,
+    body.client-mode .nav,
     body.client-mode .side-card { display: none; }
 
     .side-card {
@@ -227,6 +231,12 @@
     .doc-card { min-height: 118px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; }
     .exercise-list { display: grid; gap: 10px; }
     .task-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+    .filter-bar { display: grid; grid-template-columns: minmax(220px, 1fr) repeat(3, minmax(150px, 190px)); gap: 10px; align-items: end; }
+    .exercise-card { display: grid; gap: 10px; }
+    .exercise-card .card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .exercise-card .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .home-plan-card { display: grid; gap: 10px; }
+    .home-plan-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .task-row label { display: flex; gap: 10px; align-items: flex-start; }
     .task-row.done .name, .task-row.done .meta { color: var(--faint); text-decoration: line-through; }
     .measurement-list { display: grid; gap: 10px; }
@@ -451,7 +461,7 @@
     }
     @media (max-width: 620px) {
       .content, .topbar { padding: 16px; }
-      .form-grid { grid-template-columns: 1fr; }
+      .form-grid, .filter-bar { grid-template-columns: 1fr; }
       .progress-line { grid-template-columns: 1fr; }
       .task-form { grid-template-columns: 1fr; }
       .actions { width: 100%; }
@@ -610,7 +620,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 6.6</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 7.0</span></div>
       </div>
 
       <div class="client-switcher">
@@ -619,18 +629,35 @@
       </div>
 
       <nav class="nav" aria-label="Główna nawigacja">
-        <button data-view="command" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/></svg><span>Centrum</span></button>
-        <button data-view="todaySession"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 15 2 2 4-5"/></svg><span>Sesja dzisiaj</span></button>
-        <button data-view="intake"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg><span>Ankieta</span></button>
-        <button data-view="client"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Klient</span></button>
-        <button data-view="process"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Proces</span></button>
-        <button data-view="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4a2 2 0 0 1 2-2h11l3 3v14.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg><span>Sesje</span></button>
-        <button data-view="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Zadania</span></button>
-        <button data-view="measurements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 3-3 3 2 5-7"/><path d="M18 7h2v2"/></svg><span>Pomiary</span></button>
-        <button data-view="polar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/><path d="M3 12h4l2-4 4 8 2-4h6"/></svg><span>Polar</span></button>
-        <button data-view="decision"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-5"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg><span>Decyzja</span></button>
-        <button data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>Raport</span></button>
-        <button data-view="clientPortal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></button>
+        <div class="nav-section">
+          <div class="nav-label">Proces</div>
+          <button data-view="command" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/></svg><span>Centrum</span></button>
+          <button data-view="todaySession"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 15 2 2 4-5"/></svg><span>Sesja dzisiaj</span></button>
+          <button data-view="decision"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-5"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg><span>Decyzja</span></button>
+          <button data-view="process"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Proces</span></button>
+          <button data-view="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4a2 2 0 0 1 2-2h11l3 3v14.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg><span>Sesje</span></button>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Klient</div>
+          <button data-view="client"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Klient</span></button>
+          <button data-view="intake"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg><span>Ankieta</span></button>
+          <button data-view="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Zadania</span></button>
+          <button data-view="clientPortal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></button>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Dane</div>
+          <button data-view="measurements"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 3-3 3 2 5-7"/><path d="M18 7h2v2"/></svg><span>Pomiary</span></button>
+          <button data-view="polar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/><path d="M3 12h4l2-4 4 8 2-4h6"/></svg><span>Polar</span></button>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Ruch</div>
+          <button data-view="homePlanView"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/></svg><span>Plan domowy</span></button>
+          <button data-view="exerciseAtlas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M8 7h8M8 11h6"/></svg><span>Atlas ruchu</span></button>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Dokumenty</div>
+          <button data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>Raport</span></button>
+        </div>
       </nav>
 
       <div class="side-card">
@@ -646,7 +673,7 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 6.6</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 7.0</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
@@ -793,12 +820,52 @@
     </div>
   </div>
 
+  <div class="modal" id="exerciseModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="panel-head">
+        <div>
+          <h2>Dodaj / edytuj ćwiczenie</h2>
+          <p>Atlas jest narzędziem trenera. Do klienta trafiają tylko przypisane zadania ruchowe.</p>
+        </div>
+        <button class="btn" data-close="exerciseModal">Zamknij</button>
+      </div>
+      <form id="exerciseForm" class="form-grid">
+        <input type="hidden" name="id" />
+        <input type="hidden" name="linkedTests" value="[]" />
+        <div class="form-field"><label class="label">Nazwa techniczna</label><input name="name" required /></div>
+        <div class="form-field"><label class="label">Nazwa dla klienta</label><input name="clientName" /></div>
+        <div class="form-field"><label class="label">Kategoria</label><select name="category"><option>Mobilizacja</option><option>Rolowanie / tkanki miękkie</option><option>Stabilizacja</option><option>Core</option><option>Siła</option><option>Oddech / regulacja</option><option>Rozciąganie</option><option>Kontrola ruchu</option></select></div>
+        <div class="form-field"><label class="label">Podkategoria</label><input name="subcategory" /></div>
+        <div class="form-field"><label class="label">Region</label><select name="region"><option>stopa</option><option>łydka</option><option>udo</option><option>biodro</option><option>kręgosłup lędźwiowy</option><option>kręgosłup piersiowy</option><option>bark</option><option>nadgarstek</option><option>core</option><option>całe ciało</option></select></div>
+        <div class="form-field"><label class="label">Wzorzec</label><input name="pattern" /></div>
+        <div class="form-field"><label class="label">Etap</label><select name="stage"><option>1 Punkt startowy</option><option>2 Kontrola</option><option>3 Siła i stabilność</option><option>4 Integracja</option><option>5 Samodzielność</option></select></div>
+        <div class="form-field"><label class="label">Poziom</label><select name="level"><option>łatwy</option><option>średni</option><option>trudny</option></select></div>
+        <div class="form-field"><label class="label">Sprzęt</label><input name="equipment" /></div>
+        <div class="form-field"><label class="label">Domyślna dawka</label><input name="dosageDefault" /></div>
+        <div class="form-field"><label class="label">Tempo</label><input name="tempo" /></div>
+        <div class="form-field"><label class="label">Oddech</label><input name="breathing" /></div>
+        <div class="form-field full"><label class="label">Cel</label><input name="goal" /></div>
+        <div class="form-field full"><label class="label">Instrukcja dla klienta</label><textarea name="clientInstruction" placeholder="3-5 prostych punktów, każdy w osobnej linii"></textarea></div>
+        <div class="form-field full"><label class="label">Notatki trenera</label><textarea name="coachNotes"></textarea></div>
+        <div class="form-field full"><label class="label">Najczęstsze błędy</label><textarea name="commonMistakes"></textarea></div>
+        <div class="form-field full"><label class="label">Kiedy przerwać / zgłosić reakcję</label><textarea name="stopCriteria"></textarea></div>
+        <div class="form-field"><label class="label">Regresje</label><textarea name="regressions"></textarea></div>
+        <div class="form-field"><label class="label">Progresje</label><textarea name="progressions"></textarea></div>
+        <div class="form-field full"><label class="label">Przeciwwskazania</label><textarea name="contraindications"></textarea></div>
+        <div class="form-field"><label class="label">Video URL</label><input name="videoUrl" /></div>
+        <div class="form-field"><label class="label">Tagi</label><input name="tags" placeholder="np. oddech; biodro; start" /></div>
+        <button class="btn primary full" type="submit">Zapisz ćwiczenie</button>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "6.6";
+    const APP_VERSION = "7.0";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
+    const EXERCISE_LIBRARY_KEY = "studioLasExerciseLibraryV1";
     const TANITA_FIELD_ORDER = ["date", "weightKg", "fatPercent", "fatMassKg", "fatFreeMassKg", "muscleMassKg", "bodyWaterPercent", "bodyWaterKg", "visceralFatRating", "bmrKcal", "metabolicAge", "bmi", "boneMassKg", "proteinKg"];
     const TANITA_KEY_FIELDS = ["date", "weightKg", "fatPercent", "muscleMassKg", "fatMassKg", "bodyWaterPercent", "bmrKcal", "visceralFatRating", "bmi"];
     const TANITA_FIELD_LABELS = {
@@ -856,6 +923,301 @@
       twelveWeeks: "Raport 12 tygodni",
       continuation: "Plan Kontynuacji"
     };
+    const EXERCISE_CATEGORIES = ["Mobilizacja", "Rolowanie / tkanki miękkie", "Stabilizacja", "Core", "Siła", "Oddech / regulacja", "Rozciąganie", "Kontrola ruchu"];
+    const EXERCISE_REGIONS = ["stopa", "łydka", "udo", "biodro", "kręgosłup lędźwiowy", "kręgosłup piersiowy", "bark", "nadgarstek", "core", "całe ciało"];
+    const EXERCISE_STAGES = ["1 Punkt startowy", "2 Kontrola", "3 Siła i stabilność", "4 Integracja", "5 Samodzielność"];
+    const EXERCISE_LEVELS = ["łatwy", "średni", "trudny"];
+    const SEED_EXERCISES = [
+      {
+        id: "rolowanie-stop",
+        name: "Rolowanie stóp",
+        clientName: "Rolowanie stóp",
+        category: "Rolowanie / tkanki miękkie",
+        region: "stopa",
+        stage: "1 Punkt startowy",
+        level: "łatwy",
+        equipment: "piłka lub roller",
+        goal: "Zmniejszyć napięcie podeszwy stopy i przygotować stopę do obciążenia.",
+        dosageDefault: "1-2 min na stopę",
+        clientInstruction: "Stań lub usiądź stabilnie.\nPrzesuwaj stopę po piłce powoli.\nZatrzymaj się na wrażliwych miejscach bez dociskania na siłę.\nOddychaj spokojnie.",
+        coachNotes: "Dobry element startowy przed pracą nad stopą, łydką i przysiadem.",
+        stopCriteria: "Przerwij, jeśli pojawia się ostry ból, drętwienie albo narastające pieczenie.",
+        tags: ["stopa", "tkanki miękkie", "start"],
+        linkedTests: []
+      },
+      {
+        id: "rolowanie-piersiowe-aniolek",
+        name: "Rolowanie piersiowe + aniołek",
+        clientName: "Rolowanie pleców piersiowych z ruchem ramion",
+        category: "Mobilizacja",
+        region: "kręgosłup piersiowy",
+        stage: "2 Kontrola",
+        level: "średni",
+        equipment: "roller",
+        goal: "Poprawić ruchomość odcinka piersiowego i komfort pracy barków.",
+        dosageDefault: "6-8 spokojnych powtórzeń",
+        clientInstruction: "Połóż roller pod górną częścią pleców.\nUtrzymaj spokojny oddech.\nPrzesuń ramiona jak do aniołka tylko w wygodnym zakresie.\nNie ciągnij szyi do przodu.",
+        coachNotes: "Pilnować żeber i napięcia szyi; nie wymuszać zakresu barku.",
+        stopCriteria: "Przerwij przy bólu promieniującym, zawrotach głowy albo kłuciu w barku.",
+        tags: ["piersiowy", "bark", "mobilizacja"],
+        linkedTests: []
+      },
+      {
+        id: "rolowanie-lydek",
+        name: "Rolowanie łydek",
+        clientName: "Rolowanie łydek",
+        category: "Rolowanie / tkanki miękkie",
+        region: "łydka",
+        stage: "1 Punkt startowy",
+        level: "łatwy",
+        equipment: "roller",
+        goal: "Obniżyć napięcie łydki i przygotować staw skokowy do ruchu.",
+        dosageDefault: "60-90 s na stronę",
+        clientInstruction: "Oprzyj łydkę na rollerze.\nPrzesuwaj nogę wolno w przód i tył.\nZmieniaj lekko ustawienie stopy.\nDocisk ma być wyraźny, ale spokojny.",
+        coachNotes: "Uważać przy dużej tkliwości i problemach naczyniowych.",
+        stopCriteria: "Przerwij przy ostrym bólu, mrowieniu albo reakcji utrzymującej się po ćwiczeniu.",
+        tags: ["łydka", "skokowy", "tkanki miękkie"],
+        linkedTests: []
+      },
+      {
+        id: "rolowanie-ud",
+        name: "Rolowanie ud",
+        clientName: "Rolowanie ud",
+        category: "Rolowanie / tkanki miękkie",
+        region: "udo",
+        stage: "1 Punkt startowy",
+        level: "łatwy",
+        equipment: "roller",
+        goal: "Sprawdzić tolerancję tkanek uda i obniżyć napięcie przed ruchem.",
+        dosageDefault: "60-90 s na stronę",
+        clientInstruction: "Oprzyj udo na rollerze.\nPracuj powoli, bez pośpiechu.\nOmijaj miejsca z ostrym bólem.\nOddychaj i rozluźniaj nogę.",
+        coachNotes: "Nie traktować jako testu wytrzymałości bólu; dobrać zakres do tolerancji.",
+        stopCriteria: "Przerwij, jeśli ból robi się ostry, pojawia się drętwienie albo duży dyskomfort po zakończeniu.",
+        tags: ["udo", "tkanki miękkie", "regeneracja"],
+        linkedTests: []
+      },
+      {
+        id: "bird-dog-prawa-reka-lewa-noga",
+        name: "Bird dog / prawa ręka lewa noga",
+        clientName: "Bird dog",
+        category: "Stabilizacja",
+        region: "core",
+        stage: "2 Kontrola",
+        level: "łatwy",
+        equipment: "mata",
+        goal: "Poprawić kontrolę tułowia bez przeciążania kręgosłupa.",
+        dosageDefault: "2 serie po 6 powtórzeń na stronę",
+        clientInstruction: "Ustaw dłonie pod barkami i kolana pod biodrami.\nWyciągnij przeciwną rękę i nogę.\nNie skręcaj tułowia.\nWróć spokojnie i zmień stronę.",
+        coachNotes: "Ocenić stabilność miednicy i kompensację w lędźwiach.",
+        stopCriteria: "Przerwij, jeśli rośnie ból pleców, pojawia się ciągnięcie nerwowe albo tracisz kontrolę pozycji.",
+        tags: ["core", "stabilizacja", "kontrola"],
+        linkedTests: []
+      },
+      {
+        id: "unoszenie-bioder-marsz",
+        name: "Unoszenie bioder + marsz",
+        clientName: "Most biodrowy z marszem",
+        category: "Siła",
+        region: "biodro",
+        stage: "3 Siła i stabilność",
+        level: "średni",
+        equipment: "mata",
+        goal: "Wzmocnić pośladki i kontrolę miednicy w podporze.",
+        dosageDefault: "2 serie po 8-10 kroków",
+        clientInstruction: "Unieś biodra do wygodnej wysokości.\nUtrzymaj żebra spokojnie.\nOderwij jedną stopę jak mały marsz.\nNie pozwól biodrom uciekać na boki.",
+        coachNotes: "Dobrać tylko po opanowaniu mostu bez marszu.",
+        stopCriteria: "Przerwij, jeśli pojawia się ból lędźwi, skurcz tyłu uda albo utrata kontroli bioder.",
+        tags: ["biodro", "pośladek", "siła"],
+        linkedTests: []
+      },
+      {
+        id: "mobilizacja-nadgarstkow-w-podporze",
+        name: "Mobilizacja nadgarstków w podporze",
+        clientName: "Mobilizacja nadgarstków",
+        category: "Mobilizacja",
+        region: "nadgarstek",
+        stage: "1 Punkt startowy",
+        level: "łatwy",
+        equipment: "mata",
+        goal: "Przygotować nadgarstki do podporu i zmniejszyć sztywność.",
+        dosageDefault: "1-2 serie po 6-8 ruchów",
+        clientInstruction: "Oprzyj dłonie na macie.\nPrzenoś ciężar ciała delikatnie w przód i tył.\nZostaw łokcie miękkie.\nZakres ma być komfortowy.",
+        coachNotes: "Kontrolować obciążenie u osób z bólem nadgarstka.",
+        stopCriteria: "Przerwij przy ostrym bólu, drętwieniu palców albo uczuciu niestabilności.",
+        tags: ["nadgarstek", "podpór", "mobilizacja"],
+        linkedTests: []
+      },
+      {
+        id: "kolana-90-90-lezenie",
+        name: "Przenoszenie kolan 90/90 w leżeniu",
+        clientName: "Kolana 90/90 w leżeniu",
+        category: "Kontrola ruchu",
+        region: "kręgosłup lędźwiowy",
+        stage: "2 Kontrola",
+        level: "łatwy",
+        equipment: "mata",
+        goal: "Sprawdzić spokojną rotację tułowia i reakcję lędźwi.",
+        dosageDefault: "2 serie po 6 ruchów na stronę",
+        clientInstruction: "Połóż się na plecach i zegnij kolana.\nPrzenoś kolana powoli na bok.\nNie odrywaj ruchu na siłę.\nWróć do środka z oddechem.",
+        coachNotes: "Dobra opcja do oceny tolerancji rotacji i napięcia brzucha.",
+        stopCriteria: "Przerwij przy bólu promieniującym, blokadzie ruchu albo narastającym bólu pleców.",
+        tags: ["lędźwia", "rotacja", "kontrola"],
+        linkedTests: []
+      },
+      {
+        id: "motylek",
+        name: "Motylek",
+        clientName: "Motylek bioder",
+        category: "Rozciąganie",
+        region: "biodro",
+        stage: "1 Punkt startowy",
+        level: "łatwy",
+        equipment: "mata",
+        goal: "Sprawdzić komfort odwiedzenia bioder i napięcie przywodzicieli.",
+        dosageDefault: "2 serie po 30-45 s",
+        clientInstruction: "Usiądź stabilnie i połącz stopy.\nPozwól kolanom opaść tylko do wygodnego zakresu.\nWydłuż kręgosłup.\nOddychaj spokojnie.",
+        coachNotes: "Nie dociskać kolan; obserwować asymetrię i reakcję pachwiny.",
+        stopCriteria: "Przerwij przy bólu pachwiny, kłuciu w biodrze albo objawach po ćwiczeniu.",
+        tags: ["biodro", "przywodziciele", "rozciąganie"],
+        linkedTests: []
+      },
+      {
+        id: "motylek-kolana-do-srodka-90-90",
+        name: "Motylek + kolana do środka / 90-90",
+        clientName: "Motylek z przejściem kolan",
+        category: "Mobilizacja",
+        region: "biodro",
+        stage: "2 Kontrola",
+        level: "średni",
+        equipment: "mata",
+        goal: "Połączyć spokojną mobilność bioder z kontrolą rotacji.",
+        dosageDefault: "1-2 serie po 6 przejść",
+        clientInstruction: "Zacznij w motylku.\nPrzenieś kolana spokojnie do środka.\nNie ciągnij ruchu na siłę.\nWróć do pozycji startowej z oddechem.",
+        coachNotes: "Sprawdzać kompensację lędźwi i jakość kontroli rotacji.",
+        stopCriteria: "Przerwij, jeśli pojawia się kłucie w biodrze, ból pachwiny albo utrata kontroli ruchu.",
+        tags: ["biodro", "90/90", "kontrola"],
+        linkedTests: []
+      },
+      {
+        id: "pies-glowa-w-dole-spokojny",
+        name: "Pies z głową w dole — wersja spokojna",
+        clientName: "Pies z głową w dole - spokojna wersja",
+        category: "Mobilizacja",
+        region: "całe ciało",
+        stage: "2 Kontrola",
+        level: "średni",
+        equipment: "mata",
+        goal: "Połączyć tylną taśmę, barki i oddech bez ścigania zakresu.",
+        dosageDefault: "4-6 spokojnych wejść",
+        clientInstruction: "Ustaw dłonie i stopy stabilnie.\nWypchnij biodra do tyłu i w górę.\nKolana mogą zostać ugięte.\nOddychaj i nie walcz o pięty na ziemi.",
+        coachNotes: "Uważać przy drażliwości barku, nadgarstka i ciśnieniu.",
+        stopCriteria: "Przerwij przy zawrotach głowy, bólu barku, drętwieniu dłoni albo nasileniu objawów.",
+        tags: ["tylna taśma", "bark", "mobilizacja"],
+        linkedTests: []
+      },
+      {
+        id: "pies-glowa-w-gorze-krzeslo",
+        name: "Pies z głową w górze na krześle",
+        clientName: "Otwarcie klatki na krześle",
+        category: "Mobilizacja",
+        region: "kręgosłup piersiowy",
+        stage: "1 Punkt startowy",
+        level: "łatwy",
+        equipment: "krzesło",
+        goal: "Uzyskać łagodne otwarcie klatki i pracę oddechu bez przeciążenia lędźwi.",
+        dosageDefault: "2 serie po 5-6 oddechów",
+        clientInstruction: "Oprzyj dłonie na stabilnym krześle.\nCofnij biodra i wydłuż plecy.\nOddychaj w żebra.\nNie zapadaj się w lędźwiach.",
+        coachNotes: "Dobra regresja dla pozycji z rękami nad głową.",
+        stopCriteria: "Przerwij przy bólu barku, kłuciu w plecach albo zawrotach głowy.",
+        tags: ["piersiowy", "oddech", "krzesło"],
+        linkedTests: []
+      },
+      {
+        id: "wykrok-klek-praca-ramion",
+        name: "Wykrok w klęku + praca ramion",
+        clientName: "Wykrok w klęku z pracą ramion",
+        category: "Kontrola ruchu",
+        region: "biodro",
+        stage: "2 Kontrola",
+        level: "średni",
+        equipment: "mata",
+        goal: "Połączyć otwarcie biodra z kontrolą tułowia i ramion.",
+        dosageDefault: "2 serie po 5 ruchów na stronę",
+        clientInstruction: "Ustaw jedno kolano na macie, drugą stopę z przodu.\nDelikatnie przesuń biodra do przodu.\nDodaj spokojny ruch ramion.\nNie wyginaj lędźwi.",
+        coachNotes: "Pilnować miednicy, żeber i stabilności kolana z przodu.",
+        stopCriteria: "Przerwij przy bólu kolana, pachwiny, lędźwi albo utracie stabilności.",
+        tags: ["biodro", "wykrok", "ramiona"],
+        linkedTests: []
+      },
+      {
+        id: "siad-tylna-tasma-wykrok",
+        name: "Siad do tylnej taśmy z pozycji wykroku",
+        clientName: "Siad do tylnej taśmy",
+        category: "Rozciąganie",
+        region: "udo",
+        stage: "2 Kontrola",
+        level: "średni",
+        equipment: "mata",
+        goal: "Sprawdzić i poprawić tolerancję tylnej taśmy bez szarpania.",
+        dosageDefault: "2 serie po 6 ruchów na stronę",
+        clientInstruction: "Z pozycji wykroku cofnij biodra.\nPrzednia noga może się lekko wyprostować.\nSzukaj rozciągania, nie bólu.\nWróć płynnie do wykroku.",
+        coachNotes: "Uważać na kompensację plecami i napięcie nerwowe.",
+        stopCriteria: "Przerwij przy drętwieniu, ciągnięciu nerwowym albo ostrym bólu pod kolanem.",
+        tags: ["tylna taśma", "udo", "mobilność"],
+        linkedTests: []
+      },
+      {
+        id: "plank-klek-bear-hover",
+        name: "Plank z klęku / bear hover",
+        clientName: "Plank z klęku albo bear hover",
+        category: "Core",
+        region: "core",
+        stage: "3 Siła i stabilność",
+        level: "średni",
+        equipment: "mata",
+        goal: "Budować napięcie tułowia i tolerancję podporu.",
+        dosageDefault: "3 serie po 10-20 s",
+        clientInstruction: "Ustaw podpór stabilnie.\nNapnij brzuch jak do spokojnego wysiłku.\nOddychaj krótko i równo.\nZakończ zanim pozycja się rozsypie.",
+        coachNotes: "Wybrać wersję z klęku lub hover zależnie od jakości podporu.",
+        stopCriteria: "Przerwij przy bólu lędźwi, barku, nadgarstka albo wstrzymywaniu oddechu.",
+        tags: ["core", "podpór", "stabilizacja"],
+        linkedTests: []
+      },
+      {
+        id: "hollow-hold-superwoman-plecy",
+        name: "Hollow hold / superwoman na plecach",
+        clientName: "Hollow hold na plecach",
+        category: "Core",
+        region: "core",
+        stage: "3 Siła i stabilność",
+        level: "trudny",
+        equipment: "mata",
+        goal: "Wzmocnić przednią taśmę i kontrolę żeber w leżeniu.",
+        dosageDefault: "3 serie po 8-15 s",
+        clientInstruction: "Połóż się na plecach.\nDociśnij dolne żebra spokojnie w stronę maty.\nWyciągnij ręce i nogi tylko tak daleko, jak utrzymujesz kontrolę.\nOddychaj bez spinania szyi.",
+        coachNotes: "Regresować przez skrócenie dźwigni; nie wymuszać pozycji kosztem lędźwi.",
+        stopCriteria: "Przerwij przy bólu lędźwi, napięciu szyi albo utracie oddechu.",
+        tags: ["core", "hollow", "kontrola żeber"],
+        linkedTests: []
+      },
+      {
+        id: "pompki-na-kolanach",
+        name: "Pompki na kolanach",
+        clientName: "Pompki na kolanach",
+        category: "Siła",
+        region: "całe ciało",
+        stage: "3 Siła i stabilność",
+        level: "średni",
+        equipment: "mata",
+        goal: "Budować siłę pchania przy zachowaniu kontroli tułowia.",
+        dosageDefault: "2-3 serie po 5-8 powtórzeń",
+        clientInstruction: "Ustaw dłonie trochę szerzej niż barki.\nUtrzymaj ciało w jednej linii od kolan do głowy.\nSchodź tylko do zakresu z kontrolą.\nWypchnij się bez zapadania barków.",
+        coachNotes: "Kontrolować łopatkę, żebra i tor łokci; dobrać wysokość podporu przy potrzebie regresji.",
+        stopCriteria: "Przerwij przy bólu barku, nadgarstka, szyi albo utracie kontroli tułowia.",
+        tags: ["pchanie", "siła", "podpór"],
+        linkedTests: []
+      }
+    ];
     const INTAKE_FIELD_ALIASES = {
       submittedAt: ["Data wypełnienia", "Sygnatura czasowa", "Timestamp", "Czas przesłania"],
       name: ["Imię i nazwisko", "Imie i nazwisko", "Nazwa użytkownika"],
@@ -1087,6 +1449,62 @@
       };
     }
 
+    function migrateExercise(exercise = {}) {
+      const name = String(exercise.name || exercise.clientName || "Nowe zadanie ruchowe").trim();
+      const id = exercise.id || `ex-${slugify(name)}-${String(Date.now()).slice(-5)}`;
+      return {
+        ...exercise,
+        id,
+        name,
+        clientName: exercise.clientName || name,
+        category: EXERCISE_CATEGORIES.includes(exercise.category) ? exercise.category : "Kontrola ruchu",
+        subcategory: exercise.subcategory || "",
+        region: EXERCISE_REGIONS.includes(exercise.region) ? exercise.region : "całe ciało",
+        pattern: exercise.pattern || "",
+        stage: EXERCISE_STAGES.includes(exercise.stage) ? exercise.stage : "1 Punkt startowy",
+        level: EXERCISE_LEVELS.includes(exercise.level) ? exercise.level : "łatwy",
+        equipment: exercise.equipment || "",
+        goal: exercise.goal || "",
+        dosageDefault: exercise.dosageDefault || "",
+        tempo: exercise.tempo || "",
+        breathing: exercise.breathing || "",
+        clientInstruction: exercise.clientInstruction || "",
+        coachNotes: exercise.coachNotes || "",
+        commonMistakes: exercise.commonMistakes || "",
+        stopCriteria: exercise.stopCriteria || "",
+        regressions: exercise.regressions || "",
+        progressions: exercise.progressions || "",
+        contraindications: exercise.contraindications || "",
+        videoUrl: exercise.videoUrl || "",
+        tags: Array.isArray(exercise.tags) ? exercise.tags : splitList(exercise.tags),
+        linkedTests: Array.isArray(exercise.linkedTests) ? exercise.linkedTests : []
+      };
+    }
+
+    function getExerciseLibrary() {
+      try {
+        const raw = localStorage.getItem(EXERCISE_LIBRARY_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed.map(migrateExercise) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveExerciseLibrary(library) {
+      const migrated = (Array.isArray(library) ? library : []).map(migrateExercise);
+      localStorage.setItem(EXERCISE_LIBRARY_KEY, JSON.stringify(migrated));
+      exerciseLibrary = migrated;
+      return migrated;
+    }
+
+    function seedExerciseLibraryIfEmpty() {
+      const existing = getExerciseLibrary();
+      if (existing.length) return saveExerciseLibrary(existing);
+      return saveExerciseLibrary(SEED_EXERCISES);
+    }
+
     function migrateTestResult(result = {}) {
       return {
         ...result,
@@ -1286,11 +1704,13 @@
     function migrateClient(client = {}) {
       const plan = migrateHomePlan(client.homePlan);
 
-      // Future Studio Las OS 7.0:
-      // Exercise Prescription Foundation
+      // Future Studio Las OS 7.1:
+      // Diagnostic Test Layer.
+      // Tests should not be isolated checklists.
+      // Test result -> interpretation -> trainer decision -> suggested exercises.
+      // Trainer must approve before exercises enter the client home plan.
       // Global exerciseLibrary should stay separate from client.homePlan.
       // Client sees only assigned homePlan exercises, never the full atlas.
-      // Diagnostic tests should link to exercises later, but trainer must approve prescription.
       return {
         ...client,
         id: client.id || `SL-${new Date().getFullYear()}-${String(Date.now()).slice(-4)}`,
@@ -1371,6 +1791,9 @@
     let viewName = "command";
     let pendingMeasurementPdf = initialMeasurementPdf();
     let pendingIntakeRows = [];
+    let exerciseLibrary = [];
+    exerciseLibrary = seedExerciseLibraryIfEmpty();
+    let exerciseAtlasFilters = { q: "", category: "", region: "", stage: "" };
 
     const $ = (sel) => document.querySelector(sel);
     const view = $("#view");
@@ -1460,6 +1883,8 @@
         tasks: ["Zadania", "Aktywne rzeczy do dopięcia dla wybranego klienta."],
         measurements: ["Pomiary", "Warstwa Tanita: metryki, PDF i interpretacja w kontekście procesu."],
         polar: ["Polar Load Response", "Tolerancja obciążenia z Polar Verity Sense wpisywana po sesji."],
+        homePlanView: ["Plan domowy", "Aktywne i archiwalne zadania ruchowe dla wybranego klienta."],
+        exerciseAtlas: ["Atlas ruchu", "Baza zadań ruchowych dla trenera. Klient widzi tylko ćwiczenia przypisane do jego planu domowego."],
         decision: ["Decyzja tygodniowa", "Silnik rekomendacji na podstawie procesu, sesji, Polar, Tanita i zadań."],
         report: ["Raport dobrostanu", "Gotowy język dla klienta bez ręcznego składania notatek."],
         clientPortal: ["Panel klienta", "Prosty widok procesu dla aktualnie wybranego klienta."]
@@ -1484,6 +1909,8 @@
       if (viewName === "tasks") renderTasks();
       if (viewName === "measurements") renderMeasurements();
       if (viewName === "polar") renderPolar();
+      if (viewName === "homePlanView") renderHomePlanView();
+      if (viewName === "exerciseAtlas") renderExerciseAtlas();
       if (viewName === "decision") renderDecision();
       if (viewName === "report") renderReport();
       if (viewName === "clientPortal") renderClientPortal();
@@ -1563,6 +1990,7 @@
       const lastTanita = latestMeasurement(c);
       const tasks = c.tasks || [];
       const doneTasks = tasks.filter(task => task.done).length;
+      const homeExercises = activeHomePlanExercises(c);
       const stageName = steps[c.stage - 1]?.[0] || "Proces indywidualny";
       const milestone = lastMilestone(c);
       const redFlags = String(c.redFlags || "").trim();
@@ -1596,6 +2024,16 @@
             <div class="portal-info"><div class="label">Pierwszy fokus</div><p>${escapeHtml(intake.firstSessionFocus || "Potwierdzić baseline ruchu.")}</p></div>
             <div class="portal-info"><div class="label">Czego nie przyspieszać</div><p>${escapeHtml(hasImportedIntake(c) ? intakeDoNotAccelerate(intake) : "Nie przyspieszamy kilku parametrów naraz.")}</p></div>
           </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><div><h2>Aktualny plan domowy</h2><p>Szybka orientacja przed sesją, nie pełna biblioteka.</p></div>${pill(`${homeExercises.length} aktywne`, homeExercises.length ? "green" : "gold")}</div>
+          ${homeExercises.length ? `
+            <div class="grid cols-3">
+              ${homeExercises.slice(0, 3).map(ex => `<div class="portal-info"><div class="label">${escapeHtml(ex.category || "zadanie ruchowe")}</div><p><strong>${escapeHtml(ex.name)}</strong><br>${escapeHtml(ex.dosage || "Dawkowanie do ustalenia")}${ex.frequency ? ` · ${escapeHtml(ex.frequency)}` : ""}</p></div>`).join("")}
+            </div>
+          ` : `<p>Plan ruchowy zostanie dobrany po dzisiejszej obserwacji.</p>`}
+          <div style="margin-top:12px"><button class="btn primary" id="todayHomePlanBtn">Przejdź do planu domowego</button></div>
         </section>
 
         <section class="panel">
@@ -1651,6 +2089,10 @@
       $("#todayNewMeasurementBtn")?.addEventListener("click", openMeasurementModal);
       $("#todayReportBtn")?.addEventListener("click", () => {
         viewName = "report";
+        renderShell();
+      });
+      $("#todayHomePlanBtn")?.addEventListener("click", () => {
+        viewName = "homePlanView";
         renderShell();
       });
       $("#preSessionCheckForm")?.addEventListener("submit", savePreSessionCheck);
@@ -2030,6 +2472,194 @@
       }));
     }
 
+    function renderExerciseAtlas() {
+      const library = getFilteredExerciseLibrary();
+      view.innerHTML = `
+        <section class="panel">
+          <div class="panel-head">
+            <div><h2>Atlas ruchu</h2><p>Baza zadań ruchowych dla trenera. Klient widzi tylko ćwiczenia przypisane do jego planu domowego.</p></div>
+            <button class="btn primary" id="addExerciseBtn">Dodaj ćwiczenie</button>
+          </div>
+          <div class="filter-bar">
+            <div class="form-field"><label class="label" for="exerciseSearch">Szukaj</label><input id="exerciseSearch" value="${escapeHtml(exerciseAtlasFilters.q)}" placeholder="Nazwa, cel, tag..." /></div>
+            <div class="form-field"><label class="label" for="exerciseCategoryFilter">Kategoria</label><select id="exerciseCategoryFilter">${filterOptions(EXERCISE_CATEGORIES, exerciseAtlasFilters.category, "Wszystkie")}</select></div>
+            <div class="form-field"><label class="label" for="exerciseRegionFilter">Region</label><select id="exerciseRegionFilter">${filterOptions(EXERCISE_REGIONS, exerciseAtlasFilters.region, "Wszystkie")}</select></div>
+            <div class="form-field"><label class="label" for="exerciseStageFilter">Etap</label><select id="exerciseStageFilter">${filterOptions(EXERCISE_STAGES, exerciseAtlasFilters.stage, "Wszystkie")}</select></div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Ćwiczenia</h2>${pill(`${library.length} z ${exerciseLibrary.length}`, library.length ? "green" : "gold")}</div>
+          <div class="grid cols-3">
+            ${library.length ? library.map(renderExerciseAtlasCard).join("") : `<p>Brak ćwiczeń dla wybranych filtrów.</p>`}
+          </div>
+        </section>
+      `;
+      $("#addExerciseBtn")?.addEventListener("click", () => openExerciseModal());
+      $("#exerciseSearch")?.addEventListener("input", e => {
+        exerciseAtlasFilters.q = e.target.value;
+        renderExerciseAtlas();
+      });
+      $("#exerciseCategoryFilter")?.addEventListener("change", e => {
+        exerciseAtlasFilters.category = e.target.value;
+        renderExerciseAtlas();
+      });
+      $("#exerciseRegionFilter")?.addEventListener("change", e => {
+        exerciseAtlasFilters.region = e.target.value;
+        renderExerciseAtlas();
+      });
+      $("#exerciseStageFilter")?.addEventListener("change", e => {
+        exerciseAtlasFilters.stage = e.target.value;
+        renderExerciseAtlas();
+      });
+      document.querySelectorAll("[data-add-exercise]").forEach(btn => btn.addEventListener("click", () => addExerciseToActiveHomePlan(btn.dataset.addExercise)));
+      document.querySelectorAll("[data-edit-exercise]").forEach(btn => btn.addEventListener("click", () => openExerciseModal(btn.dataset.editExercise)));
+    }
+
+    function getFilteredExerciseLibrary() {
+      const q = compareHeader(exerciseAtlasFilters.q || "");
+      return exerciseLibrary.filter(ex => {
+        const haystack = compareHeader([ex.name, ex.clientName, ex.category, ex.region, ex.stage, ex.goal, ...(ex.tags || [])].join(" "));
+        if (q && !haystack.includes(q)) return false;
+        if (exerciseAtlasFilters.category && ex.category !== exerciseAtlasFilters.category) return false;
+        if (exerciseAtlasFilters.region && ex.region !== exerciseAtlasFilters.region) return false;
+        if (exerciseAtlasFilters.stage && ex.stage !== exerciseAtlasFilters.stage) return false;
+        return true;
+      });
+    }
+
+    function renderExerciseAtlasCard(ex) {
+      return `<div class="exercise-card">
+        <div>
+          <div class="name">${escapeHtml(ex.name)}</div>
+          <div class="meta">${escapeHtml(ex.clientName || ex.name)}</div>
+        </div>
+        <div class="tag-row">
+          ${pill(ex.category, "blue")}
+          ${pill(ex.region, "green")}
+          ${pill(ex.stage, "gold")}
+          ${pill(ex.level, "")}
+        </div>
+        <div class="portal-info"><div class="label">Dawka</div><p>${escapeHtml(ex.dosageDefault || "Do ustalenia")}</p></div>
+        <div class="portal-info"><div class="label">Cel</div><p>${escapeHtml(ex.goal || "Cel zostanie doprecyzowany.")}</p></div>
+        <div class="tag-row">${(ex.tags || []).slice(0, 5).map(tag => pill(tag, "")).join("")}</div>
+        <div class="card-actions">
+          <button class="btn primary" data-add-exercise="${escapeHtml(ex.id)}">Dodaj do planu klienta</button>
+          <button class="btn" data-edit-exercise="${escapeHtml(ex.id)}">Edytuj</button>
+        </div>
+      </div>`;
+    }
+
+    function filterOptions(values, selected, emptyLabel = "Wszystkie") {
+      return `<option value="">${escapeHtml(emptyLabel)}</option>${values.map(value => `<option value="${escapeHtml(value)}" ${value === selected ? "selected" : ""}>${escapeHtml(value)}</option>`).join("")}`;
+    }
+
+    function renderHomePlanView() {
+      const c = activeClient();
+      c.homePlan = migrateHomePlan(c.homePlan);
+      const plan = c.homePlan;
+      const exercises = plan.exercises || [];
+      const active = exercises.filter(ex => ex.status !== "archived");
+      const archived = exercises.filter(ex => ex.status === "archived");
+      view.innerHTML = `
+        <section class="panel">
+          <div class="panel-head">
+            <div><h2>Plan domowy</h2><p>${escapeHtml(c.name)} · klient widzi tylko aktywne zadania ruchowe.</p></div>
+            ${pill(`${active.length} aktywne`, active.length ? "green" : "gold")}
+          </div>
+          <form id="homePlanMetaForm" class="form-grid">
+            <div class="form-field"><label class="label">Tytuł planu</label><input name="title" value="${escapeHtml(plan.title || "")}" placeholder="np. Plan startowy biodro + core" /></div>
+            <div class="form-field"><label class="label">Focus planu</label><input name="focus" value="${escapeHtml(plan.focus || "")}" placeholder="np. spokojna tolerancja biodra" /></div>
+            <div class="form-field"><label class="label">Data aktualizacji</label><input name="updatedAt" value="${escapeHtml(plan.updatedAt || "")}" readonly /></div>
+            <div class="form-field"><label class="label">Źródło</label><input value="Atlas ruchu trenera albo ręczna edycja" readonly /></div>
+            <button class="btn primary full" type="submit">Zapisz tytuł i focus</button>
+          </form>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Aktywne zadania ruchowe</h2><button class="btn" id="homePlanAtlasBtn">Przejdź do atlasu ruchu</button></div>
+          <div class="grid">${active.length ? active.map(renderHomePlanExerciseEditor).join("") : `<p>Plan ruchowy zostanie dobrany po dzisiejszej obserwacji.</p>`}</div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Archiwalne zadania ruchowe</h2>${pill(`${archived.length}`, archived.length ? "blue" : "gold")}</div>
+          <div class="grid">${archived.length ? archived.map(renderHomePlanExerciseEditor).join("") : `<p>Brak archiwalnych zadań ruchowych.</p>`}</div>
+        </section>
+      `;
+      $("#homePlanMetaForm")?.addEventListener("submit", e => {
+        e.preventDefault();
+        const fd = new FormData(e.currentTarget);
+        plan.title = String(fd.get("title") || "").trim();
+        plan.focus = String(fd.get("focus") || "").trim();
+        plan.updatedAt = today();
+        save();
+        toast("Plan domowy zaktualizowany");
+        renderHomePlanView();
+      });
+      $("#homePlanAtlasBtn")?.addEventListener("click", () => {
+        viewName = "exerciseAtlas";
+        renderShell();
+      });
+      document.querySelectorAll("[data-home-field]").forEach(input => input.addEventListener("change", () => updateHomePlanExerciseField(input.dataset.homeId, input.dataset.homeField, input.value)));
+      document.querySelectorAll("[data-home-archive]").forEach(btn => btn.addEventListener("click", () => setHomePlanExerciseStatus(btn.dataset.homeArchive, "archived")));
+      document.querySelectorAll("[data-home-restore]").forEach(btn => btn.addEventListener("click", () => setHomePlanExerciseStatus(btn.dataset.homeRestore, "active")));
+      document.querySelectorAll("[data-home-delete]").forEach(btn => btn.addEventListener("click", () => deleteHomePlanExercise(btn.dataset.homeDelete)));
+    }
+
+    function renderHomePlanExerciseEditor(ex) {
+      const archived = ex.status === "archived";
+      return `<div class="home-plan-card ${archived ? "task-row done" : "task-row"}">
+        <div class="panel-head">
+          <div>
+            <div class="name">${escapeHtml(ex.name || "Zadanie ruchowe")}</div>
+            <div class="meta">${escapeHtml([ex.category, ex.region, ex.addedAt ? `dodane ${ex.addedAt}` : ""].filter(Boolean).join(" · "))}</div>
+          </div>
+          ${pill(archived ? "archiwalne" : "aktywne", archived ? "gold" : "green")}
+        </div>
+        <div class="form-grid">
+          <div class="form-field"><label class="label">Dawkowanie</label><input data-home-id="${escapeHtml(ex.id)}" data-home-field="dosage" value="${escapeHtml(ex.dosage || "")}" /></div>
+          <div class="form-field"><label class="label">Częstotliwość</label><input data-home-id="${escapeHtml(ex.id)}" data-home-field="frequency" value="${escapeHtml(ex.frequency || "")}" /></div>
+          <div class="form-field full"><label class="label">Krótka wskazówka</label><textarea data-home-id="${escapeHtml(ex.id)}" data-home-field="clientCue">${escapeHtml(ex.clientCue || "")}</textarea></div>
+          <div class="form-field full"><label class="label">Kiedy przerwać / zgłosić reakcję</label><textarea data-home-id="${escapeHtml(ex.id)}" data-home-field="stopCriteria">${escapeHtml(ex.stopCriteria || "")}</textarea></div>
+        </div>
+        <div class="home-plan-actions">
+          ${archived ? `<button class="btn primary" data-home-restore="${escapeHtml(ex.id)}">Przywróć</button>` : `<button class="btn warning" data-home-archive="${escapeHtml(ex.id)}">Archiwizuj</button>`}
+          <button class="btn danger" data-home-delete="${escapeHtml(ex.id)}">Usuń</button>
+        </div>
+      </div>`;
+    }
+
+    function updateHomePlanExerciseField(id, field, value) {
+      const c = activeClient();
+      c.homePlan = migrateHomePlan(c.homePlan);
+      const item = c.homePlan.exercises.find(ex => ex.id === id);
+      if (!item || !["dosage", "frequency", "clientCue", "stopCriteria"].includes(field)) return;
+      item[field] = String(value || "").trim();
+      c.homePlan.updatedAt = today();
+      save();
+      toast("Zadanie ruchowe zaktualizowane");
+    }
+
+    function setHomePlanExerciseStatus(id, status) {
+      const c = activeClient();
+      c.homePlan = migrateHomePlan(c.homePlan);
+      const item = c.homePlan.exercises.find(ex => ex.id === id);
+      if (!item) return;
+      item.status = status === "archived" ? "archived" : "active";
+      c.homePlan.updatedAt = today();
+      save();
+      toast(item.status === "archived" ? "Zadanie przeniesione do archiwum" : "Zadanie przywrócone do planu");
+      renderHomePlanView();
+    }
+
+    function deleteHomePlanExercise(id) {
+      if (!window.confirm("Usunąć to zadanie z planu domowego klienta?")) return;
+      const c = activeClient();
+      c.homePlan = migrateHomePlan(c.homePlan);
+      c.homePlan.exercises = c.homePlan.exercises.filter(ex => ex.id !== id);
+      c.homePlan.updatedAt = today();
+      save();
+      toast("Zadanie usunięte z planu");
+      renderHomePlanView();
+    }
+
     function renderMeasurements() {
       const c = activeClient();
       const measurements = sortedMeasurements(c);
@@ -2364,7 +2994,7 @@
           <div class="grid cols-3">
             <div class="portal-info"><div class="label">Data</div><p>${escapeHtml(formatDate(note.date))}</p></div>
             <div class="portal-info"><div class="label">Decyzja</div><p>${escapeHtml(simpleDecision)}</p></div>
-            <div class="portal-info"><div class="label">Zadanie domowe</div><p>${escapeHtml(note.homeTask || "Brak nowego zadania domowego.")}</p></div>
+            <div class="portal-info"><div class="label">Zadanie ruchowe</div><p>${escapeHtml(note.homeTask || "Brak nowego zadania ruchowego.")}</p></div>
           </div>
           <div class="portal-info" style="margin-top:12px"><div class="label">Komunikat</div><p>${escapeHtml(note.clientMessage || "Ustalenie zostało zapisane po sesji.")}</p></div>
         </div>
@@ -2390,22 +3020,27 @@
     }
 
     function renderHomePlan(c) {
-      const plan = c.homePlan || defaultHomePlan();
-      const hasPlan = plan.title || plan.frequency || plan.duration || plan.instructions || plan.exercises.length;
-      if (!hasPlan) return `<p>Plan domowy zostanie uzupełniony po diagnostyce lub najbliższej sesji.</p>`;
+      const plan = migrateHomePlan(c.homePlan);
+      const active = activeHomePlanExercises(c);
+      if (!active.length) return `<p>Plan domowy zostanie dobrany po potwierdzeniu punktu wyjścia.</p>`;
       return `
         <div class="grid cols-3">
           <div class="portal-info"><div class="label">Nazwa</div><p>${escapeHtml(plan.title || "Plan domowy")}</p></div>
-          <div class="portal-info"><div class="label">Częstotliwość</div><p>${escapeHtml(plan.frequency || "Do ustalenia")}</p></div>
-          <div class="portal-info"><div class="label">Czas</div><p>${escapeHtml(plan.duration || "Do ustalenia")}</p></div>
+          <div class="portal-info"><div class="label">Focus</div><p>${escapeHtml(plan.focus || "Aktualne zadania ruchowe")}</p></div>
+          <div class="portal-info"><div class="label">Aktualizacja</div><p>${escapeHtml(plan.updatedAt ? formatDate(plan.updatedAt) : "Do zapisania")}</p></div>
         </div>
-        ${plan.instructions ? `<div class="portal-info" style="margin-top:12px"><div class="label">Instrukcja</div><p>${escapeHtml(plan.instructions)}</p></div>` : ""}
         <div class="exercise-list" style="margin-top:12px">
-          ${plan.exercises.length ? plan.exercises.map(ex => `
+          ${active.map(ex => `
             <div class="exercise-card">
               <div class="name">${escapeHtml(ex.name)}</div>
-              <div class="meta">${escapeHtml(ex.dosage || "Dawkowanie do ustalenia")}${ex.note ? ` · ${escapeHtml(ex.note)}` : ""}</div>
-            </div>`).join("") : `<p>Ćwiczenia zostaną dopisane po najbliższej sesji.</p>`}
+              <div class="grid cols-2">
+                <div class="portal-info"><div class="label">Dawkowanie</div><p>${escapeHtml(ex.dosage || "Do ustalenia")}</p></div>
+                <div class="portal-info"><div class="label">Częstotliwość</div><p>${escapeHtml(ex.frequency || "Do ustalenia")}</p></div>
+                <div class="portal-info"><div class="label">Wskazówka</div><p>${escapeHtml(ex.clientCue || "Wykonuj spokojnie i bez pośpiechu.")}</p></div>
+                <div class="portal-info"><div class="label">Kiedy przerwać / zgłosić</div><p>${escapeHtml(ex.stopCriteria || "Przerwij, jeśli objawy wyraźnie narastają po aktywności.")}</p></div>
+              </div>
+              ${ex.videoUrl ? `<a class="btn" href="${escapeHtml(ex.videoUrl)}" target="_blank" rel="noopener">Video</a>` : ""}
+            </div>`).join("")}
         </div>
       `;
     }
@@ -2450,7 +3085,7 @@
     }
 
     function portalDocuments(c) {
-      const hasHomePlan = (c.homePlan?.exercises || []).length >= 1;
+      const hasHomePlan = activeHomePlanExercises(c).length >= 1;
       const sessionCount = c.sessions.length;
       return [
         {
@@ -2461,7 +3096,7 @@
         {
           title: "Plan Domowy",
           status: hasHomePlan ? "gotowy" : (c.homePlan?.title || c.homePlan?.instructions ? "aktywny" : "w przygotowaniu"),
-          description: "Ćwiczenia i dawki do pracy między spotkaniami."
+          description: "Zadania ruchowe i dawki do pracy między spotkaniami."
         },
         {
           title: "Raport 12 Tygodni",
@@ -3458,6 +4093,13 @@
         });
       }
 
+      if (homeExercises.length && !cards.some(card => /Plan domowy/i.test(card.label))) {
+        cards.splice(1, 0, {
+          label: "Plan domowy",
+          value: `${homeExercises.length} ${pluralizePl(homeExercises.length, "zadanie", "zadania", "zadań")}`,
+          description: "Zadania ruchowe dobrane do aktualnego etapu."
+        });
+      }
       return cards.filter(card => card.label && card.value).slice(0, 4);
     }
 
@@ -3525,7 +4167,7 @@
       const context = getReportProcessContext(c, reportType);
       const criteria = [
         "Reakcja bólu po aktywności nie rośnie względem punktu wyjścia.",
-        context.hasHomePlan ? "Plan domowy / zadania ruchowe są wykonywane minimum 2 razy w tygodniu albo zgodnie z ustalonym rytmem." : "Zadania bieżące mają czytelny zapis realizacji, a plan ruchowy jest doprecyzowywany po obserwacjach.",
+        context.hasHomePlan ? "Plan domowy jest wykonywany w ustalonym rytmie i nie nasila objawów po aktywności." : "Zadania bieżące mają czytelny zapis realizacji, a plan ruchowy jest doprecyzowywany po obserwacjach.",
         "Klient potrafi nazwać, które ruchy są bezpieczne, powtarzalne i dobrze tolerowane."
       ];
       if (latestPolarSession(c) || context.hasSessions || context.hasPostNotes) criteria.push("Odczyty Polar lub obserwacje po sesjach pokazują tolerancję obciążenia.");
@@ -3730,6 +4372,9 @@ ${buildWorkingHypothesis(c, audience)}
 Priorytety pierwszych 2–4 tygodni
 ${buildInitialPriorities(c, "startMap", audience)}
 
+Plan domowy / zadania ruchowe
+${buildHomePlanDetailSection(c, "startMap", audience)}
+
 Czego nie przyspieszamy
 ${buildDoNotAccelerateSection(c, audience)}
 
@@ -3759,7 +4404,9 @@ ${buildWhatWeKnowSection(c, audience)}
 
 Co działa
 ${buildWhatWorksSection(c, audience)}
-${buildHomePlanReportSection(c, "fourWeeks", audience)}
+
+Plan domowy / zadania ruchowe
+${buildHomePlanDetailSection(c, "fourWeeks", audience)}
 
 Co nadal ogranicza proces
 ${buildWhatLimitsSection(c, audience)}
@@ -3806,7 +4453,8 @@ ${generatePolarNarrative(c, "twelveWeeks", audience)}
 
 Zadania bieżące i plan domowy
 ${buildComplianceSection(c, audience)}
-${buildHomePlanReportSection(c, "twelveWeeks", audience)}
+Plan domowy / zadania ruchowe
+${buildHomePlanDetailSection(c, "twelveWeeks", audience)}
 ${buildDiagnosticTestsSection(c, audience)}
 
 Decyzja: kontynuacja / autonomia / zmiana strategii
@@ -3835,6 +4483,9 @@ ${buildKeepSection(c, decision)}
 
 Co robić samodzielnie
 ${buildSelfWorkSection(c)}
+
+Plan domowy / zadania ruchowe
+${buildHomePlanDetailSection(c, "continuation", audience)}
 
 Czego unikać
 ${buildAvoidSection(c, decision)}
@@ -3957,11 +4608,24 @@ ${buildReportClosingNote("continuation", context)}`;
         const items = exercises.slice(0, 4).map(ex => `${ex.name}${ex.dosage ? ` · ${ex.dosage}` : ""}${ex.frequency ? ` · ${ex.frequency}` : ""}`).join("; ");
         return `${label}: ${items}.`;
       }
-      if (reportType === "continuation") return "Samodzielna praca powinna na tym etapie ograniczać się do zadań uzgodnionych po sesji. Finalny plan kontynuacji wymaga jeszcze aktualnego planu domowego.";
+      if (reportType === "continuation") return "Plan kontynuacji nie powinien być finalizowany bez aktualnego planu domowego.";
       if (tasks.length && doneTasks) return "Zadania bieżące mają już zapis realizacji, ale plan ruchowy zostanie doprecyzowany po kolejnych obserwacjach.";
       if (reportType === "startMap") return "Plan domowy / zadania ruchowe zostaną dobrane po potwierdzeniu punktu wyjścia.";
       if (reportType === "fourWeeks") return "Plan domowy / zadania ruchowe wymagają doprecyzowania po kolejnych obserwacjach.";
       return "Plan domowy / zadania ruchowe warto odświeżyć przed kolejnym etapem procesu.";
+    }
+
+    function buildHomePlanDetailSection(c, reportType = "fourWeeks", audience = "client") {
+      const exercises = activeHomePlanExercises(c);
+      if (!exercises.length) return buildHomePlanReportSection(c, reportType, audience);
+      return exercises.slice(0, 6).map(ex => {
+        const parts = [
+          ex.dosage ? `dawkowanie: ${ex.dosage}` : "",
+          ex.frequency ? `częstotliwość: ${ex.frequency}` : "",
+          ex.clientCue ? `wskazówka: ${ex.clientCue}` : ""
+        ].filter(Boolean).join("; ");
+        return `- ${ex.name}${parts ? ` — ${parts}` : ""}`;
+      }).join("\n");
     }
 
     function buildDiagnosticTestsSection(c, audience = "client") {
@@ -4424,6 +5088,102 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
       $("#polarModal").setAttribute("aria-hidden", "false");
     }
 
+    function openExerciseModal(id = "") {
+      const form = $("#exerciseForm");
+      const exercise = id ? exerciseLibrary.find(item => item.id === id) : null;
+      form.reset();
+      form.elements.id.value = exercise?.id || "";
+      form.elements.linkedTests.value = JSON.stringify(exercise?.linkedTests || []);
+      [
+        "name", "clientName", "category", "subcategory", "region", "pattern", "stage", "level",
+        "equipment", "goal", "dosageDefault", "tempo", "breathing", "clientInstruction",
+        "coachNotes", "commonMistakes", "stopCriteria", "regressions", "progressions",
+        "contraindications", "videoUrl"
+      ].forEach(field => {
+        if (form.elements[field]) form.elements[field].value = exercise?.[field] || "";
+      });
+      form.elements.tags.value = (exercise?.tags || []).join("; ");
+      $("#exerciseModal").classList.add("open");
+      $("#exerciseModal").setAttribute("aria-hidden", "false");
+    }
+
+    function saveExerciseFromForm(e) {
+      e.preventDefault();
+      const form = e.currentTarget;
+      const fd = new FormData(form);
+      const id = String(fd.get("id") || "").trim();
+      const previous = id ? exerciseLibrary.find(ex => ex.id === id) : null;
+      const exercise = migrateExercise({
+        ...(previous || {}),
+        id: id || undefined,
+        name: String(fd.get("name") || "").trim(),
+        clientName: String(fd.get("clientName") || "").trim(),
+        category: fd.get("category"),
+        subcategory: String(fd.get("subcategory") || "").trim(),
+        region: fd.get("region"),
+        pattern: String(fd.get("pattern") || "").trim(),
+        stage: fd.get("stage"),
+        level: fd.get("level"),
+        equipment: String(fd.get("equipment") || "").trim(),
+        goal: String(fd.get("goal") || "").trim(),
+        dosageDefault: String(fd.get("dosageDefault") || "").trim(),
+        tempo: String(fd.get("tempo") || "").trim(),
+        breathing: String(fd.get("breathing") || "").trim(),
+        clientInstruction: String(fd.get("clientInstruction") || "").trim(),
+        coachNotes: String(fd.get("coachNotes") || "").trim(),
+        commonMistakes: String(fd.get("commonMistakes") || "").trim(),
+        stopCriteria: String(fd.get("stopCriteria") || "").trim(),
+        regressions: String(fd.get("regressions") || "").trim(),
+        progressions: String(fd.get("progressions") || "").trim(),
+        contraindications: String(fd.get("contraindications") || "").trim(),
+        videoUrl: String(fd.get("videoUrl") || "").trim(),
+        tags: splitList(fd.get("tags")),
+        linkedTests: previous?.linkedTests || []
+      });
+      const next = previous
+        ? exerciseLibrary.map(item => item.id === exercise.id ? exercise : item)
+        : [...exerciseLibrary, exercise];
+      saveExerciseLibrary(next);
+      closeModal("exerciseModal");
+      toast(previous ? "Ćwiczenie zaktualizowane" : "Ćwiczenie dodane do atlasu");
+      if (viewName === "exerciseAtlas") renderExerciseAtlas();
+    }
+
+    function addExerciseToActiveHomePlan(exerciseId) {
+      const exercise = exerciseLibrary.find(ex => ex.id === exerciseId);
+      if (!exercise) return toast("Nie znaleziono ćwiczenia w atlasie");
+      const c = activeClient();
+      c.homePlan = migrateHomePlan(c.homePlan);
+      const alreadyActive = c.homePlan.exercises.some(item => item.exerciseId === exercise.id && item.status !== "archived");
+      if (alreadyActive) return toast("To zadanie jest już aktywne w planie klienta.");
+      c.homePlan.exercises.push(migrateHomePlanExercise({
+        id: `hp-${exercise.id}-${Date.now()}`,
+        exerciseId: exercise.id,
+        name: exercise.clientName || exercise.name,
+        category: exercise.category,
+        region: exercise.region,
+        dosage: exercise.dosageDefault,
+        frequency: "",
+        clientCue: firstClientInstructionSentence(exercise.clientInstruction),
+        stopCriteria: exercise.stopCriteria,
+        videoUrl: exercise.videoUrl,
+        status: "active",
+        addedAt: today()
+      }));
+      c.homePlan.updatedAt = today();
+      save();
+      toast("Dodano zadanie do planu klienta");
+    }
+
+    function firstClientInstructionSentence(text = "") {
+      const firstLine = String(text || "")
+        .split(/\n+/)
+        .map(line => line.replace(/^[-•\d. ]+/, "").trim())
+        .find(Boolean) || "";
+      const sentence = firstLine.match(/[^.!?]+[.!?]/)?.[0] || firstLine;
+      return sentence.trim();
+    }
+
     function closeModal(id) {
       $("#" + id).classList.remove("open");
       $("#" + id).setAttribute("aria-hidden", "true");
@@ -4556,6 +5316,10 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
+    }
+
+    function slugify(value = "") {
+      return compareHeader(value).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "zadanie-ruchowe";
     }
 
     function splitList(value) {
@@ -5544,6 +6308,7 @@ Initial 83.45 64.95 18.10
     $("#newPolarBtn").addEventListener("click", openPolarModal);
     $("#tanitaDemoBtn").addEventListener("click", applyDemoTanitaData);
     $("#importLegacyBtn").addEventListener("click", importLegacy);
+    $("#exerciseForm").addEventListener("submit", saveExerciseFromForm);
     window.addEventListener("afterprint", clearPrintingReportMode);
 
     document.querySelectorAll("[data-close]").forEach(btn => btn.addEventListener("click", () => closeModal(btn.dataset.close)));

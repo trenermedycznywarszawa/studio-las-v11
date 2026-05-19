@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 7.0 | Movement Prescription Foundation</title>
+  <title>Studio Las OS 7.0.1 | Home Plan UX Patch</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -237,6 +237,17 @@
     .exercise-card .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
     .home-plan-card { display: grid; gap: 10px; }
     .home-plan-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .home-plan-source { margin-top: 10px; }
+    .home-plan-empty {
+      border: 1px dashed rgba(216,166,87,.48);
+      border-radius: 12px;
+      background: rgba(216,166,87,.08);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .home-plan-empty p { margin: 0; color: var(--ink); line-height: 1.55; }
+    .home-plan-empty .home-plan-actions { gap: 10px; }
     .task-row label { display: flex; gap: 10px; align-items: flex-start; }
     .task-row.done .name, .task-row.done .meta { color: var(--faint); text-decoration: line-through; }
     .measurement-list { display: grid; gap: 10px; }
@@ -620,7 +631,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 7.0</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 7.0.1</span></div>
       </div>
 
       <div class="client-switcher">
@@ -673,7 +684,7 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 7.0</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 7.0.1</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="importLegacyBtn">Import v1.3</button>
           <button class="btn" id="newClientBtn">Nowy klient</button>
@@ -859,10 +870,33 @@
     </div>
   </div>
 
+  <div class="modal" id="manualHomePlanModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="panel-head">
+        <div>
+          <h2>Dodaj zadanie ruchowe ręcznie</h2>
+          <p>Szybki wpis tylko do planu aktywnego klienta. Nie trafia do Atlasu ruchu.</p>
+        </div>
+        <button class="btn" data-close="manualHomePlanModal">Zamknij</button>
+      </div>
+      <form id="manualHomePlanForm" class="form-grid">
+        <div class="form-field full"><label class="label">Nazwa zadania</label><input name="name" required /></div>
+        <div class="form-field"><label class="label">Kategoria</label><select name="category"><option>Mobilizacja</option><option>Rolowanie / tkanki miękkie</option><option>Stabilizacja</option><option>Core</option><option>Siła</option><option>Oddech / regulacja</option><option>Rozciąganie</option><option>Kontrola ruchu</option></select></div>
+        <div class="form-field"><label class="label">Region</label><select name="region"><option>stopa</option><option>łydka</option><option>udo</option><option>biodro</option><option>kręgosłup lędźwiowy</option><option>kręgosłup piersiowy</option><option>bark</option><option>nadgarstek</option><option>core</option><option>całe ciało</option></select></div>
+        <div class="form-field"><label class="label">Dawkowanie</label><input name="dosage" placeholder="np. 2 serie po 6 powtórzeń" /></div>
+        <div class="form-field"><label class="label">Częstotliwość</label><input name="frequency" placeholder="np. 3 razy w tygodniu" /></div>
+        <div class="form-field full"><label class="label">Wskazówka dla klienta</label><textarea name="clientCue"></textarea></div>
+        <div class="form-field full"><label class="label">Kiedy przerwać / co zgłosić</label><textarea name="stopCriteria"></textarea></div>
+        <div class="form-field full"><label class="label">Video URL</label><input name="videoUrl" /></div>
+        <button class="btn primary full" type="submit">Dodaj zadanie do planu</button>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "7.0";
+    const APP_VERSION = "7.0.1";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
     const EXERCISE_LIBRARY_KEY = "studioLasExerciseLibraryV1";
@@ -2478,7 +2512,10 @@
         <section class="panel">
           <div class="panel-head">
             <div><h2>Atlas ruchu</h2><p>Baza zadań ruchowych dla trenera. Klient widzi tylko ćwiczenia przypisane do jego planu domowego.</p></div>
-            <button class="btn primary" id="addExerciseBtn">Dodaj ćwiczenie</button>
+            <div class="home-plan-actions">
+              <button class="btn" id="atlasHomePlanBtn">Przejdź do planu domowego</button>
+              <button class="btn primary" id="addExerciseBtn">Dodaj ćwiczenie</button>
+            </div>
           </div>
           <div class="filter-bar">
             <div class="form-field"><label class="label" for="exerciseSearch">Szukaj</label><input id="exerciseSearch" value="${escapeHtml(exerciseAtlasFilters.q)}" placeholder="Nazwa, cel, tag..." /></div>
@@ -2495,6 +2532,10 @@
         </section>
       `;
       $("#addExerciseBtn")?.addEventListener("click", () => openExerciseModal());
+      $("#atlasHomePlanBtn")?.addEventListener("click", () => {
+        viewName = "homePlanView";
+        renderShell();
+      });
       $("#exerciseSearch")?.addEventListener("input", e => {
         exerciseAtlasFilters.q = e.target.value;
         renderExerciseAtlas();
@@ -2569,14 +2610,20 @@
           <form id="homePlanMetaForm" class="form-grid">
             <div class="form-field"><label class="label">Tytuł planu</label><input name="title" value="${escapeHtml(plan.title || "")}" placeholder="np. Plan startowy biodro + core" /></div>
             <div class="form-field"><label class="label">Focus planu</label><input name="focus" value="${escapeHtml(plan.focus || "")}" placeholder="np. spokojna tolerancja biodra" /></div>
-            <div class="form-field"><label class="label">Data aktualizacji</label><input name="updatedAt" value="${escapeHtml(plan.updatedAt || "")}" readonly /></div>
-            <div class="form-field"><label class="label">Źródło</label><input value="Atlas ruchu trenera albo ręczna edycja" readonly /></div>
+            <div class="form-field"><label class="label">Data aktualizacji</label><input type="date" name="updatedAt" value="${escapeHtml(plan.updatedAt || "")}" /></div>
             <button class="btn primary full" type="submit">Zapisz tytuł i focus</button>
           </form>
+          <div class="home-plan-source">${pill("Źródło zadań: Atlas ruchu lub wpis ręczny", "blue")}</div>
         </section>
         <section class="panel">
-          <div class="panel-head"><h2>Aktywne zadania ruchowe</h2><button class="btn" id="homePlanAtlasBtn">Przejdź do atlasu ruchu</button></div>
-          <div class="grid">${active.length ? active.map(renderHomePlanExerciseEditor).join("") : `<p>Plan ruchowy zostanie dobrany po dzisiejszej obserwacji.</p>`}</div>
+          <div class="panel-head">
+            <h2>Aktywne zadania ruchowe</h2>
+            <div class="home-plan-actions">
+              <button class="btn" id="homePlanManualHeaderBtn">Dodaj ręcznie</button>
+              <button class="btn" id="homePlanAtlasBtn">Przejdź do atlasu ruchu</button>
+            </div>
+          </div>
+          ${active.length ? `<div class="grid">${active.map(renderHomePlanExerciseEditor).join("")}</div>` : renderHomePlanEmptyState()}
         </section>
         <section class="panel">
           <div class="panel-head"><h2>Archiwalne zadania ruchowe</h2>${pill(`${archived.length}`, archived.length ? "blue" : "gold")}</div>
@@ -2588,7 +2635,7 @@
         const fd = new FormData(e.currentTarget);
         plan.title = String(fd.get("title") || "").trim();
         plan.focus = String(fd.get("focus") || "").trim();
-        plan.updatedAt = today();
+        plan.updatedAt = String(fd.get("updatedAt") || "").trim() || getTodayISODate();
         save();
         toast("Plan domowy zaktualizowany");
         renderHomePlanView();
@@ -2601,6 +2648,24 @@
       document.querySelectorAll("[data-home-archive]").forEach(btn => btn.addEventListener("click", () => setHomePlanExerciseStatus(btn.dataset.homeArchive, "archived")));
       document.querySelectorAll("[data-home-restore]").forEach(btn => btn.addEventListener("click", () => setHomePlanExerciseStatus(btn.dataset.homeRestore, "active")));
       document.querySelectorAll("[data-home-delete]").forEach(btn => btn.addEventListener("click", () => deleteHomePlanExercise(btn.dataset.homeDelete)));
+      $("#homePlanAddFromAtlasBtn")?.addEventListener("click", () => {
+        viewName = "exerciseAtlas";
+        renderShell();
+      });
+      $("#homePlanManualAddBtn")?.addEventListener("click", openManualHomePlanExerciseModal);
+      $("#homePlanManualHeaderBtn")?.addEventListener("click", openManualHomePlanExerciseModal);
+      $("#homePlanTouchTodayBtn")?.addEventListener("click", setHomePlanDateToday);
+    }
+
+    function renderHomePlanEmptyState() {
+      return `<div class="home-plan-empty">
+        <p>Plan domowy nie ma jeszcze aktywnych zadań ruchowych. Na start dodaj 3–5 prostych zadań z Atlasu. Więcej nie znaczy lepiej — celem jest rytm i wykonanie.</p>
+        <div class="home-plan-actions">
+          <button class="btn primary" id="homePlanAddFromAtlasBtn">Dodaj z Atlasu</button>
+          <button class="btn" id="homePlanManualAddBtn">Dodaj ręcznie</button>
+          <button class="btn warning" id="homePlanTouchTodayBtn">Ustaw datę na dziś</button>
+        </div>
+      </div>`;
     }
 
     function renderHomePlanExerciseEditor(ex) {
@@ -2632,7 +2697,7 @@
       const item = c.homePlan.exercises.find(ex => ex.id === id);
       if (!item || !["dosage", "frequency", "clientCue", "stopCriteria"].includes(field)) return;
       item[field] = String(value || "").trim();
-      c.homePlan.updatedAt = today();
+      touchHomePlan(c);
       save();
       toast("Zadanie ruchowe zaktualizowane");
     }
@@ -2643,7 +2708,7 @@
       const item = c.homePlan.exercises.find(ex => ex.id === id);
       if (!item) return;
       item.status = status === "archived" ? "archived" : "active";
-      c.homePlan.updatedAt = today();
+      touchHomePlan(c);
       save();
       toast(item.status === "archived" ? "Zadanie przeniesione do archiwum" : "Zadanie przywrócone do planu");
       renderHomePlanView();
@@ -2654,10 +2719,18 @@
       const c = activeClient();
       c.homePlan = migrateHomePlan(c.homePlan);
       c.homePlan.exercises = c.homePlan.exercises.filter(ex => ex.id !== id);
-      c.homePlan.updatedAt = today();
+      touchHomePlan(c);
       save();
       toast("Zadanie usunięte z planu");
       renderHomePlanView();
+    }
+
+    function setHomePlanDateToday() {
+      const c = activeClient();
+      touchHomePlan(c);
+      save();
+      renderHomePlanView();
+      toast("Data planu ustawiona na dziś");
     }
 
     function renderMeasurements() {
@@ -3027,7 +3100,7 @@
         <div class="grid cols-3">
           <div class="portal-info"><div class="label">Nazwa</div><p>${escapeHtml(plan.title || "Plan domowy")}</p></div>
           <div class="portal-info"><div class="label">Focus</div><p>${escapeHtml(plan.focus || "Aktualne zadania ruchowe")}</p></div>
-          <div class="portal-info"><div class="label">Aktualizacja</div><p>${escapeHtml(plan.updatedAt ? formatDate(plan.updatedAt) : "Do zapisania")}</p></div>
+          ${plan.updatedAt ? `<div class="portal-info"><div class="label">Aktualizacja</div><p>Aktualizacja: ${escapeHtml(formatDatePL(plan.updatedAt))}</p></div>` : ""}
         </div>
         <div class="exercise-list" style="margin-top:12px">
           ${active.map(ex => `
@@ -3415,6 +3488,23 @@
       const parts = String(value).split("-");
       if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
       return value;
+    }
+
+    function getTodayISODate() {
+      const now = new Date();
+      const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+      return local.toISOString().slice(0, 10);
+    }
+
+    function formatDatePL(dateString) {
+      return formatDate(dateString);
+    }
+
+    function touchHomePlan(client) {
+      if (!client) return defaultHomePlan();
+      client.homePlan = migrateHomePlan(client.homePlan);
+      client.homePlan.updatedAt = getTodayISODate();
+      return client.homePlan;
     }
 
     function formatPainChange(value) {
@@ -4618,7 +4708,9 @@ ${buildReportClosingNote("continuation", context)}`;
     function buildHomePlanDetailSection(c, reportType = "fourWeeks", audience = "client") {
       const exercises = activeHomePlanExercises(c);
       if (!exercises.length) return buildHomePlanReportSection(c, reportType, audience);
-      return exercises.slice(0, 6).map(ex => {
+      const plan = migrateHomePlan(c.homePlan);
+      const updatedAt = plan.updatedAt ? `Aktualizacja planu: ${formatDatePL(plan.updatedAt)}\n` : "";
+      const items = exercises.slice(0, 6).map(ex => {
         const parts = [
           ex.dosage ? `dawkowanie: ${ex.dosage}` : "",
           ex.frequency ? `częstotliwość: ${ex.frequency}` : "",
@@ -4626,6 +4718,7 @@ ${buildReportClosingNote("continuation", context)}`;
         ].filter(Boolean).join("; ");
         return `- ${ex.name}${parts ? ` — ${parts}` : ""}`;
       }).join("\n");
+      return `${updatedAt}${items}`;
     }
 
     function buildDiagnosticTestsSection(c, audience = "client") {
@@ -5149,6 +5242,43 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
       if (viewName === "exerciseAtlas") renderExerciseAtlas();
     }
 
+    function openManualHomePlanExerciseModal() {
+      const form = $("#manualHomePlanForm");
+      form.reset();
+      $("#manualHomePlanModal").classList.add("open");
+      $("#manualHomePlanModal").setAttribute("aria-hidden", "false");
+    }
+
+    function saveManualHomePlanExercise(e) {
+      e.preventDefault();
+      const form = e.currentTarget;
+      const fd = new FormData(form);
+      const name = String(fd.get("name") || "").trim();
+      if (!name) return toast("Podaj nazwę zadania ruchowego");
+      const c = activeClient();
+      c.homePlan = migrateHomePlan(c.homePlan);
+      c.homePlan.exercises.push(migrateHomePlanExercise({
+        id: `hp-manual-${Date.now()}`,
+        exerciseId: "",
+        name,
+        category: String(fd.get("category") || "").trim(),
+        region: String(fd.get("region") || "").trim(),
+        dosage: String(fd.get("dosage") || "").trim(),
+        frequency: String(fd.get("frequency") || "").trim(),
+        clientCue: String(fd.get("clientCue") || "").trim(),
+        stopCriteria: String(fd.get("stopCriteria") || "").trim(),
+        videoUrl: String(fd.get("videoUrl") || "").trim(),
+        status: "active",
+        addedAt: getTodayISODate()
+      }));
+      touchHomePlan(c);
+      save();
+      closeModal("manualHomePlanModal");
+      toast("Dodano zadanie do planu domowego.");
+      viewName = "homePlanView";
+      renderShell();
+    }
+
     function addExerciseToActiveHomePlan(exerciseId) {
       const exercise = exerciseLibrary.find(ex => ex.id === exerciseId);
       if (!exercise) return toast("Nie znaleziono ćwiczenia w atlasie");
@@ -5168,11 +5298,11 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
         stopCriteria: exercise.stopCriteria,
         videoUrl: exercise.videoUrl,
         status: "active",
-        addedAt: today()
+        addedAt: getTodayISODate()
       }));
-      c.homePlan.updatedAt = today();
+      touchHomePlan(c);
       save();
-      toast("Dodano zadanie do planu klienta");
+      toast("Dodano zadanie do planu domowego.");
     }
 
     function firstClientInstructionSentence(text = "") {
@@ -5190,7 +5320,7 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
     }
 
     function today() {
-      return new Date().toISOString().slice(0, 10);
+      return getTodayISODate();
     }
 
     function toast(msg) {
@@ -6309,6 +6439,7 @@ Initial 83.45 64.95 18.10
     $("#tanitaDemoBtn").addEventListener("click", applyDemoTanitaData);
     $("#importLegacyBtn").addEventListener("click", importLegacy);
     $("#exerciseForm").addEventListener("submit", saveExerciseFromForm);
+    $("#manualHomePlanForm").addEventListener("submit", saveManualHomePlanExercise);
     window.addEventListener("afterprint", clearPrintingReportMode);
 
     document.querySelectorAll("[data-close]").forEach(btn => btn.addEventListener("click", () => closeModal(btn.dataset.close)));

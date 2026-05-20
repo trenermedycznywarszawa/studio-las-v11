@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 7.1.1 | Expanded Exercise Seed</title>
+  <title>Studio Las OS 7.1.2 | UX Simplification & Focus Mode</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -46,16 +46,16 @@
       position: sticky;
       top: 0;
       height: 100vh;
-      padding: 22px 18px;
+      padding: 18px 16px;
       border-right: 1px solid var(--line);
       background: rgba(18,20,18,.82);
       backdrop-filter: blur(22px);
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 12px;
     }
 
-    .brand { display: flex; align-items: center; gap: 12px; padding: 4px 6px 16px; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 2px 6px 12px; border-bottom: 1px solid var(--line); }
     .mark {
       width: 42px; height: 42px; border-radius: 12px;
       background: linear-gradient(145deg, rgba(127,176,105,.28), rgba(216,166,87,.16));
@@ -65,7 +65,7 @@
     .brand strong { display: block; font-family: Georgia, serif; font-size: 20px; line-height: 1; }
     .brand span { color: var(--green-2); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .16em; }
 
-    .client-switcher { display: grid; gap: 10px; }
+    .client-switcher { display: grid; gap: 8px; }
     .label { color: var(--faint); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .12em; }
     select, input, textarea {
       width: 100%;
@@ -79,26 +79,27 @@
     textarea { min-height: 94px; resize: vertical; }
     select:focus, input:focus, textarea:focus { border-color: rgba(127,176,105,.7); box-shadow: 0 0 0 3px rgba(127,176,105,.12); }
 
-    .nav { display: grid; gap: 10px; overflow-y: auto; padding-right: 2px; }
-    .nav-section { display: grid; gap: 6px; }
-    .nav-label { color: var(--faint); font-size: 10px; font-weight: 950; letter-spacing: .16em; text-transform: uppercase; padding: 0 8px; }
+    .nav { display: grid; gap: 7px; overflow-y: auto; padding-right: 2px; }
+    .nav-section { display: grid; gap: 3px; }
+    .nav-label { color: var(--faint); font-size: 9px; font-weight: 950; letter-spacing: .14em; text-transform: uppercase; padding: 0 8px; }
     .nav button,
     .nav .client-panel-link {
       width: 100%;
-      min-height: 44px;
+      min-height: 36px;
       border: 1px solid transparent;
-      border-radius: 12px;
+      border-radius: 10px;
       background: transparent;
       color: var(--muted);
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
+      gap: 8px;
+      padding: 7px 10px;
       text-align: left;
       font-weight: 800;
+      font-size: 12px;
     }
     .nav button.active { color: var(--ink); background: rgba(127,176,105,.13); border-color: rgba(127,176,105,.26); }
-    .nav svg { width: 18px; height: 18px; flex: 0 0 auto; }
+    .nav svg { width: 16px; height: 16px; flex: 0 0 auto; }
     .nav .client-panel-link { text-decoration: none; }
     .nav .client-panel-link:hover,
     .nav .client-panel-link:focus-visible { color: var(--ink); background: rgba(255,255,255,.04); border-color: rgba(127,176,105,.18); }
@@ -111,7 +112,7 @@
       border: 1px solid var(--line);
       background: rgba(31,33,31,.72);
       border-radius: 14px;
-      padding: 14px;
+      padding: 11px;
     }
     .side-card strong { display: block; font-size: 13px; }
     .side-card p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
@@ -133,9 +134,35 @@
     }
     .title h1 { margin: 0; font-size: 20px; line-height: 1.15; font-family: Georgia, serif; font-weight: 700; }
     .title p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
     .top-role { align-self: center; }
     [hidden] { display: none !important; }
+    .add-menu-wrap { position: relative; }
+    .add-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      width: min(260px, calc(100vw - 32px));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(23,25,24,.98);
+      box-shadow: var(--shadow);
+      padding: 8px;
+      display: grid;
+      gap: 4px;
+      z-index: 30;
+    }
+    .add-menu button {
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--ink);
+      padding: 10px 11px;
+      text-align: left;
+      font-weight: 850;
+    }
+    .add-menu button:hover,
+    .add-menu button:focus-visible { background: rgba(127,176,105,.12); outline: none; }
 
     .btn {
       min-height: 40px;
@@ -238,9 +265,37 @@
     .exercise-card { display: grid; gap: 10px; }
     .exercise-card .card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .exercise-card .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .focus-note {
+      border: 1px solid rgba(117,167,200,.28);
+      border-radius: 12px;
+      background: rgba(117,167,200,.08);
+      padding: 11px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+    .view-mode-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+    .view-mode-row .btn { min-height: 32px; padding: 7px 10px; font-size: 12px; }
+    .view-mode-row .btn.active { border-color: rgba(127,176,105,.68); background: rgba(127,176,105,.18); color: var(--green-2); }
+    .exercise-compact-list { display: grid; gap: 8px; }
+    .exercise-compact-row {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(31,33,31,.5);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: minmax(180px, 1.1fr) minmax(260px, 2fr) minmax(180px, auto);
+      gap: 10px;
+      align-items: center;
+    }
+    .exercise-compact-row .tag-row { display: flex; flex-wrap: wrap; gap: 5px; }
+    .exercise-compact-row .card-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
     .home-plan-card { display: grid; gap: 10px; }
     .home-plan-actions { display: flex; flex-wrap: wrap; gap: 8px; }
     .home-plan-source { margin-top: 10px; }
+    .home-plan-summary { display: grid; gap: 8px; }
+    .home-plan-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
     .home-plan-empty {
       border: 1px dashed rgba(216,166,87,.48);
       border-radius: 12px;
@@ -277,13 +332,16 @@
     }
     .measurement-readout .form-message strong { color: var(--ink); }
 
-    .progress-line { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .progress-line { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; position: relative; z-index: 0; }
     .step {
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 12px;
       min-height: 104px;
       background: rgba(31,33,31,.5);
+      color: var(--ink);
+      text-align: left;
+      appearance: none;
     }
     .step.active { border-color: rgba(127,176,105,.65); background: rgba(127,176,105,.12); }
     .step.done { border-color: rgba(127,176,105,.3); }
@@ -428,6 +486,7 @@
       z-index: 40;
       padding: 18px;
     }
+    .modal:not(.open) { display: none !important; pointer-events: none; }
     .modal.open { display: flex; }
     .modal-box {
       width: min(760px, 100%);
@@ -470,6 +529,9 @@
       .cols-4, .cols-3, .cols-2 { grid-template-columns: 1fr; }
       .span-2 { grid-column: auto; }
       .session-row { grid-template-columns: 1fr; }
+      .exercise-compact-row,
+      .home-plan-summary-grid { grid-template-columns: 1fr; }
+      .exercise-compact-row .card-actions { justify-content: flex-start; }
       .progress-line { grid-template-columns: 1fr 1fr; }
       .topbar { align-items: flex-start; flex-direction: column; }
     }
@@ -634,7 +696,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 7.1.1</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 7.1.2</span></div>
       </div>
 
       <div class="client-switcher">
@@ -644,16 +706,21 @@
 
       <nav class="nav" aria-label="Główna nawigacja">
         <div class="nav-section">
-          <div class="nav-label">Proces</div>
+          <div class="nav-label">Najważniejsze</div>
           <button data-view="command" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/></svg><span>Centrum</span></button>
           <button data-view="todaySession"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 15 2 2 4-5"/></svg><span>Sesja dzisiaj</span></button>
+          <button data-view="client"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Klient</span></button>
+          <button data-view="homePlanView"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/></svg><span>Plan domowy</span></button>
+          <button data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>Raport</span></button>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Proces</div>
           <button data-view="decision"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-5"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg><span>Decyzja</span></button>
           <button data-view="process"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Proces</span></button>
           <button data-view="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4a2 2 0 0 1 2-2h11l3 3v14.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg><span>Sesje</span></button>
         </div>
         <div class="nav-section">
           <div class="nav-label">Klient</div>
-          <button data-view="client"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Klient</span></button>
           <button data-view="intake"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg><span>Ankieta</span></button>
           <button data-view="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Zadania</span></button>
           <button data-view="clientPortal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/><path d="M18.5 5.5h2v2"/><path d="M20.5 5.5 17 9"/></svg><span>Panel klienta</span></button>
@@ -665,19 +732,9 @@
         </div>
         <div class="nav-section">
           <div class="nav-label">Ruch</div>
-          <button data-view="homePlanView"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z"/></svg><span>Plan domowy</span></button>
           <button data-view="exerciseAtlas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M8 7h8M8 11h6"/></svg><span>Atlas ruchu</span></button>
         </div>
-        <div class="nav-section">
-          <div class="nav-label">Dokumenty</div>
-          <button data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span>Raport</span></button>
-        </div>
       </nav>
-
-      <div class="side-card">
-        <strong>Szorstka prawda</strong>
-        <p>Dashboard nie ma być ładny. Ma skracać drogę od obserwacji do decyzji i zostawiać czytelny ślad procesu.</p>
-      </div>
     </aside>
 
     <main class="main">
@@ -687,13 +744,21 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 7.1.1</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 7.1.2</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
-          <button class="btn" id="importLegacyBtn">Import v1.3</button>
-          <button class="btn" id="newClientBtn">Nowy klient</button>
-          <button class="btn primary" id="newSessionBtn">Nowa sesja</button>
-          <button class="btn primary" id="newMeasurementBtn">Nowy pomiar</button>
-          <button class="btn primary" id="newPolarBtn">Nowy odczyt Polar</button>
+          <button class="btn" id="contextActionBtn" type="button" hidden></button>
+          <div class="add-menu-wrap" id="addMenuWrap">
+            <button class="btn primary" id="addMenuBtn" type="button" aria-haspopup="menu" aria-expanded="false">+ Dodaj</button>
+            <div class="add-menu" id="addMenu" role="menu" hidden>
+              <button type="button" role="menuitem" data-add-action="client">Nowy klient</button>
+              <button type="button" role="menuitem" data-add-action="session">Nowa sesja</button>
+              <button type="button" role="menuitem" data-add-action="measurement">Nowy pomiar Tanita</button>
+              <button type="button" role="menuitem" data-add-action="polar">Nowy odczyt Polar</button>
+              <button type="button" role="menuitem" data-add-action="task">Nowe zadanie</button>
+              <button type="button" role="menuitem" data-add-action="homePlanManual">Dodaj zadanie ruchowe ręcznie</button>
+              <button type="button" role="menuitem" data-add-action="intakeCsv">Import ankiety CSV</button>
+            </div>
+          </div>
         </div>
       </header>
       <section class="content" id="view"></section>
@@ -905,7 +970,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "7.1.1";
+    const APP_VERSION = "7.1.2";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
     const EXERCISE_LIBRARY_KEY = "studioLasExerciseLibraryV1";
@@ -2739,7 +2804,9 @@
     let pendingIntakeRows = [];
     let exerciseLibrary = [];
     exerciseLibrary = seedExerciseLibraryIfEmpty();
-    let exerciseAtlasFilters = { q: "", trainingBlock: "", category: "", region: "", stage: "", qualityStatus: "", sort: "process", quick: "" };
+    let exerciseAtlasFilters = { q: "", trainingBlock: "", category: "", region: "", stage: "", qualityStatus: "reviewed", sort: "process", quick: "", viewMode: "compact" };
+    let expandedHomePlanExerciseId = "";
+    let clientPortalShowAllHomeTasks = false;
 
     const $ = (sel) => document.querySelector(sel);
     const view = $("#view");
@@ -2811,6 +2878,71 @@
       return `<span class="pill ${level}">${escapeHtml(text)}</span>`;
     }
 
+    function setAddMenuOpen(open) {
+      const menu = $("#addMenu");
+      const btn = $("#addMenuBtn");
+      if (!menu || !btn) return;
+      menu.hidden = !open;
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    function closeAddMenu() {
+      setAddMenuOpen(false);
+    }
+
+    function topbarContextAction() {
+      if (viewName === "exerciseAtlas") return { label: "Dodaj ćwiczenie", action: () => openExerciseModal() };
+      if (viewName === "homePlanView") return { label: "Dodaj ręcznie", action: () => openManualHomePlanExerciseModal() };
+      if (viewName === "report") {
+        return {
+          label: "Kopiuj raport",
+          action: async () => {
+            const report = $("#printReportDocument");
+            if (!report) return toast("Raport nie jest jeszcze gotowy do skopiowania");
+            const copied = await copyReportText(report.innerText);
+            toast(copied ? "Raport skopiowany" : "Nie udało się skopiować raportu");
+          }
+        };
+      }
+      return null;
+    }
+
+    function renderTopbarActions(clientMode) {
+      const addWrap = $("#addMenuWrap");
+      const contextBtn = $("#contextActionBtn");
+      closeAddMenu();
+      if (addWrap) addWrap.hidden = clientMode;
+      if (!contextBtn) return;
+      const context = clientMode ? null : topbarContextAction();
+      contextBtn.hidden = !context;
+      contextBtn.textContent = context?.label || "";
+    }
+
+    function handleTopbarAddAction(action) {
+      closeAddMenu();
+      if (action === "client") return openClientModal();
+      if (action === "session") return openSessionModal();
+      if (action === "measurement") return openMeasurementModal();
+      if (action === "polar") return openPolarModal();
+      if (action === "homePlanManual") return openManualHomePlanExerciseModal();
+      if (action === "task") {
+        viewName = "tasks";
+        renderShell();
+        $("#taskForm input[name='taskText']")?.focus();
+        return;
+      }
+      if (action === "intakeCsv") {
+        viewName = "intake";
+        renderShell();
+        $("#intakeCsvInput")?.click();
+      }
+    }
+
+    function handleTopbarContextAction() {
+      const context = topbarContextAction();
+      if (context) context.action();
+    }
+
     function renderShell() {
       const c = activeClient();
       const clientMode = viewName === "clientPortal";
@@ -2848,10 +2980,7 @@
       $("#versionBadge").textContent = `Studio Las OS ${APP_VERSION}`;
       $("#roleBadge").textContent = clientMode ? "Widok klienta" : "Widok trenera";
       $("#roleBadge").className = `pill top-role ${clientMode ? "green" : "blue"}`;
-      ["#importLegacyBtn", "#newClientBtn", "#newSessionBtn", "#newMeasurementBtn", "#newPolarBtn"].forEach(sel => {
-        const el = $(sel);
-        if (el) el.hidden = clientMode;
-      });
+      renderTopbarActions(clientMode);
       if (viewName === "command") renderCommand();
       if (viewName === "todaySession") renderTodaySession();
       if (viewName === "intake") renderIntake();
@@ -3122,7 +3251,7 @@
     }
 
     function renderIntakeRows() {
-      if (!pendingIntakeRows.length) return `<p>Wczytaj CSV, żeby zobaczyć listę respondentów.</p>`;
+      if (!pendingIntakeRows.length) return `<p>Zaimportuj CSV z ankiety, żeby utworzyć mapę startową klienta.</p>`;
       return `<div class="grid">${pendingIntakeRows.map((row, index) => {
         const preview = intakeRowPreview(row);
         return `
@@ -3388,6 +3517,7 @@
             <input name="taskText" required placeholder="Dodaj konkretne zadanie dla tego klienta" />
             <button class="btn primary" type="submit">Dodaj</button>
           </form>
+          <div class="focus-note">Zadania bieżące służą do rzeczy organizacyjnych i ustaleń między sesjami. Plan ruchowy znajduje się w Planie domowym.</div>
         </section>
         <section class="panel">
           <div class="panel-head"><h2>Lista zadań</h2>${pill(`${tasks.length} łącznie`, "blue")}</div>
@@ -3427,6 +3557,7 @@
     function renderExerciseAtlas() {
       const library = getFilteredExerciseLibrary();
       const totalCount = exerciseLibrary.length;
+      const compactMode = exerciseAtlasFilters.viewMode !== "cards";
       view.innerHTML = `
         <section class="panel">
           <div class="panel-head">
@@ -3434,9 +3565,9 @@
             <div class="home-plan-actions">
               ${pill(`${totalCount} ćwiczeń`, "blue")}
               <button class="btn" id="atlasHomePlanBtn">Przejdź do planu domowego</button>
-              <button class="btn primary" id="addExerciseBtn">Dodaj ćwiczenie</button>
             </div>
           </div>
+          <div class="focus-note">Domyślnie pokazujemy tylko ćwiczenia gotowe do przypisania klientowi. Pozycje „Do opracowania” są zapleczem trenera.</div>
           <div class="filter-bar">
             <div class="form-field"><label class="label" for="exerciseSearch">Szukaj</label><input id="exerciseSearch" value="${escapeHtml(exerciseAtlasFilters.q)}" placeholder="Nazwa, cel, tag..." /></div>
             <div class="form-field"><label class="label" for="exerciseBlockFilter">Blok</label><select id="exerciseBlockFilter">${filterOptions(EXERCISE_TRAINING_BLOCKS, exerciseAtlasFilters.trainingBlock, "Wszystkie")}</select></div>
@@ -3449,15 +3580,19 @@
           <div class="quick-filter-row">
             ${renderExerciseQuickFilters()}
           </div>
+          <div class="view-mode-row" aria-label="Tryb widoku Atlasu">
+            <span class="label">Tryb widoku</span>
+            <button class="btn ${compactMode ? "active" : ""}" type="button" data-atlas-view-mode="compact">Kompaktowy</button>
+            <button class="btn ${!compactMode ? "active" : ""}" type="button" data-atlas-view-mode="cards">Karty</button>
+          </div>
         </section>
         <section class="panel">
           <div class="panel-head"><h2>Ćwiczenia</h2>${pill(`Pokazano ${library.length} z ${totalCount}`, library.length ? "green" : "gold")}</div>
-          <div class="grid cols-3">
-            ${library.length ? library.map(renderExerciseAtlasCard).join("") : `<p>Brak ćwiczeń dla wybranych filtrów.</p>`}
+          <div class="${compactMode ? "exercise-compact-list" : "grid cols-3"}">
+            ${library.length ? library.map(compactMode ? renderExerciseCompactRow : renderExerciseAtlasCard).join("") : `<p>Brak ćwiczeń dla wybranych filtrów.</p>`}
           </div>
         </section>
       `;
-      $("#addExerciseBtn")?.addEventListener("click", () => openExerciseModal());
       $("#atlasHomePlanBtn")?.addEventListener("click", () => {
         viewName = "homePlanView";
         renderShell();
@@ -3491,6 +3626,10 @@
         exerciseAtlasFilters.sort = e.target.value || "process";
         renderExerciseAtlas();
       });
+      document.querySelectorAll("[data-atlas-view-mode]").forEach(btn => btn.addEventListener("click", () => {
+        exerciseAtlasFilters.viewMode = btn.dataset.atlasViewMode === "cards" ? "cards" : "compact";
+        renderExerciseAtlas();
+      }));
       document.querySelectorAll("[data-exercise-quick]").forEach(btn => btn.addEventListener("click", () => {
         const quick = btn.dataset.exerciseQuick;
         if (quick === "Gotowe" || quick === "Do opracowania") {
@@ -3582,6 +3721,7 @@
     }
 
     function renderExerciseAtlasCard(ex) {
+      const needsReview = normalizeExerciseQualityStatus(ex.qualityStatus) === "needs_review";
       return `<div class="exercise-card">
         <div>
           <div class="name">${escapeHtml(ex.clientName || ex.name)}</div>
@@ -3595,12 +3735,35 @@
           ${pill(ex.stage, "gold")}
           ${pill(ex.level, "")}
         </div>
-        ${normalizeExerciseQualityStatus(ex.qualityStatus) === "needs_review" ? `<div class="portal-info"><div class="label">Status</div><p>Wymaga dopracowania przed przypisaniem klientowi.</p></div>` : ""}
+        ${needsReview ? `<div class="portal-info"><div class="label">Status</div><p>Najpierw dopracuj instrukcję.</p></div>` : ""}
         <div class="portal-info"><div class="label">Dawka</div><p>${escapeHtml(ex.dosageDefault || "Do ustalenia")}</p></div>
         <div class="portal-info"><div class="label">Cel</div><p>${escapeHtml(shortText(ex.goal || "Cel zostanie doprecyzowany.", 150))}</p></div>
         <div class="tag-row">${(ex.tags || []).slice(0, 5).map(tag => pill(tag, "")).join("")}</div>
         <div class="card-actions">
-          <button class="btn primary" data-add-exercise="${escapeHtml(ex.id)}">Dodaj do planu klienta</button>
+          <button class="btn ${needsReview ? "warning" : "primary"}" data-add-exercise="${escapeHtml(ex.id)}">Dodaj do planu klienta</button>
+          <button class="btn" data-edit-exercise="${escapeHtml(ex.id)}">Edytuj</button>
+        </div>
+      </div>`;
+    }
+
+    function renderExerciseCompactRow(ex) {
+      const needsReview = normalizeExerciseQualityStatus(ex.qualityStatus) === "needs_review";
+      return `<div class="exercise-compact-row">
+        <div>
+          <div class="name">${escapeHtml(ex.clientName || ex.name)}</div>
+          <div class="meta">${escapeHtml(ex.dosageDefault || "Dawka do ustalenia")}</div>
+          ${needsReview ? `<div class="meta warn">Najpierw dopracuj instrukcję.</div>` : ""}
+        </div>
+        <div class="tag-row">
+          ${pill(ex.trainingBlock || "Inne", "blue")}
+          ${pill(qualityStatusLabel(ex.qualityStatus), qualityStatusTone(ex.qualityStatus))}
+          ${pill(ex.category, "blue")}
+          ${pill(ex.region, "green")}
+          ${pill(ex.stage, "gold")}
+          ${pill(ex.level, "")}
+        </div>
+        <div class="card-actions">
+          <button class="btn ${needsReview ? "warning" : "primary"}" data-add-exercise="${escapeHtml(ex.id)}">Dodaj</button>
           <button class="btn" data-edit-exercise="${escapeHtml(ex.id)}">Edytuj</button>
         </div>
       </div>`;
@@ -3661,6 +3824,10 @@
         renderShell();
       });
       document.querySelectorAll("[data-home-field]").forEach(input => input.addEventListener("change", () => updateHomePlanExerciseField(input.dataset.homeId, input.dataset.homeField, input.value)));
+      document.querySelectorAll("[data-home-edit]").forEach(btn => btn.addEventListener("click", () => {
+        expandedHomePlanExerciseId = expandedHomePlanExerciseId === btn.dataset.homeEdit ? "" : btn.dataset.homeEdit;
+        renderHomePlanView();
+      }));
       document.querySelectorAll("[data-home-archive]").forEach(btn => btn.addEventListener("click", () => setHomePlanExerciseStatus(btn.dataset.homeArchive, "archived")));
       document.querySelectorAll("[data-home-restore]").forEach(btn => btn.addEventListener("click", () => setHomePlanExerciseStatus(btn.dataset.homeRestore, "active")));
       document.querySelectorAll("[data-home-delete]").forEach(btn => btn.addEventListener("click", () => deleteHomePlanExercise(btn.dataset.homeDelete)));
@@ -3686,6 +3853,7 @@
 
     function renderHomePlanExerciseEditor(ex) {
       const archived = ex.status === "archived";
+      const expanded = expandedHomePlanExerciseId === ex.id;
       return `<div class="home-plan-card ${archived ? "task-row done" : "task-row"}">
         <div class="panel-head">
           <div>
@@ -3694,15 +3862,23 @@
           </div>
           ${pill(archived ? "archiwalne" : "aktywne", archived ? "gold" : "green")}
         </div>
-        <div class="form-grid">
+        <div class="home-plan-summary">
+          <div class="home-plan-summary-grid">
+            <div class="portal-info"><div class="label">Dawkowanie</div><p>${escapeHtml(ex.dosage || "Do ustalenia")}</p></div>
+            <div class="portal-info"><div class="label">Częstotliwość</div><p>${escapeHtml(ex.frequency || "Do ustalenia")}</p></div>
+            <div class="portal-info"><div class="label">Wskazówka</div><p>${escapeHtml(shortText(ex.clientCue || "Wykonuj spokojnie i bez pośpiechu.", 120))}</p></div>
+          </div>
+        </div>
+        ${expanded ? `<div class="form-grid">
           <div class="form-field"><label class="label">Dawkowanie</label><input data-home-id="${escapeHtml(ex.id)}" data-home-field="dosage" value="${escapeHtml(ex.dosage || "")}" /></div>
           <div class="form-field"><label class="label">Częstotliwość</label><input data-home-id="${escapeHtml(ex.id)}" data-home-field="frequency" value="${escapeHtml(ex.frequency || "")}" /></div>
           <div class="form-field full"><label class="label">Krótka wskazówka</label><textarea data-home-id="${escapeHtml(ex.id)}" data-home-field="clientCue">${escapeHtml(ex.clientCue || "")}</textarea></div>
           <div class="form-field full"><label class="label">Kiedy przerwać / zgłosić reakcję</label><textarea data-home-id="${escapeHtml(ex.id)}" data-home-field="stopCriteria">${escapeHtml(ex.stopCriteria || "")}</textarea></div>
-        </div>
+          <div class="form-field full"><label class="label">Video URL</label><input data-home-id="${escapeHtml(ex.id)}" data-home-field="videoUrl" value="${escapeHtml(ex.videoUrl || "")}" /></div>
+        </div>` : ""}
         <div class="home-plan-actions">
-          ${archived ? `<button class="btn primary" data-home-restore="${escapeHtml(ex.id)}">Przywróć</button>` : `<button class="btn warning" data-home-archive="${escapeHtml(ex.id)}">Archiwizuj</button>`}
-          <button class="btn danger" data-home-delete="${escapeHtml(ex.id)}">Usuń</button>
+          ${archived ? `<button class="btn primary" data-home-restore="${escapeHtml(ex.id)}">Przywróć</button>` : `<button class="btn" data-home-edit="${escapeHtml(ex.id)}">${expanded ? "Zamknij szczegóły" : "Edytuj szczegóły"}</button><button class="btn warning" data-home-archive="${escapeHtml(ex.id)}">Archiwizuj</button>`}
+          ${expanded || archived ? `<button class="btn danger" data-home-delete="${escapeHtml(ex.id)}">Usuń</button>` : ""}
         </div>
       </div>`;
     }
@@ -3711,7 +3887,7 @@
       const c = activeClient();
       c.homePlan = migrateHomePlan(c.homePlan);
       const item = c.homePlan.exercises.find(ex => ex.id === id);
-      if (!item || !["dosage", "frequency", "clientCue", "stopCriteria"].includes(field)) return;
+      if (!item || !["dosage", "frequency", "clientCue", "stopCriteria", "videoUrl"].includes(field)) return;
       item[field] = String(value || "").trim();
       touchHomePlan(c);
       save();
@@ -3724,6 +3900,7 @@
       const item = c.homePlan.exercises.find(ex => ex.id === id);
       if (!item) return;
       item.status = status === "archived" ? "archived" : "active";
+      if (expandedHomePlanExerciseId === id) expandedHomePlanExerciseId = "";
       touchHomePlan(c);
       save();
       toast(item.status === "archived" ? "Zadanie przeniesione do archiwum" : "Zadanie przywrócone do planu");
@@ -3735,6 +3912,7 @@
       const c = activeClient();
       c.homePlan = migrateHomePlan(c.homePlan);
       c.homePlan.exercises = c.homePlan.exercises.filter(ex => ex.id !== id);
+      if (expandedHomePlanExerciseId === id) expandedHomePlanExerciseId = "";
       touchHomePlan(c);
       save();
       toast("Zadanie usunięte z planu");
@@ -3764,6 +3942,7 @@
         <section class="panel">
           <div class="panel-head"><h2>Trend Tanita</h2>${pill(`${measurements.length} pomiarów`, measurements.length ? "green" : "gold")}</div>
           ${renderMeasurementTrend(c)}
+          ${measurements.length === 1 ? `<div class="focus-note">To punkt odniesienia, nie trend.</div>` : ""}
         </section>
         <section class="panel">
           <div class="panel-head"><h2>Historia pomiarów</h2><button class="btn primary" id="inlineMeasurementBtn">Nowy pomiar</button></div>
@@ -3859,7 +4038,7 @@
             <div><h2>Najnowszy odczyt Polar</h2><p>${escapeHtml(c.name)} · tolerancja obciążenia po sesji.</p></div>
             ${pill(latest ? formatDate(latest.date) : "brak odczytu", latest ? assessLoadTolerance(latest).level : "gold")}
           </div>
-          ${latest ? renderPolarMain(latest) : `<p>Brak odczytów Polar dla aktywnego klienta. Dodaj pierwszy odczyt ręcznie po sesji.</p>`}
+          ${latest ? renderPolarMain(latest) : `<div class="home-plan-empty"><p>Nie ma jeszcze odczytu Polar dla tego klienta. Dodaj pierwszy odczyt po sesji, jeśli chcesz ocenić tolerancję obciążenia.</p><div class="home-plan-actions"><button class="btn primary" id="polarEmptyBtn">Nowy odczyt Polar</button></div></div>`}
         </section>
         <section class="panel">
           <div class="panel-head"><h2>Trend obciążenia</h2>${pill(`${sessions.length} odczytów`, sessions.length ? "green" : "gold")}</div>
@@ -3873,6 +4052,7 @@
         </section>
       `;
       $("#inlinePolarBtn")?.addEventListener("click", openPolarModal);
+      $("#polarEmptyBtn")?.addEventListener("click", openPolarModal);
     }
 
     function renderPolarMain(session) {
@@ -3948,7 +4128,6 @@
       const m = metrics(c);
       const l = latest(c);
       const stageName = steps[c.stage - 1]?.[0] || "Proces indywidualny";
-      const decision = l?.decision || c.decisionLogic || "Najbliższy krok zostanie doprecyzowany po diagnostyce lub kolejnej sesji.";
       view.innerHTML = `
         <section class="panel portal-hero">
           <div class="panel-head">
@@ -3967,44 +4146,14 @@
           </div>
         </section>
 
-        <section class="panel">
-          <div class="panel-head"><h2>Twój punkt startowy</h2>${pill("ankieta", "green")}</div>
-          ${renderPortalIntake(c)}
-        </section>
-
         <section class="panel portal-focus">
-          <div class="panel-head"><div><h2>Co robimy teraz</h2><p>Najważniejszy kierunek na ten moment.</p></div>${pill("priorytet", "gold")}</div>
-          <div class="grid cols-3">
-            <div class="portal-info"><div class="label">Aktualny priorytet</div><p>${escapeHtml(portalPriority(c))}</p></div>
-            <div class="portal-info"><div class="label">Ostatnia decyzja</div><p>${escapeHtml(decision)}</p></div>
-            <div class="portal-info"><div class="label">Czego teraz nie przyspieszamy</div><p>${escapeHtml(portalPaceLimit(c, l))}</p></div>
-          </div>
-          <p>${escapeHtml(portalExplanation(c, l))}</p>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head"><h2>Co dalej?</h2>${pill("tempo pracy", "green")}</div>
-          ${renderPortalDecision(c)}
-        </section>
-
-        <section class="panel">
-          <div class="panel-head"><h2>Ustalenie po ostatniej sesji</h2>${pill("dla klienta", "blue")}</div>
-          ${renderPortalPostSessionNote(c)}
+          <div class="panel-head"><div><h2>Co teraz?</h2><p>Jedno najważniejsze działanie na dziś.</p></div>${pill("następny krok", "gold")}</div>
+          ${renderPortalNow(c)}
         </section>
 
         <section class="panel">
           <div class="panel-head"><h2>Plan domowy</h2>${pill("do wykonania między sesjami", "green")}</div>
           ${renderHomePlan(c)}
-        </section>
-
-        <section class="panel">
-          <div class="panel-head"><h2>Ostatni pomiar Tanita</h2>${pill("punkt odniesienia", "blue")}</div>
-          ${renderPortalMeasurement(c)}
-        </section>
-
-        <section class="panel">
-          <div class="panel-head"><h2>Reakcja organizmu na trening</h2>${pill("tempo progresji", "green")}</div>
-          ${renderPortalPolar(c)}
         </section>
 
         <div class="grid cols-2">
@@ -4023,7 +4172,32 @@
           <div class="grid cols-4">${renderPortalDocuments(c)}</div>
         </section>
       `;
+      $("#clientPortalShowAllPlanBtn")?.addEventListener("click", () => {
+        clientPortalShowAllHomeTasks = !clientPortalShowAllHomeTasks;
+        renderClientPortal();
+      });
       bindPdfButtons();
+    }
+
+    function renderPortalNow(c) {
+      const firstTask = activeHomePlanExercises(c)[0];
+      if (!firstTask) return `<p>Plan domowy zostanie dobrany po potwierdzeniu punktu wyjścia.</p>`;
+      return `
+        <div class="measurement-card measurement-main">
+          <div class="panel-head">
+            <div>
+              <div class="label">Zadanie na dziś</div>
+              <div class="name">${escapeHtml(firstTask.name || "Zadanie ruchowe")}</div>
+            </div>
+            ${pill(firstTask.frequency || "do wykonania", "green")}
+          </div>
+          <div class="grid cols-3">
+            <div class="portal-info"><div class="label">Dawkowanie</div><p>${escapeHtml(firstTask.dosage || "Do ustalenia")}</p></div>
+            <div class="portal-info"><div class="label">Częstotliwość</div><p>${escapeHtml(firstTask.frequency || "Do ustalenia")}</p></div>
+            <div class="portal-info"><div class="label">Wskazówka</div><p>${escapeHtml(firstTask.clientCue || "Wykonuj spokojnie i bez pośpiechu.")}</p></div>
+          </div>
+        </div>
+      `;
     }
 
     function renderPortalMeasurement(c) {
@@ -4112,6 +4286,7 @@
       const plan = migrateHomePlan(c.homePlan);
       const active = activeHomePlanExercises(c);
       if (!active.length) return `<p>Plan domowy zostanie dobrany po potwierdzeniu punktu wyjścia.</p>`;
+      const visibleTasks = clientPortalShowAllHomeTasks ? active : active.slice(0, 3);
       return `
         <div class="grid cols-3">
           <div class="portal-info"><div class="label">Nazwa</div><p>${escapeHtml(plan.title || "Plan domowy")}</p></div>
@@ -4119,7 +4294,7 @@
           ${plan.updatedAt ? `<div class="portal-info"><div class="label">Aktualizacja</div><p>Aktualizacja: ${escapeHtml(formatDatePL(plan.updatedAt))}</p></div>` : ""}
         </div>
         <div class="exercise-list" style="margin-top:12px">
-          ${active.map(ex => `
+          ${visibleTasks.map(ex => `
             <div class="exercise-card">
               <div class="name">${escapeHtml(ex.name)}</div>
               <div class="grid cols-2">
@@ -4130,6 +4305,7 @@
               </div>
               ${ex.videoUrl ? `<a class="btn" href="${escapeHtml(ex.videoUrl)}" target="_blank" rel="noopener">Video</a>` : ""}
             </div>`).join("")}
+          ${active.length > 3 ? `<button class="btn" id="clientPortalShowAllPlanBtn" type="button">${clientPortalShowAllHomeTasks ? "Pokaż mniej" : "Pokaż wszystkie zadania"}</button>` : ""}
         </div>
       `;
     }
@@ -7485,12 +7661,25 @@ Initial 83.45 64.95 18.10
       renderShell();
     }));
 
-    $("#newClientBtn").addEventListener("click", openClientModal);
-    $("#newSessionBtn").addEventListener("click", openSessionModal);
-    $("#newMeasurementBtn").addEventListener("click", openMeasurementModal);
-    $("#newPolarBtn").addEventListener("click", openPolarModal);
+    $("#addMenuBtn")?.addEventListener("click", e => {
+      e.stopPropagation();
+      setAddMenuOpen($("#addMenu")?.hidden !== false);
+    });
+    $("#addMenu")?.addEventListener("click", e => {
+      const btn = e.target.closest("[data-add-action]");
+      if (!btn) return;
+      e.stopPropagation();
+      handleTopbarAddAction(btn.dataset.addAction);
+    });
+    $("#contextActionBtn")?.addEventListener("click", handleTopbarContextAction);
+    document.addEventListener("click", e => {
+      const wrap = $("#addMenuWrap");
+      if (wrap && !wrap.contains(e.target)) closeAddMenu();
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeAddMenu();
+    });
     $("#tanitaDemoBtn").addEventListener("click", applyDemoTanitaData);
-    $("#importLegacyBtn").addEventListener("click", importLegacy);
     $("#exerciseForm").addEventListener("submit", saveExerciseFromForm);
     $("#manualHomePlanForm").addEventListener("submit", saveManualHomePlanExercise);
     window.addEventListener("afterprint", clearPrintingReportMode);

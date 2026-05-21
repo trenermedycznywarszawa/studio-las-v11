@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Las OS 7.1.3 | Exercise Video Links</title>
+  <title>Studio Las OS 7.1.4 | Strength Exercise Set</title>
   <link rel="canonical" href="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:url" content="https://trenermedycznywarszawa.github.io/studio-las-v11/studio-management-os-3.0.html" />
   <meta property="og:locale" content="pl_PL" />
@@ -696,7 +696,7 @@
             <line x1="8" y1="33" x2="28" y2="33" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <div><strong>Studio Las</strong><span>Studio Las OS 7.1.3</span></div>
+        <div><strong>Studio Las</strong><span>Studio Las OS 7.1.4</span></div>
       </div>
 
       <div class="client-switcher">
@@ -744,7 +744,7 @@
           <p id="screenSubtitle">Operacyjny pulpit pracy 1:1, diagnostyki, procesu i danych Tanita.</p>
         </div>
         <div class="actions">
-          <span class="pill gold top-role" id="versionBadge">Studio Las OS 7.1.3</span>
+          <span class="pill gold top-role" id="versionBadge">Studio Las OS 7.1.4</span>
           <span class="pill blue top-role" id="roleBadge">Widok trenera</span>
           <button class="btn" id="contextActionBtn" type="button" hidden></button>
           <div class="add-menu-wrap" id="addMenuWrap">
@@ -912,7 +912,7 @@
         <input type="hidden" name="id" />
         <div class="form-field"><label class="label">Nazwa techniczna</label><input name="name" required /></div>
         <div class="form-field"><label class="label">Nazwa dla klienta</label><input name="clientName" /></div>
-        <div class="form-field"><label class="label">Kategoria</label><select name="category"><option>Mobilizacja</option><option>Rolowanie / tkanki miękkie</option><option>Stabilizacja</option><option>Core</option><option>Siła</option><option>Oddech / regulacja</option><option>Rozciąganie</option><option>Kontrola ruchu</option></select></div>
+        <div class="form-field"><label class="label">Kategoria</label><select name="category"><option>Mobilizacja</option><option>Rolowanie / tkanki miękkie</option><option>Stabilizacja</option><option>Core</option><option>Siła</option><option>Izolacja</option><option>Plyometria</option><option>Oddech / regulacja</option><option>Rozciąganie</option><option>Kontrola ruchu</option></select></div>
         <div class="form-field"><label class="label">Blok</label><select name="trainingBlock"><option>Przygotowanie ciała</option><option>Mobilność</option><option>Aktywacja i kontrola</option><option>Siła</option><option>Wyciszenie</option><option>Inne</option></select></div>
         <div class="form-field"><label class="label">Podkategoria</label><input name="subcategory" /></div>
         <div class="form-field"><label class="label">Region</label><select name="region"><option>stopa</option><option>łydka</option><option>udo</option><option>biodro</option><option>kręgosłup lędźwiowy</option><option>kręgosłup piersiowy</option><option>bark</option><option>nadgarstek</option><option>core</option><option>całe ciało</option></select></div>
@@ -939,6 +939,11 @@
         <div class="form-field"><label class="label">Źródło</label><input name="source" /></div>
         <div class="form-field"><label class="label">Kolejność źródła</label><input type="number" step="1" min="0" name="sourceOrder" /></div>
         <div class="form-field full"><label class="label">Powiązane testy</label><textarea name="linkedTests" placeholder="np. test-przysiad; test-biodro"></textarea></div>
+        <div class="form-field"><label><input type="checkbox" name="strengthSet" /> Strength Exercise Set</label></div>
+        <div class="form-field full"><label class="label">Mapa mięśni</label><textarea name="muscleMap" placeholder='{"klatka":3,"triceps":2}'></textarea></div>
+        <div class="form-field"><label class="label">Mięśnie główne</label><input name="primaryMuscles" placeholder="np. klatka; triceps" /></div>
+        <div class="form-field"><label class="label">Mięśnie pomocnicze</label><input name="secondaryMuscles" /></div>
+        <div class="form-field"><label class="label">Mięśnie wspierające</label><input name="supportMuscles" /></div>
         <button class="btn primary full" type="submit">Zapisz ćwiczenie</button>
       </form>
     </div>
@@ -955,7 +960,7 @@
       </div>
       <form id="manualHomePlanForm" class="form-grid">
         <div class="form-field full"><label class="label">Nazwa zadania</label><input name="name" required /></div>
-        <div class="form-field"><label class="label">Kategoria</label><select name="category"><option>Mobilizacja</option><option>Rolowanie / tkanki miękkie</option><option>Stabilizacja</option><option>Core</option><option>Siła</option><option>Oddech / regulacja</option><option>Rozciąganie</option><option>Kontrola ruchu</option></select></div>
+        <div class="form-field"><label class="label">Kategoria</label><select name="category"><option>Mobilizacja</option><option>Rolowanie / tkanki miękkie</option><option>Stabilizacja</option><option>Core</option><option>Siła</option><option>Izolacja</option><option>Plyometria</option><option>Oddech / regulacja</option><option>Rozciąganie</option><option>Kontrola ruchu</option></select></div>
         <div class="form-field"><label class="label">Region</label><select name="region"><option>stopa</option><option>łydka</option><option>udo</option><option>biodro</option><option>kręgosłup lędźwiowy</option><option>kręgosłup piersiowy</option><option>bark</option><option>nadgarstek</option><option>core</option><option>całe ciało</option></select></div>
         <div class="form-field"><label class="label">Dawkowanie</label><input name="dosage" placeholder="np. 2 serie po 6 powtórzeń" /></div>
         <div class="form-field"><label class="label">Częstotliwość</label><input name="frequency" placeholder="np. 3 razy w tygodniu" /></div>
@@ -970,7 +975,7 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const APP_VERSION = "7.1.3";
+    const APP_VERSION = "7.1.4";
     const STORAGE_KEY = "studioLasOS_v3";
     const LEGACY_KEY = "studioLasOS_v1";
     const EXERCISE_LIBRARY_KEY = "studioLasExerciseLibraryV1";
@@ -1031,7 +1036,7 @@
       twelveWeeks: "Raport 12 tygodni",
       continuation: "Plan Kontynuacji"
     };
-    const EXERCISE_CATEGORIES = ["Mobilizacja", "Rolowanie / tkanki miękkie", "Stabilizacja", "Core", "Siła", "Oddech / regulacja", "Rozciąganie", "Kontrola ruchu"];
+    const EXERCISE_CATEGORIES = ["Mobilizacja", "Rolowanie / tkanki miękkie", "Stabilizacja", "Core", "Siła", "Izolacja", "Plyometria", "Oddech / regulacja", "Rozciąganie", "Kontrola ruchu"];
     const EXERCISE_REGIONS = ["stopa", "łydka", "udo", "biodro", "kręgosłup lędźwiowy", "kręgosłup piersiowy", "bark", "nadgarstek", "core", "całe ciało"];
     const EXERCISE_STAGES = ["1 Punkt startowy", "2 Kontrola", "3 Siła i stabilność", "4 Integracja", "5 Samodzielność"];
     const EXERCISE_LEVELS = ["łatwy", "średni", "trudny"];
@@ -1052,9 +1057,13 @@
     const EXERCISE_LIBRARY_SEED_VERSION_KEY = "studioLasExerciseLibrarySeedVersion";
     const EXERCISE_LIBRARY_CORE_VERSION = "core-v3-expanded";
     const EXERCISE_VIDEO_SEED_VERSION_KEY = "studioLasExerciseVideoSeedVersion";
-    const EXERCISE_VIDEO_SEED_VERSION = "video-v2-hyperlinks";
+    const EXERCISE_VIDEO_SEED_VERSION = "video-v3-strength";
+    const STRENGTH_SEED_VERSION_KEY = "studioLasStrengthSeedVersion";
+    const STRENGTH_SEED_VERSION = "strength-v1";
     const CORE_EXERCISE_SOURCE = "Plan początkujący";
     const TRAINER_ATLAS_SOURCE = "Atlas trenerski";
+    const STRENGTH_EXERCISE_SOURCE = "Siłka.xlsx";
+    const STRENGTH_MUSCLE_GROUPS = ["wielostawowe", "łydki", "dwójki", "czwórki", "pośladki", "brzuch", "lędźwie", "szerokie pleców", "klatka", "ramiona", "biceps", "triceps", "kaptury", "przywodziciele ud"];
     const STUDIO_LAS_EXERCISE_VIDEO_LINKS = {
       "bird-dog-prawa-reka-lewa-noga": "https://youtu.be/ocZ_dhQCEqo",
       "ex-barbell-hip-thrust": "https://youtu.be/KNRFysfNj_I",
@@ -1079,7 +1088,17 @@
       "atlas-side-plank-knees": "https://youtu.be/7pzxj6KNtyc",
       "atlas-split-squat": "https://youtu.be/1rx2hqMQ8F0",
       "atlas-step-up-low-box": "https://youtu.be/fRdZgvy9Ycw",
-      "atlas-worlds-greatest-stretch": "https://youtu.be/hBlLRW7h-pc"
+      "atlas-trx-row": "https://youtu.be/l46kH1cXIZ0",
+      "atlas-worlds-greatest-stretch": "https://youtu.be/hBlLRW7h-pc",
+      "strength-dipy": "https://youtu.be/LNChWxXz8VM",
+      "strength-podciaganie-nachwyt": "https://youtu.be/ZobBXFuVNIQ",
+      "strength-podciaganie-podchwyt": "https://youtu.be/QFp1xa1vCDc",
+      "strength-przyciaganie-na-kolach": "https://youtu.be/aWXz54L-0f4",
+      "strength-przysiad-bulgarski": "https://youtu.be/MnR6znqwz5o",
+      "strength-wioslowanie-sztanga": "https://youtu.be/b8fN_gmP6Es",
+      "strength-wyciskanie-nad-glowa-hantle": "https://youtu.be/n4qcVghtAEg",
+      "strength-wykroki-boczne": "https://youtu.be/ik5h53Ghrgo",
+      "strength-zuraw": "https://youtu.be/RwsKhIIkNIM"
     };
     const SEED_EXERCISES = [
       {
@@ -2176,6 +2195,143 @@
       return trainerSeed.map((exercise, index) => trainerExercise({ ...exercise, sourceOrder: 1001 + index }));
     }
 
+    function getStudioLasStrengthExercises() {
+      const strengthSeed = [
+        { id: "strength-biceps-talerze", name: "Biceps talerze", muscleMap: { "biceps": 3 } },
+        { id: "strength-biceps-wyciag", name: "Biceps wyciąg", muscleMap: { "biceps": 3 } },
+        { id: "strength-biceps-x4-sztanga", name: "Biceps x4 sztanga", muscleMap: { "biceps": 3 } },
+        { id: "strength-dipy", name: "Dipy", muscleMap: { "triceps": 3, "brzuch": 1, "szerokie pleców": 1, "klatka": 2, "ramiona": 1 } },
+        { id: "strength-dumbbell-shrug", name: "Dumbell shrug", muscleMap: { "kaptury": 3 } },
+        { id: "atlas-band-face-pull", name: "Face pull", muscleMap: { "ramiona": 2, "szerokie pleców": 1 } },
+        { id: "strength-frankenstein", name: "Frankenstein", muscleMap: { "wielostawowe": 1, "czwórki": 3, "pośladki": 2, "brzuch": 1, "łydki": 1 } },
+        { id: "ex-barbell-hip-thrust", name: "Hip thrust", muscleMap: { "pośladki": 3 } },
+        { id: "strength-klatka-na-podlodze-hantle", name: "Klatka na podłodze hantle", muscleMap: { "klatka": 3, "wielostawowe": 1, "brzuch": 1, "triceps": 2, "ramiona": 1, "pośladki": 1 } },
+        { id: "strength-low-row", name: "Low row", muscleMap: { "szerokie pleców": 3, "kaptury": 1, "lędźwie": 2, "biceps": 1, "ramiona": 1 } },
+        { id: "atlas-db-bench-press", name: "Ławka hantle", muscleMap: { "klatka": 3, "wielostawowe": 1, "brzuch": 1, "triceps": 2, "ramiona": 1, "pośladki": 1 } },
+        { id: "strength-lawka-hantle-15", name: "Ławka hantle 15 st", muscleMap: { "klatka": 3, "wielostawowe": 1, "brzuch": 1, "triceps": 2, "ramiona": 1, "pośladki": 1 } },
+        { id: "strength-lawka-sztanga", name: "Ławka sztanga", muscleMap: { "klatka": 3, "wielostawowe": 1, "brzuch": 1, "triceps": 2, "ramiona": 1, "pośladki": 1 } },
+        { id: "strength-lawka-sztanga-wasko", name: "Ławka sztanga wąsko", muscleMap: { "triceps": 3, "wielostawowe": 1, "brzuch": 1, "klatka": 2, "ramiona": 1, "pośladki": 1 } },
+        { id: "ex-deadlift", name: "Martwy ciąg", muscleMap: { "lędźwie": 3, "dwójki": 2, "łydki": 2, "pośladki": 2, "wielostawowe": 1, "czwórki": 1, "szerokie pleców": 1 } },
+        { id: "strength-martwy-ciag-neutralny", name: "Martwy ciąg neutralny", muscleMap: { "lędźwie": 3, "dwójki": 2, "łydki": 2, "pośladki": 2, "wielostawowe": 1, "czwórki": 1, "szerokie pleców": 1 } },
+        { id: "strength-narciarz", name: "Narciarz", muscleMap: { "szerokie pleców": 3, "biceps": 1, "ramiona": 1 } },
+        { id: "strength-podciaganie-nachwyt", name: "Podciąganie nachwyt", muscleMap: { "szerokie pleców": 3, "biceps": 2, "brzuch": 1, "ramiona": 1 } },
+        { id: "strength-podciaganie-podchwyt", name: "Podciąganie podchwyt", muscleMap: { "szerokie pleców": 3, "biceps": 2, "brzuch": 1, "ramiona": 1 } },
+        { id: "strength-pompki", name: "Pompki", muscleMap: { "brzuch": 2, "klatka": 3, "lędźwie": 1, "wielostawowe": 1, "triceps": 2, "czwórki": 1, "pośladki": 1 } },
+        { id: "strength-przyciaganie-na-kolach", name: "Przyciąganie na kołach", muscleMap: { "szerokie pleców": 3, "biceps": 2, "lędźwie": 1, "wielostawowe": 1, "pośladki": 1 } },
+        { id: "atlas-trx-row", name: "Przyciąganie na TRX", muscleMap: { "szerokie pleców": 3, "biceps": 2, "lędźwie": 1, "wielostawowe": 1, "pośladki": 1 } },
+        { id: "strength-przysiad-bulgarski", name: "Przysiad bułgarski", muscleMap: { "czwórki": 3, "pośladki": 2, "łydki": 1 } },
+        { id: "strength-przysiady-z-podskokiem", name: "Przysiady z podskokiem", muscleMap: { "czwórki": 3, "łydki": 2, "pośladki": 2, "lędźwie": 1, "wielostawowe": 1 } },
+        { id: "ex-back-squat", name: "Przysiady ze sztangą", muscleMap: { "czwórki": 3, "łydki": 1, "pośladki": 2, "lędźwie": 1, "wielostawowe": 1 } },
+        { id: "strength-przywodzenie-nog-maszyna", name: "Przywodzenie nóg maszyna", muscleMap: { "przywodziciele ud": 3 } },
+        { id: "strength-rear-delt-fly", name: "Rear delt fly", muscleMap: { "ramiona": 3 } },
+        { id: "strength-rozpietki-maszyna", name: "Rozpiętki maszyna", muscleMap: { "klatka": 3, "biceps": 1, "ramiona": 1 } },
+        { id: "strength-triceps-wyciag", name: "Triceps wyciąg", muscleMap: { "triceps": 3 } },
+        { id: "strength-wioslowanie-sztanga", name: "Wiosłowanie sztangą", muscleMap: { "lędźwie": 3, "dwójki": 2, "szerokie pleców": 3, "łydki": 1, "pośladki": 2, "biceps": 1, "wielostawowe": 1 } },
+        { id: "strength-wyciag-klatka-dol", name: "Wyciąg klatka dół", muscleMap: { "klatka": 3, "biceps": 1 } },
+        { id: "strength-wyciag-klatka-srodek", name: "Wyciąg klatka środek", muscleMap: { "klatka": 3, "biceps": 1 } },
+        { id: "strength-wyciskanie-francuskie", name: "Wyciskanie francuskie", muscleMap: { "triceps": 3, "ramiona": 2 } },
+        { id: "strength-wyciskanie-kettli-jednoracz", name: "Wyciskanie kettli jednorącz", muscleMap: { "ramiona": 3, "szerokie pleców": 2, "triceps": 2, "brzuch": 1, "biceps": 1, "wielostawowe": 1 } },
+        { id: "strength-wyciskanie-nad-glowa-hantle", name: "Wyciskanie nad głową hantle", muscleMap: { "ramiona": 3, "triceps": 1, "brzuch": 1 } },
+        { id: "ex-overhead-press-db-barbell", name: "Wyciskanie żołnierskie", muscleMap: { "ramiona": 3, "triceps": 1, "brzuch": 1 } },
+        { id: "strength-wykroki-boczne", name: "Wykroki boczne", muscleMap: { "przywodziciele ud": 2, "czwórki": 3, "pośladki": 2 } },
+        { id: "strength-wykroki-z-kettlami", name: "Wykroki z kettlami", muscleMap: { "pośladki": 3, "brzuch": 2, "czwórki": 3, "wielostawowe": 1 } },
+        { id: "strength-wyprosty-nog-maszyna", name: "Wyprosty nóg maszyna", muscleMap: { "czwórki": 3 } },
+        { id: "atlas-lateral-raise", name: "Wznosy bokiem", muscleMap: { "ramiona": 3 } },
+        { id: "strength-wznosy-bokiem-kettle", name: "Wznosy bokiem kettle", muscleMap: { "ramiona": 3 } },
+        { id: "atlas-standing-calf-raise", name: "Wznosy łydek", muscleMap: { "łydki": 3, "dwójki": 1 } },
+        { id: "strength-wznosy-lydek-1-noga", name: "Wznosy łydek 1 noga", muscleMap: { "łydki": 3, "dwójki": 1 } },
+        { id: "strength-zuraw", name: "Żuraw", muscleMap: { "dwójki": 3, "pośladki": 3, "lędźwie": 2, "łydki": 2, "wielostawowe": 1 } }
+      ];
+
+      const inferCategory = (exercise) => {
+        const name = compareHeader(exercise.name);
+        const muscles = normalizeMuscleMap(exercise.muscleMap);
+        if (/podskok|skok|plyo/.test(name)) return "Plyometria";
+        if (/biceps|triceps|wznosy|wyprosty|przywodzenie|rozpietki|shrug|rear delt|wyciag klatka/.test(name)) return "Izolacja";
+        if ((muscles.brzuch === 3 || muscles["lędźwie"] === 3) && !muscles.wielostawowe) return "Core";
+        return "Siła";
+      };
+      const inferRegion = (exercise) => {
+        const muscles = normalizeMuscleMap(exercise.muscleMap);
+        if (muscles["łydki"] === 3 && Object.keys(muscles).length <= 2) return "łydka";
+        if (muscles["dwójki"] === 3 || muscles["czwórki"] === 3 || muscles["przywodziciele ud"] === 3) return "udo";
+        if (muscles["pośladki"] === 3) return "biodro";
+        if (muscles.brzuch === 3) return "core";
+        if (muscles["lędźwie"] === 3) return "kręgosłup lędźwiowy";
+        if (muscles.klatka === 3 || muscles.ramiona === 3 || muscles.biceps === 3 || muscles.triceps === 3 || muscles.kaptury === 3 || muscles["szerokie pleców"] === 3) return "bark";
+        return "całe ciało";
+      };
+      const inferPattern = (name = "") => {
+        const normalized = compareHeader(name);
+        if (/martwy|hip thrust|zuraw/.test(normalized)) return "hip hinge";
+        if (/przysiad|wykrok/.test(normalized)) return "squat / lunge";
+        if (/lawka|klatka|pompki|dipy|wyciskanie/.test(normalized)) return "push";
+        if (/row|wioslowanie|podciaganie|przyciaganie|narciarz/.test(normalized)) return "pull";
+        if (/biceps/.test(normalized)) return "zgięcie łokcia";
+        if (/triceps/.test(normalized)) return "wyprost łokcia";
+        if (/wznosy|rear delt|face pull/.test(normalized)) return "kontrola barku";
+        return "strength";
+      };
+      const inferEquipment = (name = "") => {
+        const normalized = compareHeader(name);
+        if (/trx/.test(normalized)) return "taśmy TRX";
+        if (/kettl/.test(normalized)) return "kettlebell";
+        if (/hantl/.test(normalized)) return "hantle";
+        if (/sztanga|lawka/.test(normalized)) return "sztanga lub ławka";
+        if (/wyciag|maszyna/.test(normalized)) return "wyciąg lub maszyna";
+        if (/talerze/.test(normalized)) return "talerze";
+        if (/kolach/.test(normalized)) return "koła gimnastyczne";
+        if (/podciaganie|pompki|dipy|zuraw|podskok/.test(normalized)) return "masa własnego ciała";
+        return "";
+      };
+      const beginnerFriendly = (name = "") => /pompki|hip thrust|face pull|wznosy lydek|biceps|triceps|rozpietki/.test(compareHeader(name));
+      const level = (name = "") => /martwy|podciaganie|dipy|zuraw|podskok|wioslowanie sztanga/.test(compareHeader(name)) ? "trudny" : "średni";
+
+      return strengthSeed.map((exercise, index) => {
+        const muscleMap = normalizeMuscleMap(exercise.muscleMap);
+        const primaryMuscles = musclesByScore(muscleMap, 3);
+        const secondaryMuscles = musclesByScore(muscleMap, 2);
+        const supportMuscles = musclesByScore(muscleMap, 1);
+        const primaryText = primaryMuscles.length ? primaryMuscles.join(", ") : "do określenia";
+        const category = inferCategory(exercise);
+        return migrateExercise({
+          ...exercise,
+          clientName: exercise.name,
+          category,
+          subcategory: "Strength Exercise Set",
+          trainingBlock: "Siła",
+          region: inferRegion(exercise),
+          pattern: inferPattern(exercise.name),
+          stage: "3 Siła i stabilność",
+          level: level(exercise.name),
+          equipment: inferEquipment(exercise.name),
+          goal: `Pozycja z Strength Exercise Set. Główne partie: ${primaryText}.`,
+          dosageDefault: "Do ustalenia przez trenera.",
+          tempo: "Do ustalenia przez trenera.",
+          breathing: "Nie wstrzymuj oddechu; doprecyzuj cue przed przypisaniem.",
+          clientInstruction: "Instrukcja klienta wymaga doprecyzowania przed przypisaniem do planu.",
+          coachNotes: `Seed z Siłka.xlsx. Mapa mięśni: główne ${primaryText}${secondaryMuscles.length ? `; pomocnicze ${secondaryMuscles.join(", ")}` : ""}. Doprecyzuj wariant, zakres, ciężar i kryteria bezpieczeństwa przed wysłaniem klientowi.`,
+          commonMistakes: "Do uzupełnienia przez trenera po wyborze konkretnego wariantu.",
+          stopCriteria: "Nie przypisuj klientowi bez doprecyzowania techniki, dawkowania i kryteriów przerwania.",
+          regressions: "",
+          progressions: "",
+          contraindications: "Do uzupełnienia przed przypisaniem klientowi.",
+          videoUrl: "",
+          tags: uniqueList(["strength set", STRENGTH_EXERCISE_SOURCE, category, ...primaryMuscles, ...secondaryMuscles]),
+          linkedTests: [],
+          beginnerFriendly: beginnerFriendly(exercise.name),
+          source: STRENGTH_EXERCISE_SOURCE,
+          sourceOrder: index + 1,
+          qualityStatus: "needs_review",
+          muscleMap,
+          primaryMuscles,
+          secondaryMuscles,
+          supportMuscles,
+          strengthSet: true
+        });
+      });
+    }
+
     const INTAKE_FIELD_ALIASES = {
       submittedAt: ["Data wypełnienia", "Sygnatura czasowa", "Timestamp", "Czas przesłania"],
       name: ["Imię i nazwisko", "Imie i nazwisko", "Nazwa użytkownika"],
@@ -2407,12 +2563,38 @@
       };
     }
 
+    function normalizeMuscleMap(map = {}) {
+      if (!map || typeof map !== "object" || Array.isArray(map)) return {};
+      return Object.entries(map).reduce((acc, [muscle, rawValue]) => {
+        const key = STRENGTH_MUSCLE_GROUPS.find(item => compareHeader(item) === compareHeader(muscle));
+        const value = Number(rawValue);
+        if (key && [1, 2, 3].includes(value)) acc[key] = value;
+        return acc;
+      }, {});
+    }
+
+    function musclesByScore(map = {}, score) {
+      const normalized = normalizeMuscleMap(map);
+      return STRENGTH_MUSCLE_GROUPS.filter(muscle => normalized[muscle] === score);
+    }
+
+    function normalizeMuscleList(value) {
+      return uniqueList(splitList(value).map(item => {
+        const match = STRENGTH_MUSCLE_GROUPS.find(muscle => compareHeader(muscle) === compareHeader(item));
+        return match || item;
+      }));
+    }
+
     function migrateExercise(exercise = {}) {
       const name = String(exercise.name || exercise.clientName || "Nowe zadanie ruchowe").trim();
       const id = exercise.id || `ex-${slugify(name)}-${String(Date.now()).slice(-5)}`;
       const sourceOrderNumber = Number(exercise.sourceOrder);
       const rawQualityStatus = String(exercise.qualityStatus || "").trim();
       const qualityStatus = rawQualityStatus === "needs-review" ? "needs_review" : rawQualityStatus;
+      const muscleMap = normalizeMuscleMap(exercise.muscleMap);
+      const primaryMuscles = normalizeMuscleList(exercise.primaryMuscles?.length ? exercise.primaryMuscles : musclesByScore(muscleMap, 3));
+      const secondaryMuscles = normalizeMuscleList(exercise.secondaryMuscles?.length ? exercise.secondaryMuscles : musclesByScore(muscleMap, 2));
+      const supportMuscles = normalizeMuscleList(exercise.supportMuscles?.length ? exercise.supportMuscles : musclesByScore(muscleMap, 1));
       return {
         ...exercise,
         id,
@@ -2445,7 +2627,12 @@
         beginnerFriendly: exercise.beginnerFriendly === false ? false : true,
         source: exercise.source || "Studio Las",
         sourceOrder: Number.isFinite(sourceOrderNumber) ? sourceOrderNumber : "",
-        qualityStatus: EXERCISE_QUALITY_STATUSES.includes(qualityStatus) ? qualityStatus : "reviewed"
+        qualityStatus: EXERCISE_QUALITY_STATUSES.includes(qualityStatus) ? qualityStatus : "reviewed",
+        muscleMap,
+        primaryMuscles,
+        secondaryMuscles,
+        supportMuscles,
+        strengthSet: exercise.strengthSet === true
       };
     }
 
@@ -2471,11 +2658,14 @@
       if (Array.isArray(value)) return value.length === 0;
       if (value === null || value === undefined) return true;
       if (typeof value === "string") return value.trim() === "";
+      if (typeof value === "object") return Object.keys(value).length === 0;
       return false;
     }
 
     function copyExerciseField(value) {
-      return Array.isArray(value) ? [...value] : value;
+      if (Array.isArray(value)) return [...value];
+      if (value && typeof value === "object") return { ...value };
+      return value;
     }
 
     function shouldBackfillExerciseField(field, originalValue, currentValue) {
@@ -2526,6 +2716,43 @@
       return Array.from(byId.values()).map(entry => migrateExercise(entry.exercise));
     }
 
+    function mergeStrengthExercisesIntoLibrary(existingLibrary, strengthExercises) {
+      const byId = new Map();
+      const byName = new Map();
+      (Array.isArray(existingLibrary) ? existingLibrary : []).forEach(item => {
+        const migrated = migrateExercise(item);
+        if (!byId.has(migrated.id)) {
+          byId.set(migrated.id, { original: item || {}, exercise: migrated });
+          const nameKey = compareHeader(migrated.name || migrated.clientName || "");
+          if (nameKey && !byName.has(nameKey)) byName.set(nameKey, migrated.id);
+        }
+      });
+
+      const backfillFields = ["muscleMap", "primaryMuscles", "secondaryMuscles", "supportMuscles", "source", "sourceOrder"];
+      (Array.isArray(strengthExercises) ? strengthExercises : []).map(migrateExercise).forEach(seed => {
+        const nameKey = compareHeader(seed.name || seed.clientName || "");
+        const duplicateId = byId.has(seed.id) ? seed.id : byName.get(nameKey);
+        const entry = duplicateId ? byId.get(duplicateId) : null;
+        if (!entry) {
+          byId.set(seed.id, { original: seed, exercise: seed });
+          if (nameKey) byName.set(nameKey, seed.id);
+          return;
+        }
+
+        const merged = { ...entry.exercise };
+        backfillFields.forEach(field => {
+          if (shouldBackfillExerciseField(field, entry.original?.[field], merged[field]) && !isBlankExerciseField(seed[field])) {
+            merged[field] = copyExerciseField(seed[field]);
+          }
+        });
+        if (seed.strengthSet === true) merged.strengthSet = true;
+        merged.tags = uniqueList([...(merged.tags || []), ...(seed.tags || [])]);
+        byId.set(merged.id, { original: entry.original, exercise: migrateExercise(merged) });
+      });
+
+      return Array.from(byId.values()).map(entry => migrateExercise(entry.exercise));
+    }
+
     function isValidVideoUrl(url = "") {
       const value = String(url || "").trim();
       if (!value) return false;
@@ -2567,6 +2794,12 @@
         ? existing.map(migrateExercise)
         : mergeSeedExercisesIntoLibrary(existing, seedExercises);
       if (seedVersion !== EXERCISE_LIBRARY_CORE_VERSION) localStorage.setItem(EXERCISE_LIBRARY_SEED_VERSION_KEY, EXERCISE_LIBRARY_CORE_VERSION);
+
+      const strengthSeedVersion = localStorage.getItem(STRENGTH_SEED_VERSION_KEY);
+      if (strengthSeedVersion !== STRENGTH_SEED_VERSION) {
+        merged = mergeStrengthExercisesIntoLibrary(merged, getStudioLasStrengthExercises());
+        localStorage.setItem(STRENGTH_SEED_VERSION_KEY, STRENGTH_SEED_VERSION);
+      }
 
       const videoSeedVersion = localStorage.getItem(EXERCISE_VIDEO_SEED_VERSION_KEY);
       if (videoSeedVersion !== EXERCISE_VIDEO_SEED_VERSION) {
@@ -2868,7 +3101,7 @@
     let pendingIntakeRows = [];
     let exerciseLibrary = [];
     exerciseLibrary = seedExerciseLibraryIfEmpty();
-    let exerciseAtlasFilters = { q: "", trainingBlock: "", category: "", region: "", stage: "", qualityStatus: "reviewed", video: "", sort: "process", quick: "", viewMode: "compact" };
+    let exerciseAtlasFilters = { q: "", trainingBlock: "", category: "", region: "", stage: "", qualityStatus: "reviewed", video: "", muscle: "", sort: "process", quick: "", viewMode: "compact" };
     let expandedHomePlanExerciseId = "";
     let clientPortalShowAllHomeTasks = false;
 
@@ -3637,6 +3870,7 @@
             <div class="form-field"><label class="label" for="exerciseBlockFilter">Blok</label><select id="exerciseBlockFilter">${filterOptions(EXERCISE_TRAINING_BLOCKS, exerciseAtlasFilters.trainingBlock, "Wszystkie")}</select></div>
             <div class="form-field"><label class="label" for="exerciseStatusFilter">Status</label><select id="exerciseStatusFilter">${qualityStatusOptions(exerciseAtlasFilters.qualityStatus)}</select></div>
             <div class="form-field"><label class="label" for="exerciseVideoFilter">Video</label><select id="exerciseVideoFilter">${videoFilterOptions(exerciseAtlasFilters.video)}</select></div>
+            <div class="form-field"><label class="label" for="exerciseMuscleFilter">Partia</label><select id="exerciseMuscleFilter">${filterOptions(STRENGTH_MUSCLE_GROUPS, exerciseAtlasFilters.muscle, "Wszystkie")}</select></div>
             <div class="form-field"><label class="label" for="exerciseCategoryFilter">Kategoria</label><select id="exerciseCategoryFilter">${filterOptions(EXERCISE_CATEGORIES, exerciseAtlasFilters.category, "Wszystkie")}</select></div>
             <div class="form-field"><label class="label" for="exerciseRegionFilter">Region</label><select id="exerciseRegionFilter">${filterOptions(EXERCISE_REGIONS, exerciseAtlasFilters.region, "Wszystkie")}</select></div>
             <div class="form-field"><label class="label" for="exerciseStageFilter">Etap</label><select id="exerciseStageFilter">${filterOptions(EXERCISE_STAGES, exerciseAtlasFilters.stage, "Wszystkie")}</select></div>
@@ -3679,6 +3913,11 @@
         exerciseAtlasFilters.video = e.target.value;
         renderExerciseAtlas();
       });
+      $("#exerciseMuscleFilter")?.addEventListener("change", e => {
+        exerciseAtlasFilters.muscle = e.target.value;
+        exerciseAtlasFilters.quick = "";
+        renderExerciseAtlas();
+      });
       $("#exerciseCategoryFilter")?.addEventListener("change", e => {
         exerciseAtlasFilters.category = e.target.value;
         renderExerciseAtlas();
@@ -3715,7 +3954,7 @@
     }
 
     function renderExerciseQuickFilters() {
-      const quickFilters = ["Gotowe", "Start", "Mobilność", "Core", "Siła", "Bez sprzętu", "Roller", "Krzesło", "Do opracowania"];
+      const quickFilters = ["Gotowe", "Start", "Mobilność", "Core", "Siła", "Klatka", "Plecy", "Nogi", "Pośladki", "Biceps", "Triceps", "Bez sprzętu", "Roller", "Krzesło", "Do opracowania"];
       return quickFilters.map(label => {
         const active = label === "Gotowe"
           ? exerciseAtlasFilters.qualityStatus === "reviewed"
@@ -3727,12 +3966,13 @@
     function getFilteredExerciseLibrary() {
       const q = compareHeader(exerciseAtlasFilters.q || "");
       return sortExerciseLibrary(exerciseLibrary.filter(ex => {
-        const haystack = compareHeader([ex.name, ex.clientName, ex.trainingBlock, ex.category, ex.region, ex.stage, ex.goal, ex.equipment, ...(ex.tags || [])].join(" "));
+        const haystack = compareHeader([ex.name, ex.clientName, ex.trainingBlock, ex.category, ex.region, ex.stage, ex.goal, ex.equipment, ...(ex.tags || []), ...(ex.primaryMuscles || []), ...(ex.secondaryMuscles || []), ...(ex.supportMuscles || [])].join(" "));
         if (q && !haystack.includes(q)) return false;
         if (exerciseAtlasFilters.trainingBlock && ex.trainingBlock !== exerciseAtlasFilters.trainingBlock) return false;
         if (exerciseAtlasFilters.qualityStatus && normalizeExerciseQualityStatus(ex.qualityStatus) !== exerciseAtlasFilters.qualityStatus) return false;
         if (exerciseAtlasFilters.video === "with" && !hasExerciseVideo(ex)) return false;
         if (exerciseAtlasFilters.video === "without" && hasExerciseVideo(ex)) return false;
+        if (exerciseAtlasFilters.muscle && !hasExerciseMuscle(ex, exerciseAtlasFilters.muscle)) return false;
         if (exerciseAtlasFilters.category && ex.category !== exerciseAtlasFilters.category) return false;
         if (exerciseAtlasFilters.region && ex.region !== exerciseAtlasFilters.region) return false;
         if (exerciseAtlasFilters.stage && ex.stage !== exerciseAtlasFilters.stage) return false;
@@ -3745,12 +3985,38 @@
       const haystack = compareHeader([ex.trainingBlock, ex.category, ex.region, ex.equipment, ...(ex.tags || [])].join(" "));
       if (quick === "Start") return ex.stage === "1 Punkt startowy" || haystack.includes("start");
       if (quick === "Mobilność") return ex.trainingBlock === "Mobilność" || ["Mobilizacja", "Rozciąganie"].includes(ex.category);
-      if (quick === "Core") return ex.category === "Core" || ex.region === "core" || haystack.includes("core");
+      if (quick === "Core") return ex.category === "Core" || ex.region === "core" || haystack.includes("core") || exerciseMatchesAnyMuscle(ex, ["brzuch", "lędźwie"]);
       if (quick === "Siła") return ex.trainingBlock === "Siła" || ex.category === "Siła";
+      if (quick === "Klatka") return exerciseMatchesAnyMuscle(ex, ["klatka"]);
+      if (quick === "Plecy") return exerciseMatchesAnyMuscle(ex, ["szerokie pleców", "lędźwie"]);
+      if (quick === "Nogi") return exerciseMatchesAnyMuscle(ex, ["łydki", "dwójki", "czwórki", "przywodziciele ud"]);
+      if (quick === "Pośladki") return exerciseMatchesAnyMuscle(ex, ["pośladki"]);
+      if (quick === "Biceps") return exerciseMatchesAnyMuscle(ex, ["biceps"]);
+      if (quick === "Triceps") return exerciseMatchesAnyMuscle(ex, ["triceps"]);
       if (quick === "Bez sprzętu") return !String(ex.equipment || "").trim() || /mata|masa własnego ciała|bez sprzętu/i.test(ex.equipment || haystack);
       if (quick === "Roller") return haystack.includes("roller");
       if (quick === "Krzesło") return haystack.includes("krzeslo") || haystack.includes("krzesło");
       return true;
+    }
+
+    function hasExerciseMuscle(exercise = {}, muscle = "") {
+      const normalized = normalizeMuscleMap(exercise.muscleMap);
+      const key = STRENGTH_MUSCLE_GROUPS.find(item => compareHeader(item) === compareHeader(muscle));
+      return Boolean(key && normalized[key]);
+    }
+
+    function exerciseMatchesAnyMuscle(exercise = {}, muscles = []) {
+      return muscles.some(muscle => hasExerciseMuscle(exercise, muscle));
+    }
+
+    function renderExerciseMuscleSummary(exercise = {}) {
+      const primary = normalizeMuscleList(exercise.primaryMuscles);
+      const secondary = normalizeMuscleList(exercise.secondaryMuscles);
+      if (!primary.length && !secondary.length) return "";
+      const parts = [];
+      if (primary.length) parts.push(`Główne: ${escapeHtml(primary.join(", "))}`);
+      if (secondary.length) parts.push(`Pomocnicze: ${escapeHtml(secondary.join(", "))}`);
+      return `<div class="meta">${parts.join(" · ")}</div>`;
     }
 
     function exerciseSourceOrder(ex) {
@@ -3817,6 +4083,7 @@
           ${pill(ex.level, "")}
           ${pill(hasVideo ? "Video" : "Brak video", hasVideo ? "green" : "")}
         </div>
+        ${renderExerciseMuscleSummary(ex)}
         ${needsReview ? `<div class="portal-info"><div class="label">Status</div><p>Najpierw dopracuj instrukcję.</p></div>` : ""}
         <div class="portal-info"><div class="label">Dawka</div><p>${escapeHtml(ex.dosageDefault || "Do ustalenia")}</p></div>
         <div class="portal-info"><div class="label">Cel</div><p>${escapeHtml(shortText(ex.goal || "Cel zostanie doprecyzowany.", 150))}</p></div>
@@ -3835,6 +4102,7 @@
         <div>
           <div class="name">${escapeHtml(ex.clientName || ex.name)}</div>
           <div class="meta">${escapeHtml(ex.dosageDefault || "Dawka do ustalenia")}</div>
+          ${renderExerciseMuscleSummary(ex)}
           ${needsReview ? `<div class="meta warn">Najpierw dopracuj instrukcję.</div>` : ""}
         </div>
         <div class="tag-row">
@@ -6476,9 +6744,10 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
         "name", "clientName", "category", "trainingBlock", "subcategory", "region", "pattern", "stage", "level",
         "equipment", "goal", "dosageDefault", "tempo", "breathing", "clientInstruction",
         "coachNotes", "commonMistakes", "stopCriteria", "regressions", "progressions",
-        "contraindications", "videoUrl", "source", "sourceOrder", "qualityStatus"
+        "contraindications", "videoUrl", "source", "sourceOrder", "qualityStatus",
+        "primaryMuscles", "secondaryMuscles", "supportMuscles"
       ].forEach(field => {
-        if (form.elements[field]) form.elements[field].value = exercise?.[field] || "";
+        if (form.elements[field]) form.elements[field].value = Array.isArray(exercise?.[field]) ? exercise[field].join("; ") : (exercise?.[field] || "");
       });
       if (!exercise) {
         form.elements.category.value = "Kontrola ruchu";
@@ -6491,7 +6760,9 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
       }
       form.elements.tags.value = (exercise?.tags || []).join("; ");
       form.elements.linkedTests.value = (exercise?.linkedTests || []).join("; ");
+      form.elements.muscleMap.value = exercise?.muscleMap && Object.keys(exercise.muscleMap).length ? JSON.stringify(exercise.muscleMap, null, 2) : "";
       form.elements.beginnerFriendly.checked = exercise?.beginnerFriendly !== false;
+      form.elements.strengthSet.checked = exercise?.strengthSet === true;
       $("#exerciseModal").classList.add("open");
       $("#exerciseModal").setAttribute("aria-hidden", "false");
     }
@@ -6508,6 +6779,17 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
         }
       }
       return splitList(text);
+    }
+
+    function parseMuscleMapInput(value) {
+      const text = String(value || "").trim();
+      if (!text) return {};
+      try {
+        const parsed = JSON.parse(text);
+        return normalizeMuscleMap(parsed);
+      } catch (error) {
+        return {};
+      }
     }
 
     function saveExerciseFromForm(e) {
@@ -6547,7 +6829,12 @@ Interpretacja tolerancji: ${tolerance.label}. ${audience === "trainer" ? toleran
         beginnerFriendly: fd.has("beginnerFriendly"),
         source: String(fd.get("source") || "").trim(),
         sourceOrder: sourceOrderValue ? Number(sourceOrderValue) : "",
-        qualityStatus: String(fd.get("qualityStatus") || "").trim()
+        qualityStatus: String(fd.get("qualityStatus") || "").trim(),
+        muscleMap: parseMuscleMapInput(fd.get("muscleMap")),
+        primaryMuscles: normalizeMuscleList(fd.get("primaryMuscles")),
+        secondaryMuscles: normalizeMuscleList(fd.get("secondaryMuscles")),
+        supportMuscles: normalizeMuscleList(fd.get("supportMuscles")),
+        strengthSet: fd.has("strengthSet")
       });
       const next = previous
         ? exerciseLibrary.map(item => item.id === exercise.id ? exercise : item)
